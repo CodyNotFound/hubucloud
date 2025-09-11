@@ -1,56 +1,56 @@
-import { Link } from "@heroui/link";
-import { Snippet } from "@heroui/snippet";
-import { Code } from "@heroui/code";
-import { button as buttonStyles } from "@heroui/theme";
-
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+import { HeroCarousel } from "@/components/hero-carousel";
 
 export default function Home() {
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-xl text-center justify-center">
-        <span className={title()}>Make&nbsp;</span>
-        <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
-        <br />
-        <span className={title()}>
-          websites regardless of your design experience.
-        </span>
-        <div className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
+    <div className="w-full">
+      <section className="w-full px-3 py-4">
+        <HeroCarousel />
+      </section>
+      
+      <section className="w-full px-3 py-4">
+        <div className="text-center mb-4">
+          <h2 className="text-xl font-bold mb-2">校园服务</h2>
+          <p className="text-sm text-default-600">为湖大学子提供便捷的校园生活服务</p>
         </div>
-      </div>
-
-      <div className="flex gap-3">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-          href={siteConfig.links.docs}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
-      </div>
-
-      <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
-      </div>
-    </section>
+        
+        <div className="grid grid-cols-2 gap-2">
+          <div className="bg-default-50 rounded-lg p-3 text-center hover:shadow-lg transition-shadow">
+            <div className="text-2xl mb-2">💬</div>
+            <h3 className="font-semibold text-sm">论坛</h3>
+            <p className="text-xs text-default-600 mt-1">学术讨论与交流</p>
+          </div>
+          
+          <div className="bg-default-50 rounded-lg p-3 text-center hover:shadow-lg transition-shadow">
+            <div className="text-2xl mb-2">🎉</div>
+            <h3 className="font-semibold text-sm">活动</h3>
+            <p className="text-xs text-default-600 mt-1">校园活动信息</p>
+          </div>
+          
+          <div className="bg-default-50 rounded-lg p-3 text-center hover:shadow-lg transition-shadow">
+            <div className="text-2xl mb-2">📦</div>
+            <h3 className="font-semibold text-sm">快递</h3>
+            <p className="text-xs text-default-600 mt-1">快递代收服务</p>
+          </div>
+          
+          <div className="bg-default-50 rounded-lg p-3 text-center hover:shadow-lg transition-shadow">
+            <div className="text-2xl mb-2">🛒</div>
+            <h3 className="font-semibold text-sm">跳蚤市场</h3>
+            <p className="text-xs text-default-600 mt-1">二手物品交易</p>
+          </div>
+          
+          <div className="bg-default-50 rounded-lg p-3 text-center hover:shadow-lg transition-shadow">
+            <div className="text-2xl mb-2">🔍</div>
+            <h3 className="font-semibold text-sm">失物招领</h3>
+            <p className="text-xs text-default-600 mt-1">帮助找回丢失物品</p>
+          </div>
+          
+          <div className="bg-default-50 rounded-lg p-3 text-center hover:shadow-lg transition-shadow">
+            <div className="text-2xl mb-2">💼</div>
+            <h3 className="font-semibold text-sm">兼职</h3>
+            <p className="text-xs text-default-600 mt-1">校园兼职招聘</p>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
