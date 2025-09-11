@@ -8,8 +8,6 @@ import {
     NavbarBrand,
     NavbarMenuItem,
 } from '@heroui/navbar';
-import { Kbd } from '@heroui/kbd';
-import { Input } from '@heroui/input';
 import NextLink from 'next/link';
 import clsx from 'clsx';
 import { useTheme } from 'next-themes';
@@ -17,33 +15,11 @@ import { useIsSSR } from '@react-aria/ssr';
 
 import { siteConfig } from '@/config/site';
 import { ThemeSwitch } from '@/components/theme-switch';
-import { Search } from 'lucide-react';
-import { Logo } from '@/components/icons';
 
 export const Navbar = () => {
     const { theme } = useTheme();
     const isSSR = useIsSSR();
 
-    const searchInput = (
-        <Input
-            aria-label="Search"
-            classNames={{
-                inputWrapper: 'bg-default-100',
-                input: 'text-sm',
-            }}
-            endContent={
-                <Kbd className="hidden lg:inline-block" keys={['command']}>
-                    K
-                </Kbd>
-            }
-            labelPlacement="outside"
-            placeholder="Search..."
-            startContent={
-                <Search className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-            }
-            type="search"
-        />
-    );
 
     return (
         <HeroUINavbar maxWidth="full" position="sticky">

@@ -2,13 +2,13 @@ import { HeroCarousel } from "@/components/hero-carousel";
 
 export default function Home() {
   return (
-    <div className="w-full">
-      <section className="w-full px-3 py-4">
+    <>
+      <section className="w-full py-2">
         <HeroCarousel />
       </section>
       
-      <section className="w-full px-3 py-4">
-        <div className="text-center mb-4">
+      <section className="w-full py-2">
+        <div className="text-center mb-3">
           <h2 className="text-xl font-bold mb-2">校园服务</h2>
           <p className="text-sm text-default-600">为湖大学子提供便捷的校园生活服务</p>
         </div>
@@ -51,6 +51,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 }
