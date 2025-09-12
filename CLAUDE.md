@@ -64,6 +64,12 @@ app/
 - **代码注释**: 使用简体中文
 - **变量命名**: 使用英文，但要有清晰的中文注释
 
+### 7. 运行要求
+
+- 不需要检查 link
+- 不需要运行或者编译
+- 可以使用 ide 检查代码问题
+
 ## 开发指南
 
 ### 新增功能页面
@@ -87,39 +93,40 @@ app/
 **重要**: layout.tsx 已经在 main 元素中统一处理了页面间距 (`px-4 py-4`)，所有页面组件**不需要**再添加外层容器和间距。
 
 - **页面根元素**: 页面组件直接返回内容，不需要包装容器div
-- **section边距**: 各section间使用 `py-2` (紧凑布局)  
+- **section边距**: 各section间使用 `py-2` (紧凑布局)
 - **卡片间距**: 卡片之间使用 `space-y-2` 或 `gap-2` (减少间隙)
 - **内容间距**: 标题与内容间使用 `mb-3` (适中间距)
 
 #### 页面结构模板 (简化版)
+
 ```tsx
 export default function PageName() {
-  return (
-    <>
-      <section className="w-full py-2">
-        {/* 页面标题区 */}
-        <div className="text-center mb-3">
-          <h2 className="text-xl font-bold mb-2">页面标题</h2>
-          <p className="text-sm text-default-600">页面描述</p>
-        </div>
-        
-        {/* 页面内容区 */}
-        <div className="space-y-2">
-          {/* 内容组件 */}
-        </div>
-      </section>
-    </>
-  );
+    return (
+        <>
+            <section className="w-full py-2">
+                {/* 页面标题区 */}
+                <div className="text-center mb-3">
+                    <h2 className="text-xl font-bold mb-2">页面标题</h2>
+                    <p className="text-sm text-default-600">页面描述</p>
+                </div>
+
+                {/* 页面内容区 */}
+                <div className="space-y-2">{/* 内容组件 */}</div>
+            </section>
+        </>
+    );
 }
 ```
 
 #### 布局继承说明
+
 - **导航栏**: layout.tsx中的Navbar自动包含，页面无需处理
 - **页面间距**: layout.tsx中的main元素已统一设置 `px-4 py-4`
 - **页面滚动**: layout.tsx处理overflow，页面内容自动滚动
 - **页面组件职责**: 仅处理页面内容结构，不处理容器和外层间距
 
 #### 导航集成
+
 - **全局导航**: layout.tsx中已包含Navbar，所有页面自动继承
 - **页面导航**: 不需要单独添加导航组件
 - **页面标题**: 使用统一的标题样式 `text-xl font-bold mb-2`
@@ -129,7 +136,6 @@ export default function PageName() {
 - 使用TypeScript严格模式
 - 组件使用函数式写法
 - 遵循React Hooks最佳实践
-- 代码格式化使用项目内置的ESLint配置
 
 ## 注意事项
 
@@ -139,6 +145,7 @@ export default function PageName() {
 - 保持中文界面的一致性
 - 遵循无障碍访问性 (a11y) 标准
 - 不使用响应式断点，保持固定手机端布局
+- 如果 heroui 有， 不要使用自己写的组件， 完全使用 heroui 自带
 
 ## 常用命令
 

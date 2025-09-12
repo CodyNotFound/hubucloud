@@ -26,6 +26,11 @@ export const siteConfig = {
             icon: 'Calendar',
         },
         {
+            label: '美食',
+            href: '/food',
+            icon: 'UtensilsCrossed',
+        },
+        {
             label: '快递',
             href: '/express',
             icon: 'Package',

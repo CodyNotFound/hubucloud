@@ -2,8 +2,9 @@
 
 import { Card, CardBody, CardHeader } from '@heroui/react';
 import { ExternalLink, MessageSquare } from 'lucide-react';
-import { groupList } from '@/config/forum';
 import * as LucideIcons from 'lucide-react';
+
+import { groupList } from '@/config/forum';
 
 export default function ForumPage() {
     const handleGroupClick = (url: string) => {
@@ -38,8 +39,14 @@ export default function ForumPage() {
                                     <div className="flex items-center gap-3 w-full">
                                         <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                                             {(() => {
-                                                const IconComponent = (LucideIcons as any)[group.icon];
-                                                return IconComponent ? <IconComponent className="w-5 h-5 text-primary" /> : <MessageSquare className="w-5 h-5 text-primary" />;
+                                                const IconComponent = (LucideIcons as any)[
+                                                    group.icon
+                                                ];
+                                                return IconComponent ? (
+                                                    <IconComponent className="w-5 h-5 text-primary" />
+                                                ) : (
+                                                    <MessageSquare className="w-5 h-5 text-primary" />
+                                                );
                                             })()}
                                         </div>
                                         <div className="flex-1 flex items-center justify-center">

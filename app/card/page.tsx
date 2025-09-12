@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Spinner } from '@heroui/spinner';
 import { Card, CardBody } from '@heroui/card';
-import { Grid3x3, Utensils, Home, Play } from 'lucide-react';
+import { Utensils, Home, Play } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 // 动态导入 react-pdf 组件以避免 SSR 问题

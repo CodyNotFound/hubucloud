@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card } from '@heroui/card';
 import { Button } from '@heroui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+
 import { defaultSlides, CarouselItem } from '@/config/banner';
-import { useRouter } from 'next/navigation';
 
 interface HeroCarouselProps {
     slides?: CarouselItem[];
@@ -56,7 +57,7 @@ export const HeroCarousel = ({
                                 index === currentSlide ? 'opacity-100' : 'opacity-0'
                             }`}
                             style={{
-                                pointerEvents: index === currentSlide ? 'auto' : 'none'
+                                pointerEvents: index === currentSlide ? 'auto' : 'none',
                             }}
                         >
                             <div

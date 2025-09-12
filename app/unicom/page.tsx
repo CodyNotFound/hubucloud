@@ -1,7 +1,6 @@
 'use client';
 
 import { Card, CardBody, CardFooter, CardHeader, Button, Divider, Chip } from '@heroui/react';
-import { QRCodeComponent } from '@/components/qr-code';
 import {
     Smartphone,
     Wifi,
@@ -12,6 +11,9 @@ import {
     ShoppingBag,
     MessageCircle,
 } from 'lucide-react';
+import Image from 'next/image';
+
+import { QRCodeComponent } from '@/components/qr-code';
 
 export default function UnicomPage() {
     const handleApply = () => {
@@ -139,10 +141,13 @@ export default function UnicomPage() {
 
                     {/* 2. 详细介绍图片 */}
                     <Card className="w-full">
-                        <img
+                        <Image
                             src="/unicom.webp"
                             alt="联通校园卡详细介绍"
+                            width={1280}
+                            height={1737}
                             className="w-full rounded-lg"
+                            priority
                         />
                     </Card>
 
