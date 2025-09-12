@@ -42,8 +42,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         <div className="md:max-w-md md:w-full md:bg-background md:rounded-3xl md:overflow-hidden md:shadow-2xl md:border md:border-default-200">
                             <div className="relative flex flex-col h-screen md:h-[calc(100vh-2rem)]">
                                 <Navbar />
-                                <main className="flex-grow overflow-y-auto w-full px-4 py-4">{children}</main>
-                                <footer className="w-full flex items-center justify-center py-3 bg-background">
+                                <main className="flex-grow overflow-y-auto w-full px-4 py-4">
+                                    {children}
+                                </main>
+                                {/* <footer className="w-full flex items-center justify-center py-3 bg-background">
                                     <Link
                                         isExternal
                                         className="flex items-center gap-1 text-current"
@@ -53,7 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                         <span className="text-default-600">Powered by</span>
                                         <p className="text-primary">HeroUI</p>
                                     </Link>
-                                </footer>
+                                </footer> */}
                             </div>
                         </div>
                     </div>

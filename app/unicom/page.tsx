@@ -158,25 +158,19 @@ export default function UnicomPage() {
                                     size={150}
                                     className="border rounded"
                                 />
-                                <div className="text-center">
-                                    <p className="text-sm text-primary font-medium mb-2">
-                                        免费领取1年视频会员
-                                    </p>
-                                    <p className="text-xs text-default-500">
-                                        扫码或点击下方按钮领取
-                                    </p>
-                                </div>
                             </div>
                         </CardBody>
-                        <CardFooter className="pt-3">
-                            <Button
-                                color="primary"
-                                className="w-full font-medium"
-                                startContent={<Gift className="w-4 h-4" />}
-                                onPress={handleApply}
-                            >
-                                立即领取会员
-                            </Button>
+                        <CardFooter>
+                            <div>
+                                <Button
+                                    color="primary"
+                                    className="w-full font-medium"
+                                    startContent={<Gift className="w-4 h-4" />}
+                                    onPress={handleApply}
+                                >
+                                    免费领取1年视频会员
+                                </Button>
+                            </div>
                         </CardFooter>
                     </Card>
 

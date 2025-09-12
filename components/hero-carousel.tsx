@@ -5,6 +5,7 @@ import { Card } from '@heroui/card';
 import { Button } from '@heroui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { defaultSlides, CarouselItem } from '@/config/banner';
+import { useRouter } from 'next/navigation';
 
 interface HeroCarouselProps {
     slides?: CarouselItem[];
@@ -16,6 +17,7 @@ export const HeroCarousel = ({
     autoPlayInterval = 5000,
 }: HeroCarouselProps) => {
     const [currentSlide, setCurrentSlide] = useState(0);
+    const router = useRouter();
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -37,6 +39,12 @@ export const HeroCarousel = ({
         setCurrentSlide((prev) => (prev + 1) % slides.length);
     };
 
+    const handleSlideClick = (slide: CarouselItem) => {
+        if (slide.link) {
+            router.push(slide.link);
+        }
+    };
+
     return (
         <div className="relative w-full">
             <Card className="w-full overflow-hidden">
@@ -47,10 +55,16 @@ export const HeroCarousel = ({
                             className={`absolute inset-0 transition-opacity duration-500 ${
                                 index === currentSlide ? 'opacity-100' : 'opacity-0'
                             }`}
+                            style={{
+                                pointerEvents: index === currentSlide ? 'auto' : 'none'
+                            }}
                         >
                             <div
-                                className="w-full h-full bg-cover bg-center bg-no-repeat"
+                                className={`w-full h-full bg-cover bg-center bg-no-repeat ${
+                                    slide.link ? 'cursor-pointer' : ''
+                                }`}
                                 style={{ backgroundImage: `url(${slide.image})` }}
+                                onClick={() => handleSlideClick(slide)}
                             >
                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                                     <div className="text-center text-white px-4">
