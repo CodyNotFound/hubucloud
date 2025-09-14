@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card } from '@heroui/card';
-import { Button } from '@heroui/button';
+import { Card, Button } from '@heroui/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { defaultSlides, CarouselItem } from '@/config/banner';

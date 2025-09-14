@@ -2,6 +2,7 @@
     "name": "next-app-template",
     "version": "0.0.1",
     "private": true,
+    "type": "module",
     "scripts": {
         "dev": "next dev --turbopack",
         "build": "next build",
@@ -66,6 +67,7 @@
     },
     "devDependencies": {
         "@next/eslint-plugin-next": "15.3.4",
+        "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
         "@react-types/shared": "3.30.0",
         "@tailwindcss/postcss": "4.1.11",
         "@types/node": "20.5.7",
@@ -73,10 +75,10 @@
         "@types/react-dom": "18.3.0",
         "@typescript-eslint/eslint-plugin": "8.34.1",
         "@typescript-eslint/parser": "8.34.1",
-        "eslint": "9.25.1",
+        "eslint": "^9.35.0",
         "eslint-config-next": "15.3.4",
-        "eslint-config-prettier": "9.1.0",
-        "eslint-plugin-import": "2.31.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-jsx-a11y": "6.10.2",
         "eslint-plugin-node": "11.1.0",
         "eslint-plugin-prettier": "5.2.1",
@@ -85,7 +87,7 @@
         "eslint-plugin-unused-imports": "4.1.4",
         "globals": "16.0.0",
         "postcss": "8.5.6",
-        "prettier": "3.5.3",
+        "prettier": "^3.6.2",
         "tailwind-variants": "3.1.1",
         "tailwindcss": "4.1.11",
         "typescript": "5.6.3"

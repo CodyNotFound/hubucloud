@@ -7,7 +7,7 @@ import {
     NavbarMenuToggle,
     NavbarBrand,
     NavbarMenuItem,
-} from '@heroui/navbar';
+} from '@heroui/react';
 import NextLink from 'next/link';
 import Image from 'next/image';
 import clsx from 'clsx';
@@ -28,6 +28,8 @@ import {
 
 import { siteConfig } from '@/config/site';
 import { ThemeSwitch } from '@/components/theme-switch';
+import { UserInfo } from '@/components/user-info';
+import type { User as UserType } from '@/types';
 
 // 图标映射
 const iconMap = {
@@ -66,6 +68,7 @@ export const Navbar = () => {
             </NavbarContent>
 
             <NavbarContent className="basis-1 pl-4" justify="end">
+                <UserInfo />
                 <ThemeSwitch />
                 <NavbarMenuToggle className="sm:hidden" />
             </NavbarContent>
