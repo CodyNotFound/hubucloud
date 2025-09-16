@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { adminService } from '@/services/admin';
 
 export interface AdminUser {
@@ -7,12 +8,22 @@ export interface AdminUser {
     role: string;
 }
 
+export interface AdminStats {
+    totalUsers: number;
+    totalAdmins: number;
+    regularUsers: number;
+    totalRestaurants: number;
+    totalParttime: number;
+}
+
 export interface UseAdminReturn {
     isAdmin: boolean;
     user: AdminUser | null;
-    loading: boolean;
+    isLoading: boolean;
     error: string | null;
-    checkAdminStatus: () => Promise<void>;
+    adminStats: AdminStats | null;
+    checkAdminRole: () => Promise<void>;
+    getAdminStats: () => Promise<void>;
     logout: () => void;
 }
 
@@ -23,15 +34,16 @@ export interface UseAdminReturn {
 export const useAdmin = (): UseAdminReturn => {
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [user, setUser] = useState<AdminUser | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [adminStats, setAdminStats] = useState<AdminStats | null>(null);
 
-    const checkAdminStatus = async () => {
+    const checkAdminRole = async () => {
         try {
-            setLoading(true);
+            setIsLoading(true);
             setError(null);
 
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('auth_token');
             if (!token) {
                 setIsAdmin(false);
                 setUser(null);
@@ -39,16 +51,28 @@ export const useAdmin = (): UseAdminReturn => {
                 return;
             }
 
-            const response = await adminService.checkAdminRole();
+            // 先从localStorage获取用户信息，检查角色
+            const userInfoStr = localStorage.getItem('user_info');
+            const userInfo = userInfoStr ? JSON.parse(userInfoStr) : {};
 
-            if (response.status === 'success' && response.data) {
-                setIsAdmin(response.data.isAdmin);
-                setUser(response.data.user);
-                setError(null);
+            if (userInfo.role === 'ADMIN') {
+                // 只有当用户角色是ADMIN时，才调用管理员API验证
+                const response = await adminService.checkAdminRole();
+
+                if (response.status === 'success' && response.data) {
+                    setIsAdmin(response.data.isAdmin);
+                    setUser(response.data.user);
+                    setError(null);
+                } else {
+                    setIsAdmin(false);
+                    setUser(null);
+                    setError(response.message || '权限验证失败');
+                }
             } else {
+                // 普通用户，直接设置为非管理员
                 setIsAdmin(false);
                 setUser(null);
-                setError(response.message || '权限验证失败');
+                setError('权限不足，需要管理员权限');
             }
         } catch (err: any) {
             setIsAdmin(false);
@@ -57,37 +81,64 @@ export const useAdmin = (): UseAdminReturn => {
             // 处理具体错误类型
             if (err.status === 401) {
                 setError('请先登录');
-                localStorage.removeItem('token');
+                localStorage.removeItem('auth_token');
             } else if (err.status === 403) {
                 setError('权限不足，需要管理员权限');
             } else {
                 setError(err.message || '权限验证失败');
             }
         } finally {
-            setLoading(false);
+            setIsLoading(false);
+        }
+    };
+
+    const getAdminStats = async () => {
+        // 如果已经有统计数据，不重复请求
+        if (adminStats) {
+            return;
+        }
+
+        try {
+            const response = await adminService.getAdminStats();
+            if (response.status === 'success' && response.data) {
+                setAdminStats(response.data.stats);
+            }
+        } catch (error) {
+            console.error('获取统计数据失败:', error);
         }
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
+        localStorage.removeItem('auth_token');
         setIsAdmin(false);
         setUser(null);
         setError(null);
+        setAdminStats(null);
         // 跳转到登录页或首页
         window.location.href = '/';
     };
 
     // 组件挂载时检查管理员状态
     useEffect(() => {
-        checkAdminStatus();
+        checkAdminRole();
+        // 延迟获取统计数据，避免重复请求
+        const timer = setTimeout(() => {
+            if (!adminStats) {
+                getAdminStats();
+            }
+        }, 1000);
+
+        return () => clearTimeout(timer);
     }, []);
 
     return {
         isAdmin,
         user,
-        loading,
+        isLoading,
         error,
-        checkAdminStatus,
+        adminStats,
+        checkAdminRole,
+        getAdminStats,
         logout,
     };
 };
@@ -97,24 +148,24 @@ export const useAdmin = (): UseAdminReturn => {
  * 用于保护需要管理员权限的页面或组件
  */
 export const useAdminGuard = () => {
-    const { isAdmin, loading, error, checkAdminStatus } = useAdmin();
+    const { isAdmin, isLoading, error, checkAdminRole } = useAdmin();
 
     useEffect(() => {
-        if (!loading && !isAdmin) {
+        if (!isLoading && !isAdmin) {
             // 如果不是管理员，重定向到首页或显示错误
             console.warn('Access denied: Admin permission required');
             // 可以在这里添加重定向逻辑
             // router.push('/');
         }
-    }, [isAdmin, loading]);
+    }, [isAdmin, isLoading]);
 
     return {
         isAdmin,
-        loading,
+        isLoading,
         error,
-        checkAdminStatus,
+        checkAdminRole,
         // 便于在组件中使用的权限检查函数
-        hasAccess: isAdmin && !loading,
-        accessDenied: !loading && !isAdmin,
+        hasAccess: isAdmin && !isLoading,
+        accessDenied: !isLoading && !isAdmin,
     };
 };

@@ -7,7 +7,7 @@ import { Get, Post, Put, Delete } from '@/decorators/http';
 import { Body, Query, Param, Header } from '@/decorators/params';
 import { Required, Length } from '@/decorators/validation';
 import { RequireAuth, getCurrentUser } from '@/decorators/auth';
-import { ResponseUtil } from '@/core/response';
+import { ResponseUtil, ERROR_MESSAGES } from '@/core/response';
 import { db } from '@/utils/db';
 import { JWTUtil } from '@/utils/jwt';
 
@@ -33,7 +33,7 @@ export class UserController {
             });
 
             if (existingUser) {
-                return ResponseUtil.clientError(c, '用户名已存在', 400);
+                return ResponseUtil.clientError(c, ERROR_MESSAGES.USERNAME_EXISTS, 400);
             }
 
             // 密码加密（简单实现，实际项目中建议使用bcrypt）
@@ -48,7 +48,7 @@ export class UserController {
                     user: username,
                     password: hashedPassword,
                     name: username, // 默认使用用户名作为姓名
-                    avatar: '/public/avatar.webp',
+                    avatar: '/logo.png',
                     phone: '未设置',
                     studentId: `temp_${Date.now()}`,
                     major: '未设置',
@@ -102,13 +102,13 @@ export class UserController {
             });
 
             if (!user) {
-                return ResponseUtil.clientError(c, '用户名或密码错误', 401);
+                return ResponseUtil.authError(c, ERROR_MESSAGES.INVALID_CREDENTIALS);
             }
 
             // 验证密码
             const hashedPassword = createHash('sha256').update(password).digest('hex');
             if (user.password !== hashedPassword) {
-                return ResponseUtil.clientError(c, '用户名或密码错误', 401);
+                return ResponseUtil.authError(c, ERROR_MESSAGES.INVALID_CREDENTIALS);
             }
 
             // 生成JWT token
@@ -121,7 +121,7 @@ export class UserController {
             // 返回用户信息（不包含密码）和token
             const userInfo = {
                 id: user.id,
-                username: user.user,
+                user: user.user, // 使用user字段与前端保持一致
                 name: user.name,
                 avatar: user.avatar,
                 phone: user.phone,
@@ -151,7 +151,7 @@ export class UserController {
         try {
             const currentUser = getCurrentUser(c);
             if (!currentUser) {
-                return ResponseUtil.authError(c, '未登录', 401);
+                return ResponseUtil.authError(c, ERROR_MESSAGES.UNAUTHORIZED);
             }
 
             const user = await db.user.findUnique({
@@ -171,7 +171,7 @@ export class UserController {
             });
 
             if (!user) {
-                return ResponseUtil.clientError(c, '用户不存在', 404);
+                return ResponseUtil.clientError(c, ERROR_MESSAGES.USER_NOT_FOUND, 404);
             }
 
             return ResponseUtil.success(c, user);
@@ -204,7 +204,7 @@ export class UserController {
             });
 
             if (!user) {
-                return ResponseUtil.clientError(c, '用户不存在', 404);
+                return ResponseUtil.clientError(c, ERROR_MESSAGES.USER_NOT_FOUND, 404);
             }
 
             return ResponseUtil.success(c, user);
@@ -315,12 +315,12 @@ export class UserController {
             const isSelf = currentUserId === id;
 
             if (!isAdmin && !isSelf) {
-                return ResponseUtil.clientError(c, '权限不足', 403);
+                return ResponseUtil.authError(c, ERROR_MESSAGES.FORBIDDEN, 403);
             }
 
             // 如果要修改角色，只有管理员可以操作
             if (role && !isAdmin) {
-                return ResponseUtil.clientError(c, '只有管理员可以修改用户角色', 403);
+                return ResponseUtil.authError(c, ERROR_MESSAGES.ADMIN_REQUIRED, 403);
             }
 
             // 构建更新数据对象
@@ -411,7 +411,7 @@ export class UserController {
         if (!userId) {
             return {
                 isAdmin: false,
-                message: '未登录',
+                message: ERROR_MESSAGES.UNAUTHORIZED,
                 statusCode: 401,
             };
         }
@@ -431,7 +431,7 @@ export class UserController {
         if (!user) {
             return {
                 isAdmin: false,
-                message: '未登录',
+                message: ERROR_MESSAGES.UNAUTHORIZED,
                 statusCode: 401,
             };
         }
@@ -440,7 +440,7 @@ export class UserController {
         if (user.role !== 'ADMIN') {
             return {
                 isAdmin: false,
-                message: '权限不足，需要管理员权限',
+                message: ERROR_MESSAGES.ADMIN_REQUIRED,
                 statusCode: 403,
             };
         }

@@ -14,25 +14,15 @@ import {
     SelectItem,
     Card,
     CardBody,
-    Chip,
     Pagination,
     Modal,
     ModalContent,
     ModalHeader,
     ModalBody,
     ModalFooter,
-    useDisclosure
+    useDisclosure,
 } from '@heroui/react';
-import {
-    Search,
-    Plus,
-    Edit,
-    Trash2,
-    Eye,
-    MoreHorizontal,
-    Filter,
-    RefreshCw
-} from 'lucide-react';
+import { Search, Plus, Edit, Trash2, Eye, RefreshCw } from 'lucide-react';
 
 export interface TableColumn<T = any> {
     key: string;
@@ -102,10 +92,14 @@ export function DataTable<T extends Record<string, any>>({
     createButtonText = '添加',
     getItemKey = (item) => item.id,
     emptyText = '暂无数据',
-    actions = true
+    actions = true,
 }: DataTableProps<T>) {
     const [selectedItem, setSelectedItem] = useState<T | null>(null);
-    const { isOpen: isDeleteModalOpen, onOpen: openDeleteModal, onClose: closeDeleteModal } = useDisclosure();
+    const {
+        isOpen: isDeleteModalOpen,
+        onOpen: openDeleteModal,
+        onClose: closeDeleteModal,
+    } = useDisclosure();
 
     const handleDelete = (item: T) => {
         setSelectedItem(item);
@@ -209,7 +203,9 @@ export function DataTable<T extends Record<string, any>>({
                     <Select
                         key={filter.key}
                         placeholder={filter.label}
-                        selectedKeys={selectedFilters[filter.key] ? [selectedFilters[filter.key]] : []}
+                        selectedKeys={
+                            selectedFilters[filter.key] ? [selectedFilters[filter.key]] : []
+                        }
                         onSelectionChange={(keys) => {
                             const value = Array.from(keys)[0] as string;
                             onFilterChange?.(filter.key, value);
@@ -261,9 +257,7 @@ export function DataTable<T extends Record<string, any>>({
                                             {column.render ? column.render(item) : item[column.key]}
                                         </TableCell>
                                     ))}
-                                    {actions && (
-                                        <TableCell>{renderActionButtons(item)}</TableCell>
-                                    )}
+                                    {actions && <TableCell>{renderActionButtons(item)}</TableCell>}
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -290,9 +284,7 @@ export function DataTable<T extends Record<string, any>>({
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">
-                                确认删除
-                            </ModalHeader>
+                            <ModalHeader className="flex flex-col gap-1">确认删除</ModalHeader>
                             <ModalBody>
                                 <p>确定要删除这条记录吗？此操作无法撤销。</p>
                             </ModalBody>

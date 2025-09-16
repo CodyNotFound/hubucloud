@@ -21,7 +21,7 @@ export function DataStats({
     totalPages,
     itemName = '条记录',
     showPageInfo = true,
-    className = ''
+    className = '',
 }: DataStatsProps) {
     return (
         <div className={`flex items-center justify-between text-sm text-default-600 ${className}`}>

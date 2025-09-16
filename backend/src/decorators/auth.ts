@@ -1,7 +1,7 @@
 import type { Context } from 'hono';
 
 import { JWTUtil, type UserTokenPayload } from '@/utils/jwt';
-import { ResponseUtil } from '@/core/response';
+import { ResponseUtil, ERROR_MESSAGES } from '@/core/response';
 
 /**
  * JWT认证装饰器
@@ -15,12 +15,12 @@ export function RequireAuth() {
             const token = JWTUtil.extractTokenFromHeader(authHeader);
 
             if (!token) {
-                return ResponseUtil.clientError(c, '未登录', 401);
+                return ResponseUtil.authError(c, ERROR_MESSAGES.UNAUTHORIZED);
             }
 
             const payload = JWTUtil.verifyToken(token);
             if (!payload) {
-                return ResponseUtil.clientError(c, 'Token无效或已过期', 401);
+                return ResponseUtil.authError(c, ERROR_MESSAGES.TOKEN_INVALID);
             }
 
             // 将用户信息存储到上下文中
@@ -43,16 +43,16 @@ export function RequireAdmin() {
             const token = JWTUtil.extractTokenFromHeader(authHeader);
 
             if (!token) {
-                return ResponseUtil.clientError(c, '未登录', 401);
+                return ResponseUtil.authError(c, ERROR_MESSAGES.UNAUTHORIZED);
             }
 
             const payload = JWTUtil.verifyToken(token);
             if (!payload) {
-                return ResponseUtil.clientError(c, 'Token无效或已过期', 401);
+                return ResponseUtil.authError(c, ERROR_MESSAGES.TOKEN_INVALID);
             }
 
             if (payload.role !== 'ADMIN') {
-                return ResponseUtil.clientError(c, '权限不足，需要管理员权限', 403);
+                return ResponseUtil.authError(c, ERROR_MESSAGES.ADMIN_REQUIRED, 403);
             }
 
             // 将用户信息存储到上下文中

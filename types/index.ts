@@ -7,15 +7,15 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 // 用户信息类型定义（与后端API保持一致）
 export interface User {
     id: string;
-    user: string;        // 用户名/登录名
-    name: string;        // 真实姓名
+    user: string; // 用户名/登录名
+    name: string; // 真实姓名
     avatar: string;
     role: 'USER' | 'ADMIN';
     phone: string;
     studentId: string;
     major: string;
     grade: number;
-    createdAt: string;   // 创建时间
+    createdAt: string; // 创建时间
 }
 
 // 通用API响应类型
@@ -45,11 +45,12 @@ export interface PaginatedResponse<T> {
 export interface Parttime {
     id: string;
     name: string;
-    type: string;
     salary: string;
-    time: string;
+    worktime: string;
     location: string;
     description: string;
+    contact: string;
+    requirements?: string;
     tags: string[];
     createdAt?: string;
     updatedAt?: string;

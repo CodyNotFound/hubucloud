@@ -8,6 +8,28 @@ import { HTTPException } from 'hono/http-exception';
 import logger from '../utils/logger';
 
 /**
+ * 标准错误消息常量
+ */
+export const ERROR_MESSAGES = {
+    // 认证相关
+    UNAUTHORIZED: '未登录',
+    TOKEN_INVALID: 'Token无效或已过期',
+    FORBIDDEN: '权限不足',
+    ADMIN_REQUIRED: '权限不足，需要管理员权限',
+
+    // 用户相关
+    USER_NOT_FOUND: '用户不存在',
+    USERNAME_EXISTS: '用户名已存在',
+    INVALID_CREDENTIALS: '用户名或密码错误',
+
+    // 通用错误
+    VALIDATION_ERROR: '输入数据不合法',
+    NETWORK_ERROR: '网络连接失败',
+    SERVER_ERROR: '服务器内部错误',
+    NOT_FOUND: '资源不存在',
+} as const;
+
+/**
  * 标准响应格式
  * 成功响应: {status: 'success', data: T}
  * 错误响应: {status: 'error', error: string}

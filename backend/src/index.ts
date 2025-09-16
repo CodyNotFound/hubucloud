@@ -10,6 +10,8 @@ import '@/controllers/restaurant';
 import '@/controllers/parttime';
 import '@/controllers/admin';
 import '@/controllers/user';
+import '@/controllers/upload';
+import '@/controllers/static';
 
 const app = new Hono();
 

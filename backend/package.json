@@ -8,7 +8,11 @@
         "db:generate": "prisma generate",
         "db:migrate": "prisma migrate dev",
         "db:studio": "prisma studio",
-        "db": "bun db:generate && bun db:migrate"
+        "db": "bun db:generate && bun db:migrate",
+        "admin:create-user": "bun run scripts/create-user.ts",
+        "admin:reset-password": "bun run scripts/reset-password.ts",
+        "admin:manage-role": "bun run scripts/manage-role.ts",
+        "admin:list-users": "bun run scripts/list-users.ts"
     },
     "devDependencies": {
         "@types/bun": "latest",
@@ -36,6 +40,7 @@
         "hono": "^4.9.7",
         "jsonwebtoken": "^9.0.2",
         "prisma": "^6.16.1",
-        "reflect-metadata": "^0.2.2"
+        "reflect-metadata": "^0.2.2",
+        "sharp": "^0.34.3"
     }
 }

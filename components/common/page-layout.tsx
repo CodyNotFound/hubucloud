@@ -36,7 +36,7 @@ export function PageLayout({
     loadingText = '加载中...',
     emptyContent,
     isEmpty = false,
-    stats
+    stats,
 }: PageLayoutProps) {
     return (
         <>
@@ -44,24 +44,14 @@ export function PageLayout({
             <section className="w-full py-2">
                 <div className="text-center mb-3">
                     <h2 className="text-xl font-bold mb-2">{title}</h2>
-                    {description && (
-                        <p className="text-sm text-default-600">{description}</p>
-                    )}
+                    {description && <p className="text-sm text-default-600">{description}</p>}
                 </div>
 
                 {/* 筛选区 */}
-                {filters && (
-                    <div className="mb-4">
-                        {filters}
-                    </div>
-                )}
+                {filters && <div className="mb-4">{filters}</div>}
 
                 {/* 统计信息 */}
-                {stats && !loading && (
-                    <div className="mb-3">
-                        {stats}
-                    </div>
-                )}
+                {stats && !loading && <div className="mb-3">{stats}</div>}
             </section>
 
             {/* 内容区 */}
@@ -76,17 +66,11 @@ export function PageLayout({
                         <div className="text-center py-8 text-default-500">暂无数据</div>
                     )
                 ) : (
-                    <div className="space-y-3">
-                        {children}
-                    </div>
+                    <div className="space-y-3">{children}</div>
                 )}
 
                 {/* 分页器 */}
-                {pagination && !loading && !isEmpty && (
-                    <div className="mt-6">
-                        {pagination}
-                    </div>
-                )}
+                {pagination && !loading && !isEmpty && <div className="mt-6">{pagination}</div>}
             </section>
         </>
     );

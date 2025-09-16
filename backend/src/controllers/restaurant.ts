@@ -127,54 +127,6 @@ export class RestaurantController {
     }
 
     /**
-     * 根据位置搜索附近餐厅
-     */
-    @Get('/nearby')
-    async getNearbyRestaurants(
-        c: Context,
-        @Query('latitude') @Required() latitude: string,
-        @Query('longitude') @Required() longitude: string,
-        @Query('radius') radius?: string,
-        @Query('limit') limit?: string
-    ) {
-        try {
-            const lat = parseFloat(latitude);
-            const lng = parseFloat(longitude);
-            const radiusKm = radius ? parseFloat(radius) : 5; // 默认5公里
-            const limitNum = limit ? parseInt(limit) : 20;
-
-            // 简单的距离计算（实际项目中可能需要更精确的地理位置计算）
-            const restaurants = await db.restaurant.findMany({
-                take: limitNum,
-                orderBy: {
-                    rating: 'desc',
-                },
-            });
-
-            // 计算距离并筛选
-            const nearbyRestaurants = restaurants
-                .map((restaurant) => {
-                    const distance = this.calculateDistance(
-                        lat,
-                        lng,
-                        restaurant.latitude,
-                        restaurant.longitude
-                    );
-                    return {
-                        ...restaurant,
-                        distance: parseFloat(distance.toFixed(2)),
-                    };
-                })
-                .filter((restaurant) => restaurant.distance <= radiusKm)
-                .sort((a, b) => a.distance - b.distance);
-
-            return ResponseUtil.success(c, nearbyRestaurants);
-        } catch (error) {
-            return ResponseUtil.serverError(c, '搜索附近餐厅失败', error as Error);
-        }
-    }
-
-    /**
      * 根据ID获取餐厅详情
      */
     @Get('/:id')
@@ -210,8 +162,8 @@ export class RestaurantController {
         @Body('preview') preview: string[],
         @Body('openTime') @Required() openTime: string,
         @Body('rating') @IsNumber(1, 5) rating: number,
-        @Body('latitude') @Required() latitude: number,
-        @Body('longitude') @Required() longitude: number
+        @Body('latitude') latitude?: number,
+        @Body('longitude') longitude?: number
     ) {
         try {
             const restaurant = await db.restaurant.create({
@@ -226,8 +178,8 @@ export class RestaurantController {
                     preview: preview || [],
                     openTime,
                     rating,
-                    latitude,
-                    longitude,
+                    latitude: latitude || 30.5951, // 默认湖北大学坐标
+                    longitude: longitude || 114.4086,
                 },
             });
 
@@ -316,23 +268,5 @@ export class RestaurantController {
         } catch (error) {
             return ResponseUtil.serverError(c, '删除餐厅失败', error as Error);
         }
-    }
-
-    /**
-     * 计算两点间距离（单位：公里）
-     * 使用Haversine公式
-     */
-    private calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
-        const R = 6371; // 地球半径（公里）
-        const dLat = ((lat2 - lat1) * Math.PI) / 180;
-        const dLng = ((lng2 - lng1) * Math.PI) / 180;
-        const a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos((lat1 * Math.PI) / 180) *
-                Math.cos((lat2 * Math.PI) / 180) *
-                Math.sin(dLng / 2) *
-                Math.sin(dLng / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
     }
 }

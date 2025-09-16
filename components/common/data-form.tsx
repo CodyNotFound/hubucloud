@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Modal,
     ModalContent,
@@ -12,12 +12,10 @@ import {
     Textarea,
     Select,
     SelectItem,
-    Card,
-    CardBody,
     Chip,
-    Switch
+    Switch,
 } from '@heroui/react';
-import { X, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 export interface FormField {
     key: string;
@@ -64,23 +62,31 @@ export const DataForm = ({
     isEdit = false,
     loading = false,
     submitText,
-    cancelText = '取消'
+    cancelText = '取消',
 }: DataFormProps) => {
-    const [formData, setFormData] = useState<Record<string, any>>(initialData);
+    // 确保initialData始终是一个对象
+    const safeInitialData = initialData || {};
+    const [formData, setFormData] = useState<Record<string, any>>(safeInitialData);
     const [errors, setErrors] = useState<Record<string, string>>({});
+
+    // 当initialData变化时更新formData
+    useEffect(() => {
+        setFormData(safeInitialData);
+        setErrors({});
+    }, [initialData]);
 
     // 重置表单数据
     const resetForm = () => {
-        setFormData(initialData);
+        setFormData(safeInitialData);
         setErrors({});
     };
 
     // 处理字段值变化
     const handleFieldChange = (key: string, value: any) => {
-        setFormData(prev => ({ ...prev, [key]: value }));
+        setFormData((prev) => ({ ...prev, [key]: value }));
         // 清除该字段的错误信息
         if (errors[key]) {
-            setErrors(prev => ({ ...prev, [key]: '' }));
+            setErrors((prev) => ({ ...prev, [key]: '' }));
         }
     };
 
@@ -88,7 +94,7 @@ export const DataForm = ({
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
 
-        fields.forEach(field => {
+        fields.forEach((field) => {
             const value = formData[field.key];
 
             // 必填验证
@@ -98,7 +104,11 @@ export const DataForm = ({
             }
 
             // 自定义验证
-            if (value && field.validation?.pattern && !field.validation.pattern.test(String(value))) {
+            if (
+                value &&
+                field.validation?.pattern &&
+                !field.validation.pattern.test(String(value))
+            ) {
                 newErrors[field.key] = field.validation.message || `${field.label}格式不正确`;
                 return;
             }
@@ -147,7 +157,10 @@ export const DataForm = ({
         };
 
         const removeTag = (tagToRemove: string) => {
-            handleFieldChange(field.key, tags.filter(tag => tag !== tagToRemove));
+            handleFieldChange(
+                field.key,
+                tags.filter((tag) => tag !== tagToRemove)
+            );
         };
 
         return (
@@ -171,13 +184,8 @@ export const DataForm = ({
                 </div>
                 {tags.length > 0 && (
                     <div className="flex flex-wrap gap-1">
-                        {tags.map(tag => (
-                            <Chip
-                                key={tag}
-                                size="sm"
-                                onClose={() => removeTag(tag)}
-                                variant="flat"
-                            >
+                        {tags.map((tag) => (
+                            <Chip key={tag} size="sm" onClose={() => removeTag(tag)} variant="flat">
                                 {tag}
                             </Chip>
                         ))}
@@ -197,7 +205,7 @@ export const DataForm = ({
             placeholder: field.placeholder,
             isRequired: field.required,
             errorMessage: errors[field.key],
-            isInvalid: hasError
+            isInvalid: hasError,
         };
 
         switch (field.type) {
@@ -221,7 +229,9 @@ export const DataForm = ({
                         min={field.min}
                         max={field.max}
                         step={field.step}
-                        onValueChange={(val) => handleFieldChange(field.key, val ? Number(val) : '')}
+                        onValueChange={(val) =>
+                            handleFieldChange(field.key, val ? Number(val) : '')
+                        }
                     />
                 );
 
@@ -245,7 +255,7 @@ export const DataForm = ({
                             handleFieldChange(field.key, selectedValue);
                         }}
                     >
-                        {(field.options || []).map(option => (
+                        {(field.options || []).map((option) => (
                             <SelectItem key={option.value} value={option.value}>
                                 {option.label}
                             </SelectItem>
@@ -263,7 +273,7 @@ export const DataForm = ({
                             handleFieldChange(field.key, Array.from(keys));
                         }}
                     >
-                        {(field.options || []).map(option => (
+                        {(field.options || []).map((option) => (
                             <SelectItem key={option.value} value={option.value}>
                                 {option.label}
                             </SelectItem>
@@ -317,15 +327,11 @@ export const DataForm = ({
             <ModalContent>
                 {(onClose) => (
                     <>
-                        <ModalHeader className="flex flex-col gap-1">
-                            {title}
-                        </ModalHeader>
+                        <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
                         <ModalBody>
                             <div className="space-y-4">
-                                {fields.map(field => (
-                                    <div key={field.key}>
-                                        {renderField(field)}
-                                    </div>
+                                {fields.map((field) => (
+                                    <div key={field.key}>{renderField(field)}</div>
                                 ))}
                             </div>
                         </ModalBody>
@@ -333,11 +339,7 @@ export const DataForm = ({
                             <Button variant="light" onPress={onClose}>
                                 {cancelText}
                             </Button>
-                            <Button
-                                color="primary"
-                                onPress={handleSubmit}
-                                isLoading={loading}
-                            >
+                            <Button color="primary" onPress={handleSubmit} isLoading={loading}>
                                 {submitText || (isEdit ? '更新' : '创建')}
                             </Button>
                         </ModalFooter>

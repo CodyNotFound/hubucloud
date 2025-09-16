@@ -2,7 +2,8 @@
 
 import { ReactNode } from 'react';
 import { Card, CardBody } from '@heroui/react';
-import { Shield, AlertTriangle, Loader2 } from 'lucide-react';
+import { AlertTriangle, Loader2 } from 'lucide-react';
+
 import { useAdmin } from '@/hooks/use-admin';
 
 interface AdminGuardProps {
@@ -15,10 +16,10 @@ interface AdminGuardProps {
  * 只有管理员才能看到子组件内容
  */
 export const AdminGuard = ({ children, fallback }: AdminGuardProps) => {
-    const { isAdmin, loading, error, user } = useAdmin();
+    const { isAdmin, isLoading, error } = useAdmin();
 
     // 加载中
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-[200px]">
                 <div className="flex items-center space-x-2 text-default-600">
@@ -36,7 +37,7 @@ export const AdminGuard = ({ children, fallback }: AdminGuardProps) => {
         }
 
         return (
-            <div className="flex items-center justify-center min-h-[400px] p-4">
+            <div className="flex items-center justify-center min-h-[400px]">
                 <Card className="max-w-md w-full">
                     <CardBody className="text-center space-y-4 p-6">
                         <div className="flex justify-center">
@@ -50,7 +51,7 @@ export const AdminGuard = ({ children, fallback }: AdminGuardProps) => {
                         </div>
                         <div className="pt-2">
                             <button
-                                onClick={() => window.location.href = '/'}
+                                onClick={() => (window.location.href = '/')}
                                 className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm hover:bg-primary/90 transition-colors"
                             >
                                 返回首页
@@ -63,19 +64,5 @@ export const AdminGuard = ({ children, fallback }: AdminGuardProps) => {
     }
 
     // 权限验证通过，显示子组件
-    return (
-        <div className="admin-protected">
-            {/* 管理员标识条 */}
-            <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 mb-4">
-                <div className="flex items-center space-x-2 text-primary">
-                    <Shield className="w-4 h-4" />
-                    <span className="text-sm font-medium">
-                        管理员模式 - 当前用户: {user?.username}
-                    </span>
-                </div>
-            </div>
-
-            {children}
-        </div>
-    );
+    return <>{children}</>;
 };

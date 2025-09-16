@@ -19,6 +19,13 @@ enum Role {
   ADMIN
 }
 
+enum RestaurantType {
+  CAMPUS_DINING      // 校内餐饮
+  OFF_CAMPUS_MEAL    // 校外主食
+  OFF_CAMPUS_SNACK   // 校外小食
+  OFF_CAMPUS_DRINK   // 校外茶饮
+}
+
 model User {
   id       String @id @default(cuid())
   user     String @unique
@@ -44,7 +51,7 @@ model Restaurant {
   phone       String
   description String
 
-  type    String
+  type    RestaurantType
   cover   String
   tags    String[]
   preview String[]
@@ -55,6 +62,8 @@ model Restaurant {
   latitude  Float
   longitude Float
 
+  locationDescription String @default("")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -62,14 +71,16 @@ model Restaurant {
 model Parttime {
   id String @id @default(cuid())
 
-  type   String
   salary String
 
-  time     String
+  worktime     String
   location String
 
   name        String
   description String
+
+  contact      String
+  requirements String?
 
   tags String[]
 

@@ -23,7 +23,7 @@ export function PaginationWrapper({
     onPageChange,
     showControls = true,
     isCompact = true,
-    size = 'sm'
+    size = 'sm',
 }: PaginationWrapperProps) {
     if (totalPages <= 1) {
         return null;

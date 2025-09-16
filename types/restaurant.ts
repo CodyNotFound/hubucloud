@@ -14,8 +14,7 @@ export interface Restaurant {
     preview: string[];
     openTime: string;
     rating: number;
-    latitude: number;
-    longitude: number;
+    locationDescription: string;
     createdAt?: string;
     updatedAt?: string;
     distance?: number; // 计算出的距离
@@ -32,8 +31,7 @@ export interface CreateRestaurantData {
     preview: string[];
     openTime: string;
     rating: number;
-    latitude: number;
-    longitude: number;
+    locationDescription: string;
 }
 
 export interface UpdateRestaurantData {
@@ -47,8 +45,7 @@ export interface UpdateRestaurantData {
     preview?: string[];
     openTime?: string;
     rating?: number;
-    latitude?: number;
-    longitude?: number;
+    locationDescription?: string;
 }
 
 export interface RestaurantQuery {
@@ -57,7 +54,6 @@ export interface RestaurantQuery {
     type?: string;
     tags?: string;
     keyword?: string;
-    latitude?: number;
-    longitude?: number;
+    locationDescription?: string;
     radius?: number;
 }

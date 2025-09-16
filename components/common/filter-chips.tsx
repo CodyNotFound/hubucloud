@@ -9,7 +9,7 @@ interface FilterOption {
 
 interface FilterChipsProps {
     /** 筛选选项 */
-    options: FilterOption[];
+    options?: FilterOption[];
     /** 当前选中的值 */
     selectedValue: string;
     /** 选择改变时的回调 */
@@ -19,11 +19,16 @@ interface FilterChipsProps {
 }
 
 export function FilterChips({
-    options,
+    options = [],
     selectedValue,
     onSelectionChange,
-    className = ''
+    className = '',
 }: FilterChipsProps) {
+    // 如果没有选项，不渲染任何内容
+    if (!options || options.length === 0) {
+        return null;
+    }
+
     return (
         <div className={`flex flex-wrap gap-2 ${className}`}>
             {options.map((option) => (

@@ -5,7 +5,7 @@
 class ApiClient {
     private baseURL: string;
 
-    constructor(baseURL: string = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001') {
+    constructor(baseURL: string = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000') {
         this.baseURL = baseURL;
     }
 
@@ -13,7 +13,7 @@ class ApiClient {
      * 获取认证头
      */
     private getAuthHeaders(): HeadersInit {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('auth_token');
         return {
             'Content-Type': 'application/json',
             ...(token && { Authorization: `Bearer ${token}` }),

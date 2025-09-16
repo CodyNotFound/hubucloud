@@ -6,6 +6,12 @@ import { Body, Query, Param } from '@/decorators/params';
 import { Required, Length } from '@/decorators/validation';
 import { ResponseUtil } from '@/core/response';
 import { db } from '@/utils/db';
+import {
+    validateContact,
+    validateRequirements,
+    parseContact,
+    parseGenderRequirement,
+} from '@/utils/parttime';
 
 /**
  * 兼职信息控制器
@@ -162,20 +168,46 @@ export class ParttimeController {
         @Body('name') @Required() @Length(1, 100) name: string,
         @Body('type') @Required() @Length(1, 50) type: string,
         @Body('salary') @Required() @Length(1, 100) salary: string,
-        @Body('time') @Required() @Length(1, 200) time: string,
+        @Body('worktime') @Required() @Length(1, 200) worktime: string,
         @Body('location') @Required() @Length(1, 200) location: string,
         @Body('description') @Required() @Length(1, 2000) description: string,
+        @Body('contact') @Required() contact: string,
+        @Body('requirements') requirements?: string,
         @Body('tags') tags: string[]
     ) {
         try {
+            // 验证联系方式格式
+            const contactValidation = validateContact(contact);
+            if (!contactValidation.isValid) {
+                return ResponseUtil.clientError(
+                    c,
+                    contactValidation.error || '联系方式格式不正确',
+                    400
+                );
+            }
+
+            // 验证要求字段格式
+            if (requirements) {
+                const requirementsValidation = validateRequirements(requirements);
+                if (!requirementsValidation.isValid) {
+                    return ResponseUtil.clientError(
+                        c,
+                        requirementsValidation.error || '要求字段格式不正确',
+                        400
+                    );
+                }
+            }
+
             const parttime = await db.parttime.create({
                 data: {
                     name,
                     type,
                     salary,
-                    time,
+                    worktime,
                     location,
                     description,
+                    contact,
+                    requirements: requirements || null,
                     tags: tags || [],
                 },
             });
@@ -196,9 +228,11 @@ export class ParttimeController {
         @Body('name') @Length(1, 100) name?: string,
         @Body('type') @Length(1, 50) type?: string,
         @Body('salary') @Length(1, 100) salary?: string,
-        @Body('time') @Length(1, 200) time?: string,
+        @Body('worktime') @Length(1, 200) worktime?: string,
         @Body('location') @Length(1, 200) location?: string,
         @Body('description') @Length(1, 2000) description?: string,
+        @Body('contact') contact?: string,
+        @Body('requirements') requirements?: string,
         @Body('tags') tags?: string[]
     ) {
         try {
@@ -211,14 +245,40 @@ export class ParttimeController {
                 return ResponseUtil.clientError(c, '兼职信息不存在', 404);
             }
 
+            // 验证联系方式格式（如果提供了）
+            if (contact !== undefined) {
+                const contactValidation = validateContact(contact);
+                if (!contactValidation.isValid) {
+                    return ResponseUtil.clientError(
+                        c,
+                        contactValidation.error || '联系方式格式不正确',
+                        400
+                    );
+                }
+            }
+
+            // 验证要求字段格式（如果提供了）
+            if (requirements !== undefined) {
+                const requirementsValidation = validateRequirements(requirements);
+                if (!requirementsValidation.isValid) {
+                    return ResponseUtil.clientError(
+                        c,
+                        requirementsValidation.error || '要求字段格式不正确',
+                        400
+                    );
+                }
+            }
+
             // 构建更新数据对象
             const updateData: any = {};
             if (name !== undefined) updateData.name = name;
             if (type !== undefined) updateData.type = type;
             if (salary !== undefined) updateData.salary = salary;
-            if (time !== undefined) updateData.time = time;
+            if (worktime !== undefined) updateData.worktime = worktime;
             if (location !== undefined) updateData.location = location;
             if (description !== undefined) updateData.description = description;
+            if (contact !== undefined) updateData.contact = contact;
+            if (requirements !== undefined) updateData.requirements = requirements;
             if (tags !== undefined) updateData.tags = tags;
 
             const parttime = await db.parttime.update({
@@ -297,6 +357,52 @@ export class ParttimeController {
             });
         } catch (error) {
             return ResponseUtil.serverError(c, '获取兼职列表失败', error as Error);
+        }
+    }
+
+    /**
+     * 解析联系方式信息
+     */
+    @Post('/parse-contact')
+    async parseContactInfo(c: Context, @Body('contact') @Required() contact: string) {
+        try {
+            const contactValidation = validateContact(contact);
+            if (!contactValidation.isValid) {
+                return ResponseUtil.clientError(
+                    c,
+                    contactValidation.error || '联系方式格式不正确',
+                    400
+                );
+            }
+
+            const parsed = parseContact(contact);
+            return ResponseUtil.success(c, parsed);
+        } catch (error) {
+            return ResponseUtil.serverError(c, '解析联系方式失败', error as Error);
+        }
+    }
+
+    /**
+     * 解析要求字段信息
+     */
+    @Post('/parse-requirements')
+    async parseRequirementsInfo(c: Context, @Body('requirements') requirements?: string) {
+        try {
+            if (requirements) {
+                const requirementsValidation = validateRequirements(requirements);
+                if (!requirementsValidation.isValid) {
+                    return ResponseUtil.clientError(
+                        c,
+                        requirementsValidation.error || '要求字段格式不正确',
+                        400
+                    );
+                }
+            }
+
+            const parsed = parseGenderRequirement(requirements);
+            return ResponseUtil.success(c, parsed);
+        } catch (error) {
+            return ResponseUtil.serverError(c, '解析要求字段失败', error as Error);
         }
     }
 }

@@ -1,7 +1,7 @@
 'use client';
 
 // API基础配置
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
 // 请求方法类型
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -93,12 +93,12 @@ function redirectToLogin(): void {
 
         // 保存当前页面路径，登录后可以返回
         const currentPath = window.location.pathname;
-        if (currentPath !== '/login') {
+        if (currentPath !== '/auth') {
             localStorage.setItem('redirect_after_login', currentPath);
         }
 
         // 重定向到登录页
-        window.location.href = '/login';
+        window.location.href = '/auth';
     }
 }
 
@@ -142,17 +142,26 @@ class ApiClient {
     }
 
     // 处理响应
-    private async handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
+    private async handleResponse<T>(
+        response: Response,
+        endpoint?: string
+    ): Promise<ApiResponse<T>> {
         try {
             const data: ApiResponse<T> = await response.json();
 
             // 检查是否需要重新登录
             if (data.status === 'error') {
+                // 如果是登录接口，不要自动重定向
+                const isLoginEndpoint =
+                    endpoint?.includes('/users/login') || endpoint?.includes('/users/register');
+
                 if (
-                    data.error === '未登录' ||
-                    data.error === '登录已过期' ||
-                    data.error === 'token无效' ||
-                    response.status === 401
+                    !isLoginEndpoint &&
+                    (data.error === '未登录' ||
+                        data.error === 'Token无效或已过期' ||
+                        data.error === '登录已过期' ||
+                        data.error === 'token无效' ||
+                        response.status === 401)
                 ) {
                     redirectToLogin();
                     throw new Error('认证失败，正在跳转到登录页...');
@@ -198,7 +207,7 @@ class ApiClient {
             }
 
             const response = await fetch(url, requestInit);
-            return await this.handleResponse<T>(response);
+            return await this.handleResponse<T>(response, endpoint);
         } catch (error) {
             console.error('API请求失败:', error);
 
@@ -350,7 +359,7 @@ export const auth = {
             await post('/users/logout');
         } finally {
             TokenManager.clearTokens();
-            window.location.href = '/login';
+            window.location.href = '/auth';
         }
     },
 

@@ -21,29 +21,9 @@ export const siteConfig = {
             icon: 'MessageSquare',
         },
         {
-            label: '活动',
-            href: '/activity',
-            icon: 'Calendar',
-        },
-        {
             label: '美食',
             href: '/food',
             icon: 'UtensilsCrossed',
-        },
-        {
-            label: '快递',
-            href: '/express',
-            icon: 'Package',
-        },
-        {
-            label: '跳蚤市场',
-            href: '/market',
-            icon: 'ShoppingBag',
-        },
-        {
-            label: '失物招领',
-            href: '/lost-found',
-            icon: 'Search',
         },
         {
             label: '兼职',
@@ -51,43 +31,53 @@ export const siteConfig = {
             icon: 'Briefcase',
         },
         {
-            label: '个人中心',
-            href: '/profile',
-            icon: 'User',
+            label: '联通',
+            href: '/unicom',
+            icon: 'Briefcase',
+        },
+        {
+            label: '黑卡',
+            href: '/card',
+            icon: 'Package',
+        },
+        {
+            label: '驾校',
+            href: '/drivingschool',
+            icon: 'Car',
         },
     ],
     navMenuItems: [
         {
-            label: 'Profile',
-            href: '/profile',
+            label: '首页',
+            href: '/',
         },
         {
-            label: 'Dashboard',
-            href: '/dashboard',
+            label: '论坛',
+            href: '/forum',
         },
         {
-            label: 'Projects',
-            href: '/projects',
+            label: '美食',
+            href: '/food',
         },
         {
-            label: 'Team',
-            href: '/team',
+            label: '兼职',
+            href: '/jobs',
         },
         {
-            label: 'Calendar',
-            href: '/calendar',
+            label: '联通',
+            href: '/unicom',
         },
         {
-            label: 'Settings',
-            href: '/settings',
+            label: '黑卡',
+            href: '/card',
         },
         {
-            label: 'Help & Feedback',
-            href: '/help-feedback',
+            label: '驾校',
+            href: '/drivingschool',
         },
         {
-            label: 'Logout',
-            href: '/logout',
+            label: '登录',
+            href: '/auth',
         },
     ],
     links: {

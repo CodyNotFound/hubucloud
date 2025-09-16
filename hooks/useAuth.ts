@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { auth, TokenManager } from '@/utils/api';
 import type { User } from '@/types';
+
+import { useState, useEffect, useCallback } from 'react';
+
+import { auth, TokenManager } from '@/utils/api';
 
 interface AuthState {
     user: User | null;
@@ -92,7 +94,7 @@ export function useAuth() {
             console.log('📤 发送登录请求...');
             const response = await auth.login({
                 username: credentials.user,
-                password: credentials.password
+                password: credentials.password,
             });
 
             console.log('📨 登录响应:', response);
@@ -131,10 +133,7 @@ export function useAuth() {
     }, []);
 
     // 注册函数
-    const register = useCallback(async (userData: {
-        user: string;
-        password: string;
-    }) => {
+    const register = useCallback(async (userData: { user: string; password: string }) => {
         setAuthState((prev) => ({ ...prev, isLoading: true }));
 
         try {
@@ -200,7 +199,7 @@ export function useAuth() {
 
             return {
                 success: false,
-                error: error instanceof Error ? error.message : '获取用户信息失败'
+                error: error instanceof Error ? error.message : '获取用户信息失败',
             };
         }
     }, [authState.token, logout]);

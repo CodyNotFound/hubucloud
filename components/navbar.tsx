@@ -24,12 +24,12 @@ import {
     Search,
     Briefcase,
     User,
+    Car,
 } from 'lucide-react';
 
 import { siteConfig } from '@/config/site';
 import { ThemeSwitch } from '@/components/theme-switch';
 import { UserInfo } from '@/components/user-info';
-import type { User as UserType } from '@/types';
 
 // 图标映射
 const iconMap = {
@@ -42,6 +42,7 @@ const iconMap = {
     Search,
     Briefcase,
     User,
+    Car,
 } as const;
 
 export const Navbar = () => {
@@ -50,7 +51,11 @@ export const Navbar = () => {
     const pathname = usePathname();
 
     return (
-        <HeroUINavbar maxWidth="full" position="sticky" className="border-b border-divider">
+        <HeroUINavbar
+            maxWidth="full"
+            position="sticky"
+            className="border-b border-divider z-50 bg-background/70 backdrop-blur-md"
+        >
             <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
                 <NavbarBrand as="li" className="gap-3 max-w-fit">
                     <NextLink className="flex justify-start items-center gap-2" href="/">
@@ -67,12 +72,42 @@ export const Navbar = () => {
                 </NavbarBrand>
             </NavbarContent>
 
+            {/* 桌面端导航菜单 */}
+            <NavbarContent className="hidden lg:flex gap-6" justify="center">
+                {siteConfig.navItems.slice(0, 7).map((item, index) => {
+                    const IconComponent = iconMap[item.icon as keyof typeof iconMap];
+                    const isActive = pathname === item.href;
+
+                    return (
+                        <NextLink
+                            key={`${item.label}-${index}`}
+                            className={clsx(
+                                'flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200',
+                                isActive
+                                    ? 'bg-primary/10 text-primary font-semibold'
+                                    : 'text-default-600 hover:bg-default-100 hover:text-default-900'
+                            )}
+                            href={item.href}
+                        >
+                            {IconComponent && (
+                                <IconComponent
+                                    size={18}
+                                    className={isActive ? 'text-primary' : 'text-default-500'}
+                                />
+                            )}
+                            <span className="text-sm font-medium">{item.label}</span>
+                        </NextLink>
+                    );
+                })}
+            </NavbarContent>
+
             <NavbarContent className="basis-1 pl-4" justify="end">
                 <UserInfo />
                 <ThemeSwitch />
-                <NavbarMenuToggle className="sm:hidden" />
+                <NavbarMenuToggle className="lg:hidden" />
             </NavbarContent>
 
+            {/* 移动端侧边栏菜单 */}
             <NavbarMenu className="pt-6">
                 <div className="mx-4 mt-2 flex flex-col gap-1">
                     {siteConfig.navItems.map((item, index) => {
@@ -103,14 +138,6 @@ export const Navbar = () => {
                             </NavbarMenuItem>
                         );
                     })}
-                </div>
-
-                {/* 底部分隔线和额外信息 */}
-                <div className="mx-4 mt-6 pt-6 border-t border-divider">
-                    <div className="flex flex-col gap-2 text-sm text-default-500">
-                        <p>湖北大学校园服务平台</p>
-                        <p className="text-xs">为湖大学子提供便捷服务</p>
-                    </div>
                 </div>
             </NavbarMenu>
         </HeroUINavbar>

@@ -7,7 +7,6 @@ import { Required } from '@/decorators/validation';
 import { RequireAdmin, getCurrentUser } from '@/decorators/auth';
 import { ResponseUtil } from '@/core/response';
 import { db } from '@/utils/db';
-import type { Parttime, Restaurant } from '@prisma/client';
 
 /**
  * 管理员控制器
@@ -40,6 +39,62 @@ export class AdminController {
             );
         } catch (error) {
             return ResponseUtil.serverError(c, '管理员权限检查失败', error as Error);
+        }
+    }
+
+    /**
+     * 初始化第一个管理员（仅当系统没有管理员时可用）
+     */
+    @Post('/init-admin')
+    async initFirstAdmin(c: Context, @Body('userId') @Required() userId: string) {
+        try {
+            // 检查系统是否已经有管理员
+            const adminCount = await db.user.count({ where: { role: 'ADMIN' } });
+
+            if (adminCount > 0) {
+                return ResponseUtil.clientError(c, '系统已存在管理员，不能重复初始化', 400);
+            }
+
+            // 检查目标用户是否存在
+            const targetUser = await db.user.findUnique({
+                where: { id: userId },
+                select: {
+                    id: true,
+                    user: true,
+                    name: true,
+                    role: true,
+                },
+            });
+
+            if (!targetUser) {
+                return ResponseUtil.clientError(c, '用户不存在', 404);
+            }
+
+            // 提升为管理员
+            const updatedUser = await db.user.update({
+                where: { id: userId },
+                data: { role: 'ADMIN' },
+                select: {
+                    id: true,
+                    user: true,
+                    name: true,
+                    avatar: true,
+                    phone: true,
+                    studentId: true,
+                    major: true,
+                    grade: true,
+                    role: true,
+                    updatedAt: true,
+                },
+            });
+
+            return ResponseUtil.success(
+                c,
+                updatedUser,
+                `用户 ${targetUser.name}(${targetUser.user}) 已设置为系统第一个管理员`
+            );
+        } catch (error) {
+            return ResponseUtil.serverError(c, '初始化管理员失败', error as Error);
         }
     }
 
@@ -310,22 +365,24 @@ export class AdminController {
     async createParttime(
         c: Context,
         @Body('name') @Required() name: string,
-        @Body('type') @Required() type: string,
         @Body('salary') @Required() salary: string,
-        @Body('time') @Required() time: string,
+        @Body('worktime') @Required() worktime: string,
         @Body('location') @Required() location: string,
         @Body('description') @Required() description: string,
+        @Body('contact') @Required() contact: string,
+        @Body('requirements') requirements?: string,
         @Body('tags') tags?: string[]
     ) {
         try {
             const parttime = await db.parttime.create({
                 data: {
                     name,
-                    type,
                     salary,
-                    time,
+                    worktime,
                     location,
                     description,
+                    contact,
+                    requirements,
                     tags: tags || [],
                 },
             });
@@ -345,11 +402,12 @@ export class AdminController {
         c: Context,
         @Param('id') id: string,
         @Body('name') name?: string,
-        @Body('type') type?: string,
         @Body('salary') salary?: string,
-        @Body('time') time?: string,
+        @Body('worktime') worktime?: string,
         @Body('location') location?: string,
         @Body('description') description?: string,
+        @Body('contact') contact?: string,
+        @Body('requirements') requirements?: string,
         @Body('tags') tags?: string[]
     ) {
         try {
@@ -363,11 +421,12 @@ export class AdminController {
 
             const updateData: any = {};
             if (name !== undefined) updateData.name = name;
-            if (type !== undefined) updateData.type = type;
             if (salary !== undefined) updateData.salary = salary;
-            if (time !== undefined) updateData.time = time;
+            if (worktime !== undefined) updateData.worktime = worktime;
             if (location !== undefined) updateData.location = location;
             if (description !== undefined) updateData.description = description;
+            if (contact !== undefined) updateData.contact = contact;
+            if (requirements !== undefined) updateData.requirements = requirements;
             if (tags !== undefined) updateData.tags = tags;
 
             const updatedParttime = await db.parttime.update({
@@ -415,46 +474,30 @@ export class AdminController {
     @RequireAdmin()
     async getRestaurantList(
         c: Context,
-        @Query('page') page?: string,
-        @Query('limit') limit?: string,
         @Query('keyword') keyword?: string,
         @Query('type') type?: string
     ) {
         try {
-            const pageNum = parseInt(page || '1');
-            const limitNum = parseInt(limit || '10');
-            const skip = (pageNum - 1) * limitNum;
-
             const where: any = {};
             if (keyword) {
                 where.OR = [
-                    { name: { contains: keyword } },
-                    { description: { contains: keyword } },
-                    { address: { contains: keyword } },
+                    { name: { contains: keyword, mode: 'insensitive' } },
+                    { description: { contains: keyword, mode: 'insensitive' } },
+                    { address: { contains: keyword, mode: 'insensitive' } },
+                    { locationDescription: { contains: keyword, mode: 'insensitive' } },
                 ];
             }
             if (type) {
                 where.type = type;
             }
 
-            const [restaurants, total] = await Promise.all([
-                db.restaurant.findMany({
-                    where,
-                    skip,
-                    take: limitNum,
-                    orderBy: { updatedAt: 'desc' },
-                }),
-                db.restaurant.count({ where }),
-            ]);
+            const restaurants = await db.restaurant.findMany({
+                where,
+                orderBy: { updatedAt: 'desc' },
+            });
 
             return ResponseUtil.success(c, {
                 list: restaurants,
-                pagination: {
-                    page: pageNum,
-                    limit: limitNum,
-                    total,
-                    totalPages: Math.ceil(total / limitNum),
-                },
             });
         } catch (error) {
             return ResponseUtil.serverError(c, '获取餐厅列表失败', error as Error);
@@ -473,10 +516,11 @@ export class AdminController {
         @Body('phone') @Required() phone: string,
         @Body('description') @Required() description: string,
         @Body('type') @Required() type: string,
-        @Body('cover') @Required() cover: string,
+        @Body('cover') cover: string,
         @Body('openTime') @Required() openTime: string,
-        @Body('latitude') @Required() latitude: number,
-        @Body('longitude') @Required() longitude: number,
+        @Body('locationDescription') @Required() locationDescription: string,
+        @Body('latitude') latitude?: number,
+        @Body('longitude') longitude?: number,
         @Body('tags') tags?: string[],
         @Body('preview') preview?: string[],
         @Body('rating') rating?: number
@@ -489,10 +533,11 @@ export class AdminController {
                     phone,
                     description,
                     type,
-                    cover,
+                    cover: cover || '',
                     openTime,
-                    latitude,
-                    longitude,
+                    locationDescription,
+                    latitude: latitude || 30.5951, // 默认湖北大学坐标
+                    longitude: longitude || 114.4086,
                     tags: tags || [],
                     preview: preview || [],
                     rating: rating || 0,
@@ -520,6 +565,7 @@ export class AdminController {
         @Body('type') type?: string,
         @Body('cover') cover?: string,
         @Body('openTime') openTime?: string,
+        @Body('locationDescription') locationDescription?: string,
         @Body('latitude') latitude?: number,
         @Body('longitude') longitude?: number,
         @Body('tags') tags?: string[],
@@ -543,6 +589,8 @@ export class AdminController {
             if (type !== undefined) updateData.type = type;
             if (cover !== undefined) updateData.cover = cover;
             if (openTime !== undefined) updateData.openTime = openTime;
+            if (locationDescription !== undefined)
+                updateData.locationDescription = locationDescription;
             if (latitude !== undefined) updateData.latitude = latitude;
             if (longitude !== undefined) updateData.longitude = longitude;
             if (tags !== undefined) updateData.tags = tags;
