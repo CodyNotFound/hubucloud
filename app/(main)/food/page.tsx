@@ -6,21 +6,22 @@ import { Card, CardBody, Chip, Input, Pagination } from '@heroui/react';
 import { Search, MapPin, Star, Loader2 } from 'lucide-react';
 
 import { ImageViewer } from '@/components/common/image-viewer';
+import { RestaurantType, RestaurantTypeLabels } from '@/types/restaurant';
 
 // 餐厅类型映射
 const restaurantTypeMap: Record<string, string> = {
-    CAMPUS_DINING: '校内餐饮',
-    OFF_CAMPUS_MEAL: '校外主食',
-    OFF_CAMPUS_SNACK: '校外小食',
-    OFF_CAMPUS_DRINK: '校外茶饮',
+    campusfood: '校园食堂',
+    mainfood: '主食',
+    drinks: '饮品店',
+    nightmarket: '夜市',
 };
 
 // 分类到后端枚举的映射
 const categoryToTypeMap: Record<string, string> = {
-    校内餐饮: 'CAMPUS_DINING',
-    校外主食: 'OFF_CAMPUS_MEAL',
-    校外小食: 'OFF_CAMPUS_SNACK',
-    校外茶饮: 'OFF_CAMPUS_DRINK',
+    校园食堂: 'campusfood',
+    主食: 'mainfood',
+    饮品店: 'drinks',
+    夜市: 'nightmarket',
 };
 
 // 餐厅数据类型（对应后端）
@@ -65,7 +66,7 @@ const fetchRestaurants = async (endpoint: string, params: Record<string, any> = 
         }
     });
 
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
     const url = `${API_BASE_URL}/restaurants${endpoint}?${query}`;
 
     try {
@@ -78,7 +79,7 @@ const fetchRestaurants = async (endpoint: string, params: Record<string, any> = 
     }
 };
 
-const categories = ['全部', '校内餐饮', '校外主食', '校外小食', '校外茶饮'];
+const categories = ['全部', '校园食堂', '主食', '饮品店', '夜市'];
 
 export default function FoodPage() {
     const router = useRouter();

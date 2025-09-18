@@ -6,6 +6,7 @@ import { Card, CardBody, Chip, Button, Divider } from '@heroui/react';
 import { ArrowLeft, MapPin, Star, Clock, Phone, Heart } from 'lucide-react';
 
 import { ImageViewer } from '@/components/common/image-viewer';
+import { RestaurantType, RestaurantTypeLabels } from '@/types/restaurant';
 
 // 餐厅数据类型
 interface Restaurant {
@@ -14,7 +15,7 @@ interface Restaurant {
     address: string;
     phone: string;
     description: string;
-    type: string;
+    type: RestaurantType;
     cover: string;
     tags: string[];
     preview: string[];
@@ -30,17 +31,10 @@ interface ApiResponse<T> {
     data?: T;
 }
 
-// 餐厅类型映射
-const restaurantTypeMap: Record<string, string> = {
-    CAMPUS_DINING: '校内餐饮',
-    OFF_CAMPUS_MEAL: '校外主食',
-    OFF_CAMPUS_SNACK: '校外小食',
-    OFF_CAMPUS_DRINK: '校外茶饮',
-};
 
 // API请求函数
 const fetchRestaurantDetail = async (id: string): Promise<ApiResponse<Restaurant>> => {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
     const url = `${API_BASE_URL}/restaurants/${id}`;
 
     try {
@@ -166,7 +160,7 @@ export default function RestaurantDetailPage() {
                                 <h2 className="text-xl font-bold mb-1">{restaurant.name}</h2>
                                 <div className="flex items-center gap-2 mb-2">
                                     <Chip size="sm" variant="flat" color="primary">
-                                        {restaurantTypeMap[restaurant.type] || restaurant.type}
+                                        {RestaurantTypeLabels[restaurant.type] || restaurant.type}
                                     </Chip>
                                     <div className="flex items-center gap-1 text-orange-500">
                                         <span className="text-lg font-bold">
@@ -190,26 +184,29 @@ export default function RestaurantDetailPage() {
                             </div>
                         )}
 
-                        {/* 位置信息 */}
-                        {restaurant.locationDescription &&
-                            restaurant.locationDescription.trim() !== '' &&
-                            !restaurant.locationDescription.includes('位置不详') &&
-                            !restaurant.locationDescription.includes('不知道') && (
-                                <div className="flex items-center gap-2 mb-3">
-                                    <MapPin size={16} className="text-default-500" />
-                                    <span className="text-sm text-default-700">
-                                        {restaurant.locationDescription}
-                                    </span>
+                        {/* 联系信息 */}
+                        <div className="space-y-2 mb-3">
+                            {/* 位置信息 */}
+                            {restaurant.locationDescription &&
+                                restaurant.locationDescription.trim() !== '' &&
+                                !restaurant.locationDescription.includes('位置不详') &&
+                                !restaurant.locationDescription.includes('不知道') && (
+                                    <div className="flex items-center gap-2">
+                                        <MapPin size={16} className="text-default-500" />
+                                        <span className="text-sm text-default-700">
+                                            {restaurant.locationDescription}
+                                        </span>
+                                    </div>
+                                )}
+
+                            {/* 联系电话 */}
+                            {restaurant.phone && restaurant.phone.trim() !== '' && (
+                                <div className="flex items-center gap-2">
+                                    <Phone size={16} className="text-default-500" />
+                                    <span className="text-sm text-default-700">{restaurant.phone}</span>
                                 </div>
                             )}
-
-                        {/* 联系电话 */}
-                        {restaurant.phone && restaurant.phone.trim() !== '' && (
-                            <div className="flex items-center gap-2 mb-3">
-                                <Phone size={16} className="text-default-500" />
-                                <span className="text-sm text-default-700">{restaurant.phone}</span>
-                            </div>
-                        )}
+                        </div>
 
                         {/* 标签 */}
                         {restaurant.tags.length > 0 && (
@@ -262,33 +259,50 @@ export default function RestaurantDetailPage() {
                 )}
 
                 {/* 底部操作按钮 */}
-                <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t border-divider">
-                    <div className="flex gap-3">
-                        {restaurant.phone && restaurant.phone.trim() !== '' && (
-                            <Button
-                                variant="bordered"
-                                className="flex-1"
-                                startContent={<Phone size={16} />}
-                                onPress={() => {
-                                    window.location.href = `tel:${restaurant.phone}`;
-                                }}
-                            >
-                                拨打电话
-                            </Button>
-                        )}
-                        <Button
-                            color="primary"
-                            className={
-                                restaurant.phone && restaurant.phone.trim() !== ''
-                                    ? 'flex-1'
-                                    : 'w-full'
-                            }
-                            startContent={<MapPin size={16} />}
-                        >
-                            查看位置
-                        </Button>
+                {(restaurant.phone && restaurant.phone.trim() !== '') ||
+                (restaurant.locationDescription &&
+                    restaurant.locationDescription.trim() !== '' &&
+                    !restaurant.locationDescription.includes('位置不详') &&
+                    !restaurant.locationDescription.includes('不知道')) ? (
+                    <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t border-divider">
+                        <div className="flex gap-3">
+                            {restaurant.phone && restaurant.phone.trim() !== '' && (
+                                <Button
+                                    variant="bordered"
+                                    className="flex-1"
+                                    startContent={<Phone size={16} />}
+                                    onPress={() => {
+                                        window.location.href = `tel:${restaurant.phone}`;
+                                    }}
+                                >
+                                    拨打电话
+                                </Button>
+                            )}
+                            {restaurant.locationDescription &&
+                                restaurant.locationDescription.trim() !== '' &&
+                                !restaurant.locationDescription.includes('位置不详') &&
+                                !restaurant.locationDescription.includes('不知道') && (
+                                    <Button
+                                        color="primary"
+                                        className={
+                                            restaurant.phone && restaurant.phone.trim() !== ''
+                                                ? 'flex-1'
+                                                : 'w-full'
+                                        }
+                                        startContent={<MapPin size={16} />}
+                                        onPress={() => {
+                                            // 构建高德地图搜索URL，武汉市城市代码为420100
+                                            const query = encodeURIComponent(`${restaurant.name} ${restaurant.locationDescription}`);
+                                            const amapUrl = `https://ditu.amap.com/search?query=${query}&city=420100`;
+                                            window.open(amapUrl, '_blank');
+                                        }}
+                                    >
+                                        查看位置
+                                    </Button>
+                                )}
+                        </div>
                     </div>
-                </div>
+                ) : null}
             </div>
         </>
     );

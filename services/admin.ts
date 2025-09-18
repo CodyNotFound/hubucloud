@@ -114,10 +114,11 @@ class AdminService {
         name: string;
         type: string;
         salary: string;
-        time: string;
+        worktime: string;
         location: string;
         description: string;
-        tags?: string[];
+        contact: string;
+        requirements?: string;
     }): Promise<{ status: string; data?: Parttime; message?: string }> {
         return apiClient.post('/api/admin/parttime', data);
     }
@@ -131,10 +132,11 @@ class AdminService {
             name?: string;
             type?: string;
             salary?: string;
-            time?: string;
+            worktime?: string;
             location?: string;
             description?: string;
-            tags?: string[];
+            contact?: string;
+            requirements?: string;
         }
     ): Promise<{ status: string; data?: Parttime; message?: string }> {
         return apiClient.put(`/api/admin/parttime/${id}`, data);

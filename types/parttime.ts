@@ -12,7 +12,6 @@ export interface Parttime {
     description: string;
     contact: string;
     requirements?: string;
-    tags: string[];
     createdAt?: string;
     updatedAt?: string;
 }
@@ -26,7 +25,6 @@ export interface CreateParttimeData {
     description: string;
     contact: string;
     requirements?: string;
-    tags: string[];
 }
 
 export interface UpdateParttimeData {
@@ -38,7 +36,6 @@ export interface UpdateParttimeData {
     description?: string;
     contact?: string;
     requirements?: string;
-    tags?: string[];
 }
 
 export interface ParttimeQuery {
@@ -46,6 +43,5 @@ export interface ParttimeQuery {
     limit?: number;
     type?: string;
     location?: string;
-    tags?: string;
     keyword?: string;
 }

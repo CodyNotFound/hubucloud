@@ -24,7 +24,7 @@ export interface PaginationResponse<T = any> {
 export class ApiClient {
     private baseURL: string;
 
-    constructor(baseURL = 'http://localhost:8000') {
+    constructor(baseURL = '') {
         this.baseURL = baseURL;
     }
 

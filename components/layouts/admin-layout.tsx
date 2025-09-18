@@ -13,7 +13,6 @@ import {
 } from '@heroui/react';
 import {
     LayoutDashboard,
-    Users,
     Store,
     Briefcase,
     Settings,
@@ -21,7 +20,6 @@ import {
     Menu,
     X,
     Home,
-    BarChart3,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -53,24 +51,6 @@ const sidebarItems: SidebarItem[] = [
         label: '兼职管理',
         icon: <Briefcase className="w-5 h-5" />,
         href: '/admin/parttime',
-    },
-    {
-        key: 'users',
-        label: '用户管理',
-        icon: <Users className="w-5 h-5" />,
-        href: '/admin/users',
-    },
-    {
-        key: 'stats',
-        label: '数据统计',
-        icon: <BarChart3 className="w-5 h-5" />,
-        href: '/admin/stats',
-    },
-    {
-        key: 'settings',
-        label: '系统设置',
-        icon: <Settings className="w-5 h-5" />,
-        href: '/admin/settings',
     },
 ];
 

@@ -21,8 +21,7 @@ import AdminLayout from '@/components/layouts/admin-layout';
 import { useAdmin } from '@/hooks/use-admin';
 import { PracticalDataTable } from '@/components/common/practical-data-table';
 import { adminService } from '@/services/admin';
-import { ContactInput } from '@/components/parttime/contact-input';
-import { RequirementsInput } from '@/components/parttime/requirements-input';
+import { ContactInput, RequirementsInput } from '@/components/parttime';
 
 interface Parttime {
     id: string;
@@ -33,7 +32,6 @@ interface Parttime {
     description: string;
     contact: string;
     requirements?: string;
-    tags: string[];
     createdAt: string;
 }
 
@@ -218,28 +216,6 @@ function ParttimeManagement() {
             ),
         },
         {
-            key: 'tags',
-            label: '标签',
-            width: '160px',
-            render: (item: Parttime) => (
-                <div className="flex flex-wrap gap-1">
-                    {item.tags?.slice(0, 2).map((tag, index) => (
-                        <span
-                            key={index}
-                            className="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-xs rounded"
-                        >
-                            {tag}
-                        </span>
-                    )) || '-'}
-                    {item.tags && item.tags.length > 2 && (
-                        <span className="px-1.5 py-0.5 bg-default-100 text-xs rounded">
-                            +{item.tags.length - 2}
-                        </span>
-                    )}
-                </div>
-            ),
-        },
-        {
             key: 'createdAt',
             label: '发布时间',
             width: '100px',
@@ -312,8 +288,14 @@ function ParttimeManagement() {
 
         setFormLoading(true);
         try {
+            // 添加默认的 type 字段
+            const dataWithDefaults = {
+                ...formData,
+                type: '兼职', // 默认类型
+            };
+
             if (editingItem) {
-                const response = await adminService.updateParttime(editingItem.id, formData);
+                const response = await adminService.updateParttime(editingItem.id, dataWithDefaults);
                 if (response.status === 'success') {
                     await fetchParttimes();
                     onClose();
@@ -322,7 +304,7 @@ function ParttimeManagement() {
                     alert('更新失败：' + (response.message || '未知错误'));
                 }
             } else {
-                const response = await adminService.createParttime(formData);
+                const response = await adminService.createParttime(dataWithDefaults);
                 if (response.status === 'success') {
                     await fetchParttimes();
                     onClose();
@@ -439,6 +421,7 @@ function ParttimeManagement() {
                                     description="选择性别要求并添加其他招聘条件"
                                 />
                             </div>
+
 
                             <div className="md:col-span-2">
                                 <Textarea

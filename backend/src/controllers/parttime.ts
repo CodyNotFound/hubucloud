@@ -30,7 +30,6 @@ export class ParttimeController {
         @Query('limit') limit?: string,
         @Query('type') type?: string,
         @Query('location') location?: string,
-        @Query('tags') tags?: string
     ) {
         try {
             const pageNum = page ? Math.max(1, parseInt(page) || 1) : 1;
@@ -46,12 +45,6 @@ export class ParttimeController {
                 where.location = {
                     contains: location,
                     mode: 'insensitive',
-                };
-            }
-            if (tags) {
-                const tagArray = tags.split(',');
-                where.tags = {
-                    hasSome: tagArray,
                 };
             }
 
@@ -172,8 +165,7 @@ export class ParttimeController {
         @Body('location') @Required() @Length(1, 200) location: string,
         @Body('description') @Required() @Length(1, 2000) description: string,
         @Body('contact') @Required() contact: string,
-        @Body('requirements') requirements?: string,
-        @Body('tags') tags: string[]
+        @Body('requirements') requirements?: string
     ) {
         try {
             // 验证联系方式格式
@@ -208,7 +200,6 @@ export class ParttimeController {
                     description,
                     contact,
                     requirements: requirements || null,
-                    tags: tags || [],
                 },
             });
 
@@ -232,8 +223,7 @@ export class ParttimeController {
         @Body('location') @Length(1, 200) location?: string,
         @Body('description') @Length(1, 2000) description?: string,
         @Body('contact') contact?: string,
-        @Body('requirements') requirements?: string,
-        @Body('tags') tags?: string[]
+        @Body('requirements') requirements?: string
     ) {
         try {
             // 检查兼职是否存在
@@ -279,7 +269,6 @@ export class ParttimeController {
             if (description !== undefined) updateData.description = description;
             if (contact !== undefined) updateData.contact = contact;
             if (requirements !== undefined) updateData.requirements = requirements;
-            if (tags !== undefined) updateData.tags = tags;
 
             const parttime = await db.parttime.update({
                 where: { id },

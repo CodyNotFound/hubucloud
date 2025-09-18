@@ -82,22 +82,22 @@ function RestaurantManagement() {
     });
 
     // 餐厅类型选项
-    const restaurantTypes = ['校内餐饮', '校外主食', '校外小食', '校外茶饮'];
+    const restaurantTypes = ['校园食堂', '主食', '饮品店', '夜市'];
 
     // 类型映射：前端显示 -> 后端枚举
     const typeMapping = {
-        校内餐饮: 'CAMPUS_DINING',
-        校外主食: 'OFF_CAMPUS_MEAL',
-        校外小食: 'OFF_CAMPUS_SNACK',
-        校外茶饮: 'OFF_CAMPUS_DRINK',
+        校园食堂: 'campusfood',
+        主食: 'mainfood',
+        饮品店: 'drinks',
+        夜市: 'nightmarket',
     };
 
     // 反向映射：后端枚举 -> 前端显示
     const reverseTypeMapping = {
-        CAMPUS_DINING: '校内餐饮',
-        OFF_CAMPUS_MEAL: '校外主食',
-        OFF_CAMPUS_SNACK: '校外小食',
-        OFF_CAMPUS_DRINK: '校外茶饮',
+        campusfood: '校园食堂',
+        mainfood: '主食',
+        drinks: '饮品店',
+        nightmarket: '夜市',
     };
 
     // 获取餐厅列表

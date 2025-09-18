@@ -86,17 +86,7 @@ export default function JobsPage() {
                             {parttime.requirements && (
                                 <div className="flex items-center gap-2 text-sm text-default-600">
                                     <Users className="w-4 h-4" />
-                                    <span
-                                        className={`px-2 py-1 rounded text-xs ${
-                                            parttime.requirements.includes('限男生')
-                                                ? 'bg-blue-100 text-blue-700'
-                                                : parttime.requirements.includes('限女生')
-                                                  ? 'bg-pink-100 text-pink-700'
-                                                  : 'bg-gray-100 text-gray-700'
-                                        }`}
-                                    >
-                                        {parttime.requirements}
-                                    </span>
+                                    <span className="line-clamp-1">{parttime.requirements}</span>
                                 </div>
                             )}
                         </div>
@@ -106,21 +96,6 @@ export default function JobsPage() {
                             {parttime.description}
                         </p>
 
-                        {/* 标签 */}
-                        {parttime.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mb-3">
-                                {parttime.tags.map((tag, index) => (
-                                    <Chip
-                                        key={index}
-                                        size="sm"
-                                        variant="bordered"
-                                        className="text-xs"
-                                    >
-                                        {tag}
-                                    </Chip>
-                                ))}
-                            </div>
-                        )}
 
                         {/* 底部信息 */}
                         {parttime.createdAt && (

@@ -7,7 +7,11 @@
         "dev": "next dev --turbopack",
         "build": "next build",
         "start": "next start",
-        "lint": "eslint . --fix --ext .ts,.tsx & prettier --write ."
+        "lint": "eslint . --fix --ext .ts,.tsx & prettier --write .",
+        "db:generate": "prisma generate",
+        "db:migrate": "prisma migrate dev",
+        "db:push": "prisma db push",
+        "db:studio": "prisma studio"
     },
     "dependencies": {
         "@heroui/accordion": "2.2.23",
@@ -51,19 +55,26 @@
         "@heroui/toast": "2.0.16",
         "@heroui/tooltip": "2.2.23",
         "@heroui/user": "2.2.21",
+        "@paralleldrive/cuid2": "^2.2.2",
+        "@prisma/client": "^6.16.1",
         "@react-aria/ssr": "3.9.10",
         "@react-aria/visually-hidden": "3.8.27",
+        "@types/jsonwebtoken": "^9.0.10",
         "@types/qrcode": "^1.5.5",
         "clsx": "2.1.1",
+        "dayjs": "^1.11.18",
         "framer-motion": "11.18.2",
         "intl-messageformat": "10.7.16",
+        "jsonwebtoken": "^9.0.2",
         "lucide-react": "^0.543.0",
         "next": "15.3.1",
         "next-themes": "0.4.6",
+        "prisma": "^6.16.1",
         "qrcode": "^1.5.4",
         "react": "18.3.1",
         "react-dom": "18.3.1",
-        "react-pdf": "^10.1.0"
+        "react-pdf": "^10.1.0",
+        "sharp": "^0.34.3"
     },
     "devDependencies": {
         "@next/eslint-plugin-next": "15.3.4",
