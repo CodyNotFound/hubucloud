@@ -137,9 +137,7 @@ export const PracticalDataTable = ({
                                 }}
                             >
                                 {filterOptions.map((option) => (
-                                    <SelectItem key={option.key} value={option.key}>
-                                        {option.label}
-                                    </SelectItem>
+                                    <SelectItem key={option.key}>{option.label}</SelectItem>
                                 ))}
                             </Select>
                         </div>
@@ -271,18 +269,10 @@ export const PracticalDataTable = ({
                                         value: 'text-sm',
                                     }}
                                 >
-                                    <SelectItem key="10" value="10">
-                                        10
-                                    </SelectItem>
-                                    <SelectItem key="20" value="20">
-                                        20
-                                    </SelectItem>
-                                    <SelectItem key="50" value="50">
-                                        50
-                                    </SelectItem>
-                                    <SelectItem key="100" value="100">
-                                        100
-                                    </SelectItem>
+                                    <SelectItem key="10">10</SelectItem>
+                                    <SelectItem key="20">20</SelectItem>
+                                    <SelectItem key="50">50</SelectItem>
+                                    <SelectItem key="100">100</SelectItem>
                                 </Select>
                                 <span className="text-sm text-default-500">条</span>
                             </div>

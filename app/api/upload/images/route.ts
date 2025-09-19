@@ -1,8 +1,10 @@
-import { NextRequest } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
+
+import { NextRequest } from 'next/server';
 import sharp from 'sharp';
+
 import { ResponseUtil } from '@/lib/response';
 
 export async function POST(request: NextRequest) {
@@ -10,7 +12,8 @@ export async function POST(request: NextRequest) {
         const formData = await request.formData();
 
         const files: File[] = [];
-        for (const [key, value] of formData.entries()) {
+        const entries = Array.from(formData.entries());
+        for (const [key, value] of entries) {
             if (key.startsWith('images') && value instanceof File) {
                 files.push(value);
             }
@@ -70,7 +73,7 @@ export async function POST(request: NextRequest) {
                 const fileName = `restaurant_${timestamp}_${i}_${randomString}.webp`;
 
                 const filePath = path.join(uploadDir, fileName);
-                await writeFile(filePath, processedImage);
+                await writeFile(filePath, new Uint8Array(processedImage));
 
                 const imageUrl = `/uploads/images/${fileName}`;
 

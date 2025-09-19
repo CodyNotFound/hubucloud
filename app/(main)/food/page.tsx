@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardBody, Chip, Input, Pagination } from '@heroui/react';
-import { Search, MapPin, Star, Loader2 } from 'lucide-react';
+import { Card, CardBody, Chip, Pagination } from '@heroui/react';
+import { MapPin, Star, Loader2 } from 'lucide-react';
 
 import { ImageViewer } from '@/components/common/image-viewer';
-import { RestaurantType, RestaurantTypeLabels } from '@/types/restaurant';
+// import { RestaurantType, RestaurantTypeLabels } from '@/types/restaurant';
 
 // 餐厅类型映射
 const restaurantTypeMap: Record<string, string> = {
@@ -41,21 +41,21 @@ interface Restaurant {
 }
 
 // API响应类型
-interface ApiResponse<T> {
-    status: 'success' | 'error';
-    message?: string;
-    data?: T;
-}
+// interface ApiResponse<T> {
+//     status: 'success' | 'error';
+//     message?: string;
+//     data?: T;
+// }
 
-interface PaginationData<T> {
-    restaurants: T[];
-    pagination: {
-        page: number;
-        limit: number;
-        total: number;
-        pages: number;
-    };
-}
+// interface PaginationData<T> {
+//     restaurants: T[];
+//     pagination: {
+//         page: number;
+//         limit: number;
+//         total: number;
+//         pages: number;
+//     };
+// }
 
 // API请求函数
 const fetchRestaurants = async (endpoint: string, params: Record<string, any> = {}) => {
@@ -83,7 +83,6 @@ const categories = ['全部', '校园食堂', '主食', '饮品店', '夜市'];
 
 export default function FoodPage() {
     const router = useRouter();
-    const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('全部');
     const [currentPage, setCurrentPage] = useState(1);
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -104,15 +103,7 @@ export default function FoodPage() {
                 params.type = categoryToTypeMap[selectedCategory] || selectedCategory;
             }
 
-            let response;
-            if (searchTerm) {
-                response = await fetchRestaurants('/search', {
-                    keyword: searchTerm,
-                    ...params,
-                });
-            } else {
-                response = await fetchRestaurants('', params);
-            }
+            let response = await fetchRestaurants('', params);
 
             if (response.status === 'success' && response.data) {
                 setRestaurants(response.data.restaurants || []);
@@ -130,14 +121,14 @@ export default function FoodPage() {
     // 初始化和筛选条件变化时重新加载数据
     useEffect(() => {
         loadRestaurants();
-    }, [currentPage, selectedCategory, searchTerm]);
+    }, [currentPage, selectedCategory]);
 
     // 当筛选条件改变时重置到第一页
     useEffect(() => {
         if (currentPage !== 1) {
             setCurrentPage(1);
         }
-    }, [selectedCategory, searchTerm]);
+    }, [selectedCategory]);
 
     const totalPages = Math.ceil(total / itemsPerPage);
 
@@ -159,17 +150,6 @@ export default function FoodPage() {
                 <div className="text-center mb-3">
                     <h2 className="text-xl font-bold mb-2">校园美食</h2>
                     <p className="text-sm text-default-600">发现湖大周边美味</p>
-                </div>
-
-                {/* 搜索栏 */}
-                <div className="mb-4">
-                    <Input
-                        placeholder="搜索美食商家或菜品..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        startContent={<Search size={20} className="text-default-400" />}
-                        className="w-full"
-                    />
                 </div>
 
                 {/* 分类筛选 */}

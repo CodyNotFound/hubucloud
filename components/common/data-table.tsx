@@ -195,7 +195,7 @@ export function DataTable<T extends Record<string, any>>({
                         onValueChange={onSearchChange}
                         startContent={<Search className="w-4 h-4 text-default-500" />}
                         className="max-w-xs"
-                        clearable
+                        isClearable
                     />
                 )}
 
@@ -214,9 +214,7 @@ export function DataTable<T extends Record<string, any>>({
                         size="sm"
                     >
                         {filter.options.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                            </SelectItem>
+                            <SelectItem key={option.value}>{option.label}</SelectItem>
                         ))}
                     </Select>
                 ))}
@@ -234,16 +232,24 @@ export function DataTable<T extends Record<string, any>>({
                         }}
                     >
                         <TableHeader>
-                            {columns.map((column) => (
-                                <TableColumn
-                                    key={column.key}
-                                    width={column.width}
-                                    allowsSorting={column.sortable}
-                                >
-                                    {column.label}
-                                </TableColumn>
-                            ))}
-                            {actions && <TableColumn width="120px">操作</TableColumn>}
+                            {[
+                                ...columns.map((column) => (
+                                    <TableColumn
+                                        key={column.key}
+                                        width={column.width as any}
+                                        allowsSorting={column.sortable}
+                                    >
+                                        {column.label}
+                                    </TableColumn>
+                                )),
+                                ...(actions
+                                    ? [
+                                          <TableColumn key="actions" width={'120px' as any}>
+                                              操作
+                                          </TableColumn>,
+                                      ]
+                                    : []),
+                            ]}
                         </TableHeader>
                         <TableBody
                             isLoading={loading}
@@ -252,12 +258,22 @@ export function DataTable<T extends Record<string, any>>({
                         >
                             {data.map((item) => (
                                 <TableRow key={getItemKey(item)}>
-                                    {columns.map((column) => (
-                                        <TableCell key={column.key}>
-                                            {column.render ? column.render(item) : item[column.key]}
-                                        </TableCell>
-                                    ))}
-                                    {actions && <TableCell>{renderActionButtons(item)}</TableCell>}
+                                    {[
+                                        ...columns.map((column) => (
+                                            <TableCell key={column.key}>
+                                                {column.render
+                                                    ? column.render(item)
+                                                    : item[column.key]}
+                                            </TableCell>
+                                        )),
+                                        ...(actions
+                                            ? [
+                                                  <TableCell key={`actions-${getItemKey(item)}`}>
+                                                      {renderActionButtons(item)}
+                                                  </TableCell>,
+                                              ]
+                                            : []),
+                                    ]}
                                 </TableRow>
                             ))}
                         </TableBody>

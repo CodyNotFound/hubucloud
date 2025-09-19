@@ -2,7 +2,7 @@
 
 import type { Parttime } from '@/types';
 
-import { Card, CardBody, Chip } from '@heroui/react';
+import { Card, CardBody } from '@heroui/react';
 import { MapPin, Clock, DollarSign, Calendar, Phone, Users } from 'lucide-react';
 
 import { usePaginatedData } from '@/hooks/usePaginatedData';
@@ -16,8 +16,8 @@ export default function JobsPage() {
         total,
         currentPage,
         totalPages,
-        filters,
-        updateFilters,
+        filters: _filters,
+        updateFilters: _updateFilters,
         goToPage,
         isEmpty,
     } = usePaginatedData<Parttime>({

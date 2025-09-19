@@ -17,7 +17,7 @@ export function ContactInput({
     value,
     onChange,
     label = '联系方式',
-    placeholder = '输入手机号即可',
+    placeholder: _placeholder = '输入手机号即可',
     isRequired = false,
     description,
 }: ContactInputProps) {

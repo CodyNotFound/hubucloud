@@ -27,7 +27,6 @@
 
 - `GET /api/restaurants` - 获取餐厅列表
 - `POST /api/restaurants` - 创建餐厅
-- `GET /api/restaurants/search` - 搜索餐厅
 - `GET /api/restaurants/[id]` - 获取餐厅详情
 - `PUT /api/restaurants/[id]` - 更新餐厅信息
 - `DELETE /api/restaurants/[id]` - 删除餐厅
@@ -36,7 +35,6 @@
 
 - `GET /api/parttime` - 获取兼职列表
 - `POST /api/parttime` - 发布兼职
-- `GET /api/parttime/search` - 搜索兼职
 - `GET /api/parttime/[id]` - 获取兼职详情
 - `PUT /api/parttime/[id]` - 更新兼职信息
 - `DELETE /api/parttime/[id]` - 删除兼职

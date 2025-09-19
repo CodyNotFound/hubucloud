@@ -1,8 +1,10 @@
-import { NextRequest } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
+
+import { NextRequest } from 'next/server';
 import sharp from 'sharp';
+
 import { ResponseUtil } from '@/lib/response';
 
 export async function POST(request: NextRequest) {
@@ -47,7 +49,7 @@ export async function POST(request: NextRequest) {
         }
 
         const filePath = path.join(uploadDir, fileName);
-        await writeFile(filePath, processedImage);
+        await writeFile(filePath, new Uint8Array(processedImage));
 
         const imageUrl = `/uploads/images/${fileName}`;
 

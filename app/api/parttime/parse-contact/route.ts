@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+
 import { ResponseUtil } from '@/lib/response';
 import { validateContact, parseContact } from '@/lib/parttime';
 

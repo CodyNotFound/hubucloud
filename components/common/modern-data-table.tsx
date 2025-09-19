@@ -166,9 +166,7 @@ export const ModernDataTable = ({
                                     }}
                                 >
                                     {filterOptions.map((option) => (
-                                        <SelectItem key={option.key} value={option.key}>
-                                            {option.label}
-                                        </SelectItem>
+                                        <SelectItem key={option.key}>{option.label}</SelectItem>
                                     ))}
                                 </Select>
                             )}
@@ -187,27 +185,31 @@ export const ModernDataTable = ({
                     }}
                 >
                     <TableHeader>
-                        {columns.map((column) => (
-                            <TableColumn
-                                key={column.key}
-                                width={column.width}
-                                className={
-                                    column.sortable ? 'cursor-pointer hover:bg-default-100' : ''
-                                }
-                            >
-                                <div className="flex items-center gap-2">
-                                    {column.label}
-                                    {column.sortable && (
-                                        <ArrowUpDown className="w-4 h-4 text-default-400" />
-                                    )}
-                                </div>
-                            </TableColumn>
-                        ))}
-                        {(onEdit || onDelete) && (
-                            <TableColumn width="100px">
-                                <span className="text-center">操作</span>
-                            </TableColumn>
-                        )}
+                        {[
+                            ...columns.map((column) => (
+                                <TableColumn
+                                    key={column.key}
+                                    width={column.width as any}
+                                    className={
+                                        column.sortable ? 'cursor-pointer hover:bg-default-100' : ''
+                                    }
+                                >
+                                    <div className="flex items-center gap-2">
+                                        {column.label}
+                                        {column.sortable && (
+                                            <ArrowUpDown className="w-4 h-4 text-default-400" />
+                                        )}
+                                    </div>
+                                </TableColumn>
+                            )),
+                            ...(onEdit || onDelete
+                                ? [
+                                      <TableColumn key="actions" width={'100px' as any}>
+                                          <span className="text-center">操作</span>
+                                      </TableColumn>,
+                                  ]
+                                : []),
+                        ]}
                     </TableHeader>
                     <TableBody>
                         {data.map((item, index) => (
@@ -215,43 +217,47 @@ export const ModernDataTable = ({
                                 key={item.id || index}
                                 className="hover:bg-default-50 transition-colors"
                             >
-                                {columns.map((column) => (
-                                    <TableCell key={column.key}>
-                                        {renderCell(item, column)}
-                                    </TableCell>
-                                ))}
-                                {(onEdit || onDelete) && (
-                                    <TableCell>
-                                        <div className="flex items-center gap-1 justify-center">
-                                            {onEdit && (
-                                                <Tooltip content="编辑">
-                                                    <Button
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="light"
-                                                        onPress={() => onEdit(item)}
-                                                        className="text-default-500 hover:text-primary"
-                                                    >
-                                                        <Edit3 className="w-4 h-4" />
-                                                    </Button>
-                                                </Tooltip>
-                                            )}
-                                            {onDelete && (
-                                                <Tooltip content="删除" color="danger">
-                                                    <Button
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="light"
-                                                        onPress={() => onDelete(item)}
-                                                        className="text-default-500 hover:text-danger"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
-                                                </Tooltip>
-                                            )}
-                                        </div>
-                                    </TableCell>
-                                )}
+                                {[
+                                    ...columns.map((column) => (
+                                        <TableCell key={column.key}>
+                                            {renderCell(item, column)}
+                                        </TableCell>
+                                    )),
+                                    ...(onEdit || onDelete
+                                        ? [
+                                              <TableCell key={`actions-${item.id || index}`}>
+                                                  <div className="flex items-center gap-1 justify-center">
+                                                      {onEdit && (
+                                                          <Tooltip content="编辑">
+                                                              <Button
+                                                                  isIconOnly
+                                                                  size="sm"
+                                                                  variant="light"
+                                                                  onPress={() => onEdit(item)}
+                                                                  className="text-default-500 hover:text-primary"
+                                                              >
+                                                                  <Edit3 className="w-4 h-4" />
+                                                              </Button>
+                                                          </Tooltip>
+                                                      )}
+                                                      {onDelete && (
+                                                          <Tooltip content="删除" color="danger">
+                                                              <Button
+                                                                  isIconOnly
+                                                                  size="sm"
+                                                                  variant="light"
+                                                                  onPress={() => onDelete(item)}
+                                                                  className="text-default-500 hover:text-danger"
+                                                              >
+                                                                  <Trash2 className="w-4 h-4" />
+                                                              </Button>
+                                                          </Tooltip>
+                                                      )}
+                                                  </div>
+                                              </TableCell>,
+                                          ]
+                                        : []),
+                                ]}
                             </TableRow>
                         ))}
                     </TableBody>

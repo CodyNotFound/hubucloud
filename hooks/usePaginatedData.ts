@@ -75,7 +75,7 @@ export function usePaginatedData<T>({
                         items = responseData;
                     }
 
-                    const total = responseData.pagination?.total || 0;
+                    const total = (Array.isArray(responseData) ? 0 : responseData.pagination?.total) || 0;
                     const totalPages = Math.ceil(total / itemsPerPage);
 
                     setState((prev) => ({

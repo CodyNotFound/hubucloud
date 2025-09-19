@@ -54,7 +54,7 @@ interface AdminLayoutWithUserProps extends AdminLayoutProps {
 export default function AdminLayout({
     children,
     user,
-    adminStats,
+    adminStats: _adminStats,
     onLogout,
 }: AdminLayoutWithUserProps) {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

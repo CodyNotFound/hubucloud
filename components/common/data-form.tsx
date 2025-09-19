@@ -256,9 +256,7 @@ export const DataForm = ({
                         }}
                     >
                         {(field.options || []).map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                            </SelectItem>
+                            <SelectItem key={option.value}>{option.label}</SelectItem>
                         ))}
                     </Select>
                 );
@@ -274,9 +272,7 @@ export const DataForm = ({
                         }}
                     >
                         {(field.options || []).map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                            </SelectItem>
+                            <SelectItem key={option.value}>{option.label}</SelectItem>
                         ))}
                     </Select>
                 );

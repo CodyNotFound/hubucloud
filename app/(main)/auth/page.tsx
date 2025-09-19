@@ -102,7 +102,7 @@ export default function AuthPage() {
                 // 登录失败，重置标记
                 isLoginInProgress.current = false;
             }
-        } catch (error) {
+        } catch (_error) {
             showMessage('error', '登录失败，请检查网络连接');
             // 登录失败，重置标记
             isLoginInProgress.current = false;
@@ -156,7 +156,7 @@ export default function AuthPage() {
                 // 注册失败，重置标记
                 isLoginInProgress.current = false;
             }
-        } catch (error) {
+        } catch (_error) {
             showMessage('error', '注册失败，请检查网络连接');
             // 注册失败，重置标记
             isLoginInProgress.current = false;

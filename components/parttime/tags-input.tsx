@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Input, Chip, Button } from '@heroui/react';
-import { Plus, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 interface TagsInputProps {
     label?: string;

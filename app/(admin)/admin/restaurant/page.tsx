@@ -50,7 +50,7 @@ function RestaurantManagement() {
     const [selectedType, setSelectedType] = useState('all');
     const [editingItem, setEditingItem] = useState<Restaurant | null>(null);
     const [formLoading, setFormLoading] = useState(false);
-    const [uploadError, setUploadError] = useState<string | null>(null);
+    const [_uploadError, setUploadError] = useState<string | null>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     // 表单数据

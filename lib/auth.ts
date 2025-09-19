@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+
 import { JWTUtil, UserTokenPayload } from './jwt';
 import { db } from './db';
 

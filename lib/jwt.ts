@@ -1,4 +1,5 @@
 import type { JwtPayload } from 'jsonwebtoken';
+
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'hubucloud-secret-key-2024';
@@ -16,7 +17,7 @@ export class JWTUtil {
             expiresIn: JWT_EXPIRES_IN,
             issuer: 'hubucloud',
             audience: 'hubucloud-users',
-        });
+        } as any);
     }
 
     static verifyToken(token: string): UserTokenPayload | null {
@@ -31,7 +32,7 @@ export class JWTUtil {
                 username: decoded.username,
                 role: decoded.role,
             };
-        } catch (error) {
+        } catch (_error) {
             return null;
         }
     }

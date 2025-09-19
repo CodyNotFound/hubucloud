@@ -223,7 +223,7 @@ export function MultiImageUpload({
     className = '',
 }: MultiImageUploadProps) {
     const [uploading, setUploading] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
+    const [_uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {

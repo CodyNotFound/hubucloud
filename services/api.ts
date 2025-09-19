@@ -22,10 +22,6 @@ export class DataService {
             return get(endpoint);
         },
 
-        async search(keyword: string, params: FilterParams = {}) {
-            return this.getList({ ...params, keyword });
-        },
-
         async getByType(type: string, params: FilterParams = {}) {
             return this.getList({ ...params, type });
         },
@@ -45,18 +41,6 @@ export class DataService {
 
             const endpoint = query.toString() ? `/restaurants?${query}` : '/restaurants';
             return get(endpoint);
-        },
-
-        async search(keyword: string, params: FilterParams = {}) {
-            const query = new URLSearchParams();
-            Object.keys(params).forEach((key) => {
-                if (params[key] !== undefined && params[key] !== '') {
-                    query.append(key, params[key].toString());
-                }
-            });
-            query.append('keyword', keyword);
-
-            return get(`/restaurants/search?${query}`);
         },
 
         async getByType(type: string, params: FilterParams = {}) {
