@@ -244,9 +244,8 @@ DELETE /api/admin/restaurant/:id # 删除餐厅
 
 ### 后端部署
 
-1. 数据库迁移: `bun run db:migrate`
-2. 生成Prisma客户端: `bun run db:generate`
-3. 启动后端服务: `bun run dev`
+1. 生成Prisma客户端: `bun run db:generate`
+2. 启动后端服务: `bun run dev`
 
 ## 未来扩展
 

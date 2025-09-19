@@ -11,16 +11,7 @@ import {
     Avatar,
     Link,
 } from '@heroui/react';
-import {
-    LayoutDashboard,
-    Store,
-    Briefcase,
-    Settings,
-    LogOut,
-    Menu,
-    X,
-    Home,
-} from 'lucide-react';
+import { LayoutDashboard, Store, Briefcase, Settings, LogOut, Menu, X, Home } from 'lucide-react';
 
 interface AdminLayoutProps {
     children: ReactNode;

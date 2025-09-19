@@ -13,10 +13,7 @@ export async function POST(request: NextRequest) {
 
         const contactValidation = validateContact(contact);
         if (!contactValidation.isValid) {
-            return ResponseUtil.clientError(
-                contactValidation.error || '联系方式格式不正确',
-                400
-            );
+            return ResponseUtil.clientError(contactValidation.error || '联系方式格式不正确', 400);
         }
 
         const parsed = parseContact(contact);

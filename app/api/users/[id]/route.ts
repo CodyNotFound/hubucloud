@@ -3,12 +3,9 @@ import { db } from '@/lib/db';
 import { ResponseUtil, ERROR_MESSAGES } from '@/lib/response';
 import { authenticateRequest } from '@/lib/auth';
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = params;
+        const { id } = await params;
 
         const user = await db.user.findUnique({
             where: { id },
@@ -37,12 +34,9 @@ export async function GET(
     }
 }
 
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = params;
+        const { id } = await params;
         const currentUser = await authenticateRequest(request);
         const body = await request.json();
 
@@ -58,7 +52,7 @@ export async function PUT(
         if (currentUser) {
             const adminUser = await db.user.findUnique({
                 where: { id: currentUser.userId },
-                select: { role: true }
+                select: { role: true },
             });
             isAdmin = adminUser?.role === 'ADMIN';
         }
@@ -124,10 +118,10 @@ export async function PUT(
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const { id } = params;
+        const { id } = await params;
         const currentUser = await authenticateRequest(request);
 
         if (!currentUser) {
@@ -136,7 +130,7 @@ export async function DELETE(
 
         const adminUser = await db.user.findUnique({
             where: { id: currentUser.userId },
-            select: { role: true }
+            select: { role: true },
         });
 
         if (!adminUser || adminUser.role !== 'ADMIN') {

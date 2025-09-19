@@ -45,13 +45,13 @@ export interface PaginatedResponse<T> {
 export interface Parttime {
     id: string;
     name: string;
+    type: string;
     salary: string;
     worktime: string;
     location: string;
     description: string;
     contact: string;
     requirements?: string;
-    tags: string[];
     createdAt?: string;
     updatedAt?: string;
 }
@@ -71,6 +71,7 @@ export interface Restaurant {
     rating: number;
     latitude: number;
     longitude: number;
+    locationDescription?: string;
     distance?: number;
     createdAt?: string;
     updatedAt?: string;

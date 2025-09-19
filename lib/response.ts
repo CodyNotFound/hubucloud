@@ -21,12 +21,15 @@ export const ERROR_MESSAGES = {
 
 export class ResponseUtil {
     static success<T>(data?: T, message?: string, status = 200): NextResponse<StandardResponse<T>> {
-        return NextResponse.json({
-            status: 'success',
-            message,
-            data,
-            timestamp: new Date().toISOString(),
-        }, { status });
+        return NextResponse.json(
+            {
+                status: 'success',
+                message,
+                data,
+                timestamp: new Date().toISOString(),
+            },
+            { status }
+        );
     }
 
     static error(message: string, status = 400, error?: Error): NextResponse<StandardResponse> {

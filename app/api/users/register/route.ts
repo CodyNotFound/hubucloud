@@ -63,11 +63,14 @@ export async function POST(request: NextRequest) {
             role: newUser.role,
         });
 
-        return ResponseUtil.success({
-            user: newUser,
-            token,
-            expiresIn: '7d',
-        }, '注册成功');
+        return ResponseUtil.success(
+            {
+                user: newUser,
+                token,
+                expiresIn: '7d',
+            },
+            '注册成功'
+        );
     } catch (error) {
         return ResponseUtil.serverError('用户注册失败', error as Error);
     }

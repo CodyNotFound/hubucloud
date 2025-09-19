@@ -26,7 +26,7 @@ export async function requireAdmin(request: NextRequest): Promise<UserTokenPaylo
 
     const dbUser = await db.user.findUnique({
         where: { id: user.userId },
-        select: { role: true }
+        select: { role: true },
     });
 
     if (!dbUser || dbUser.role !== 'ADMIN') {

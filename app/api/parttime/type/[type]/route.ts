@@ -2,12 +2,9 @@ import { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 import { ResponseUtil } from '@/lib/response';
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { type: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ type: string }> }) {
     try {
-        const { type } = params;
+        const { type } = await params;
         const { searchParams } = new URL(request.url);
         const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
         const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '10')));
@@ -24,7 +21,7 @@ export async function GET(
             }),
             db.parttime.count({
                 where: { type },
-            })
+            }),
         ]);
 
         return ResponseUtil.success({

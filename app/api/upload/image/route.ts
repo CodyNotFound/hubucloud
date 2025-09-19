@@ -14,13 +14,7 @@ export async function POST(request: NextRequest) {
             return ResponseUtil.clientError('请选择要上传的图片');
         }
 
-        const allowedTypes = [
-            'image/jpeg',
-            'image/jpg',
-            'image/png',
-            'image/gif',
-            'image/webp',
-        ];
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
         if (!allowedTypes.includes(file.type)) {
             return ResponseUtil.clientError(
                 '不支持的图片格式，请上传JPG、PNG、GIF或WebP格式的图片'
@@ -57,13 +51,16 @@ export async function POST(request: NextRequest) {
 
         const imageUrl = `/uploads/images/${fileName}`;
 
-        return ResponseUtil.success({
-            filename: fileName,
-            url: imageUrl,
-            size: processedImage.length,
-            originalSize: file.size,
-            compressionRatio: Math.round((1 - processedImage.length / file.size) * 100),
-        }, '图片上传成功');
+        return ResponseUtil.success(
+            {
+                filename: fileName,
+                url: imageUrl,
+                size: processedImage.length,
+                originalSize: file.size,
+                compressionRatio: Math.round((1 - processedImage.length / file.size) * 100),
+            },
+            '图片上传成功'
+        );
     } catch (error) {
         return ResponseUtil.serverError('图片上传失败', error as Error);
     }

@@ -10,7 +10,7 @@ export const RestaurantTypeLabels: Record<RestaurantType, string> = {
     campusfood: '校园食堂',
     mainfood: '主食',
     drinks: '饮品店',
-    nightmarket: '夜市'
+    nightmarket: '夜市',
 };
 
 export interface Restaurant {

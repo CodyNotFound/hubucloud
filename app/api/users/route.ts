@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
                     createdAt: 'desc',
                 },
             }),
-            db.user.count({ where })
+            db.user.count({ where }),
         ]);
 
         return ResponseUtil.success({

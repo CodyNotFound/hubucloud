@@ -2,12 +2,9 @@ import { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 import { ResponseUtil } from '@/lib/response';
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = params;
+        const { id } = await params;
 
         const restaurant = await db.restaurant.findUnique({
             where: { id },
@@ -23,12 +20,9 @@ export async function GET(
     }
 }
 
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = params;
+        const { id } = await params;
         const body = await request.json();
 
         const existingRestaurant = await db.restaurant.findUnique({
@@ -97,10 +91,10 @@ export async function PUT(
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const { id } = params;
+        const { id } = await params;
 
         const existingRestaurant = await db.restaurant.findUnique({
             where: { id },

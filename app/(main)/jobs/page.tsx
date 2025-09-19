@@ -96,7 +96,6 @@ export default function JobsPage() {
                             {parttime.description}
                         </p>
 
-
                         {/* 底部信息 */}
                         {parttime.createdAt && (
                             <div className="flex items-center justify-between pt-2 border-t border-default-200">

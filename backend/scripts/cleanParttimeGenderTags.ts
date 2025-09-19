@@ -27,9 +27,7 @@ async function cleanParttimeGenderTags() {
         for (const parttime of parttimes) {
             // 过滤掉性别相关的标签
             const originalTags = parttime.tags;
-            const filteredTags = parttime.tags.filter(
-                (tag) => !genderRelatedTags.includes(tag)
-            );
+            const filteredTags = parttime.tags.filter((tag) => !genderRelatedTags.includes(tag));
 
             // 检查是否有性别标签被移除
             const hasGenderTags = originalTags.length !== filteredTags.length;
@@ -40,7 +38,7 @@ async function cleanParttimeGenderTags() {
                     data: { tags: filteredTags },
                 });
 
-                const removedTags = originalTags.filter(tag => genderRelatedTags.includes(tag));
+                const removedTags = originalTags.filter((tag) => genderRelatedTags.includes(tag));
 
                 console.log(`✅ 更新: ${parttime.name}`);
                 console.log(`   移除的性别标签: [${removedTags.join(', ')}]`);

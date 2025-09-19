@@ -29,7 +29,7 @@ export class ParttimeController {
         @Query('page') page?: string,
         @Query('limit') limit?: string,
         @Query('type') type?: string,
-        @Query('location') location?: string,
+        @Query('location') location?: string
     ) {
         try {
             const pageNum = page ? Math.max(1, parseInt(page) || 1) : 1;

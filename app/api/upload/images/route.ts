@@ -87,13 +87,16 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        return ResponseUtil.success({
-            success: results,
-            errors: errors,
-            total: files.length,
-            successCount: results.length,
-            errorCount: errors.length,
-        }, `成功上传${results.length}张图片${errors.length > 0 ? `，${errors.length}张失败` : ''}`);
+        return ResponseUtil.success(
+            {
+                success: results,
+                errors: errors,
+                total: files.length,
+                successCount: results.length,
+                errorCount: errors.length,
+            },
+            `成功上传${results.length}张图片${errors.length > 0 ? `，${errors.length}张失败` : ''}`
+        );
     } catch (error) {
         return ResponseUtil.serverError('批量上传失败', error as Error);
     }

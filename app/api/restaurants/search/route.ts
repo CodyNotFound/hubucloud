@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
                     rating: 'desc',
                 },
             }),
-            db.restaurant.count({ where })
+            db.restaurant.count({ where }),
         ]);
 
         return ResponseUtil.success({

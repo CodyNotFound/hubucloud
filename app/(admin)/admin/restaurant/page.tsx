@@ -1,5 +1,7 @@
 'use client';
 
+import type { Restaurant } from '@/types/index';
+
 import { useState, useEffect } from 'react';
 import {
     Button,
@@ -22,22 +24,6 @@ import { useAdmin } from '@/hooks/use-admin';
 import { PracticalDataTable } from '@/components/common/practical-data-table';
 import { MultiImageUpload, imageUtils } from '@/components/common/image-upload';
 import { adminService } from '@/services/admin';
-
-interface Restaurant {
-    id: string;
-    name: string;
-    type: string;
-    address: string;
-    phone: string;
-    cover: string;
-    rating: number;
-    openTime: string;
-    description: string;
-    locationDescription?: string;
-    tags: string[];
-    preview: string[];
-    createdAt: string;
-}
 
 export default function RestaurantPage() {
     return (
@@ -241,6 +227,8 @@ function RestaurantManagement() {
                 type: typeMapping[formData.type as keyof typeof typeMapping] || formData.type, // 转换为后端枚举
                 preview: imageUtils.getImageUrls(formData.preview), // 转换为URL数组
                 tags: [], // 暂时为空，后续可以添加标签功能
+                latitude: 30.5418, // 默认湖北大学纬度
+                longitude: 114.3468, // 默认湖北大学经度
             };
 
             if (editingItem) {
@@ -332,9 +320,7 @@ function RestaurantManagement() {
                                 isRequired
                             >
                                 {restaurantTypes.map((type) => (
-                                    <SelectItem key={type} value={type}>
-                                        {type}
-                                    </SelectItem>
+                                    <SelectItem key={type}>{type}</SelectItem>
                                 ))}
                             </Select>
 

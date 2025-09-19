@@ -64,15 +64,20 @@ export async function POST(request: NextRequest) {
             longitude,
             tags = [],
             preview = [],
-            rating = 0
+            rating = 0,
         } = body;
 
         // 验证必填字段
-        if (!name || !address || !phone || !description || !type || !openTime || !locationDescription) {
-            return NextResponse.json(
-                ResponseUtil.error('缺少必填字段'),
-                { status: 400 }
-            );
+        if (
+            !name ||
+            !address ||
+            !phone ||
+            !description ||
+            !type ||
+            !openTime ||
+            !locationDescription
+        ) {
+            return NextResponse.json(ResponseUtil.error('缺少必填字段'), { status: 400 });
         }
 
         const restaurant = await db.restaurant.create({

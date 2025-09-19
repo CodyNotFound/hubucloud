@@ -31,7 +31,6 @@ interface ApiResponse<T> {
     data?: T;
 }
 
-
 // API请求函数
 const fetchRestaurantDetail = async (id: string): Promise<ApiResponse<Restaurant>> => {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
@@ -203,7 +202,9 @@ export default function RestaurantDetailPage() {
                             {restaurant.phone && restaurant.phone.trim() !== '' && (
                                 <div className="flex items-center gap-2">
                                     <Phone size={16} className="text-default-500" />
-                                    <span className="text-sm text-default-700">{restaurant.phone}</span>
+                                    <span className="text-sm text-default-700">
+                                        {restaurant.phone}
+                                    </span>
                                 </div>
                             )}
                         </div>
@@ -292,7 +293,9 @@ export default function RestaurantDetailPage() {
                                         startContent={<MapPin size={16} />}
                                         onPress={() => {
                                             // 构建高德地图搜索URL，武汉市城市代码为420100
-                                            const query = encodeURIComponent(`${restaurant.name} ${restaurant.locationDescription}`);
+                                            const query = encodeURIComponent(
+                                                `${restaurant.name} ${restaurant.locationDescription}`
+                                            );
                                             const amapUrl = `https://ditu.amap.com/search?query=${query}&city=420100`;
                                             window.open(amapUrl, '_blank');
                                         }}

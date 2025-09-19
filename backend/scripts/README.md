@@ -86,7 +86,7 @@ bun run scripts/list-users.ts USER
 
     ```bash
     cd backend
-    npm install
+    bun install
     ```
 
 2. 确保数据库已经配置并可连接

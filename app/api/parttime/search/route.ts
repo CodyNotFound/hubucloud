@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
                     createdAt: 'desc',
                 },
             }),
-            db.parttime.count({ where })
+            db.parttime.count({ where }),
         ]);
 
         return ResponseUtil.success({

@@ -4,14 +4,11 @@ import { ResponseUtil } from '@/lib/response';
 import { requireAdmin } from '@/lib/auth';
 import { ERROR_MESSAGES } from '@/lib/response';
 
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         await requireAdmin(request);
 
-        const { id } = params;
+        const { id } = await params;
         const body = await request.json();
 
         // 检查餐厅是否存在
@@ -20,10 +17,7 @@ export async function PUT(
         });
 
         if (!existingRestaurant) {
-            return NextResponse.json(
-                ResponseUtil.error('餐厅不存在'),
-                { status: 404 }
-            );
+            return NextResponse.json(ResponseUtil.error('餐厅不存在'), { status: 404 });
         }
 
         const {
@@ -39,7 +33,7 @@ export async function PUT(
             longitude,
             tags,
             preview,
-            rating
+            rating,
         } = body;
 
         const updateData: any = {};
@@ -62,26 +56,21 @@ export async function PUT(
             data: updateData,
         });
 
-        return NextResponse.json(
-            ResponseUtil.success(updatedRestaurant, '餐厅信息更新成功')
-        );
+        return NextResponse.json(ResponseUtil.success(updatedRestaurant, '餐厅信息更新成功'));
     } catch (error) {
         console.error('管理员更新餐厅失败:', error);
-        return NextResponse.json(
-            ResponseUtil.error('更新餐厅失败'),
-            { status: 500 }
-        );
+        return NextResponse.json(ResponseUtil.error('更新餐厅失败'), { status: 500 });
     }
 }
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         await requireAdmin(request);
 
-        const { id } = params;
+        const { id } = await params;
 
         // 检查餐厅是否存在
         const existingRestaurant = await db.restaurant.findUnique({
@@ -89,24 +78,16 @@ export async function DELETE(
         });
 
         if (!existingRestaurant) {
-            return NextResponse.json(
-                ResponseUtil.error('餐厅不存在'),
-                { status: 404 }
-            );
+            return NextResponse.json(ResponseUtil.error('餐厅不存在'), { status: 404 });
         }
 
         await db.restaurant.delete({
             where: { id },
         });
 
-        return NextResponse.json(
-            ResponseUtil.success(null, '餐厅删除成功')
-        );
+        return NextResponse.json(ResponseUtil.success(null, '餐厅删除成功'));
     } catch (error) {
         console.error('管理员删除餐厅失败:', error);
-        return NextResponse.json(
-            ResponseUtil.error('删除餐厅失败'),
-            { status: 500 }
-        );
+        return NextResponse.json(ResponseUtil.error('删除餐厅失败'), { status: 500 });
     }
 }

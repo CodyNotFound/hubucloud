@@ -65,23 +65,11 @@ export async function POST(request: NextRequest) {
         await requireAdmin(request);
 
         const body = await request.json();
-        const {
-            name,
-            salary,
-            worktime,
-            location,
-            description,
-            contact,
-            requirements,
-            tags = []
-        } = body;
+        const { name, type, salary, worktime, location, description, contact, requirements } = body;
 
         // 验证必填字段
-        if (!name || !salary || !worktime || !location || !description || !contact) {
-            return NextResponse.json(
-                ResponseUtil.error('缺少必填字段'),
-                { status: 400 }
-            );
+        if (!name || !type || !salary || !worktime || !location || !description || !contact) {
+            return NextResponse.json(ResponseUtil.error('缺少必填字段'), { status: 400 });
         }
 
         const parttime = await db.parttime.create({
@@ -93,7 +81,7 @@ export async function POST(request: NextRequest) {
                 description,
                 contact,
                 requirements,
-                tags,
+                type,
             },
         });
 

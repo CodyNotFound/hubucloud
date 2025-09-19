@@ -3,12 +3,9 @@ import { db } from '@/lib/db';
 import { ResponseUtil } from '@/lib/response';
 import { validateContact, validateRequirements } from '@/lib/parttime';
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = params;
+        const { id } = await params;
 
         const parttime = await db.parttime.findUnique({
             where: { id },
@@ -24,12 +21,9 @@ export async function GET(
     }
 }
 
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = params;
+        const { id } = await params;
         const body = await request.json();
 
         const existingParttime = await db.parttime.findUnique({
@@ -113,10 +107,10 @@ export async function PUT(
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const { id } = params;
+        const { id } = await params;
 
         const existingParttime = await db.parttime.findUnique({
             where: { id },

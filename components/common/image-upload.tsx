@@ -71,8 +71,7 @@ export function ImageUpload({
             const formData = new FormData();
             formData.append('image', file);
 
-            const API_BASE_URL =
-                process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+            const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
             const response = await fetch(`${API_BASE_URL}/upload/image`, {
                 method: 'POST',
@@ -262,8 +261,7 @@ export function MultiImageUpload({
                 const formData = new FormData();
                 formData.append('image', file);
 
-                const API_BASE_URL =
-                    process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+                const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
                 const response = await fetch(`${API_BASE_URL}/upload/image`, {
                     method: 'POST',

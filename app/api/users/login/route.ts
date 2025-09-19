@@ -45,11 +45,14 @@ export async function POST(request: NextRequest) {
             createdAt: user.createdAt,
         };
 
-        return ResponseUtil.success({
-            user: userInfo,
-            token,
-            expiresIn: '7d',
-        }, '登录成功');
+        return ResponseUtil.success(
+            {
+                user: userInfo,
+                token,
+                expiresIn: '7d',
+            },
+            '登录成功'
+        );
     } catch (error) {
         return ResponseUtil.serverError('登录失败', error as Error);
     }

@@ -2,15 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardBody, CardHeader, Button, Chip, Spacer } from '@heroui/react';
-import {
-    Users,
-    Store,
-    Briefcase,
-    BarChart3,
-    ArrowRight,
-    RefreshCw,
-    Activity,
-} from 'lucide-react';
+import { Users, Store, Briefcase, BarChart3, ArrowRight, RefreshCw, Activity } from 'lucide-react';
 import Link from 'next/link';
 
 import { AdminGuard } from '@/components/common/admin-guard';
@@ -220,9 +212,7 @@ function DashboardContent() {
                             >
                                 <div className="flex flex-col items-start text-left">
                                     <span className="font-medium">{action.title}</span>
-                                    <span className="text-xs opacity-70">
-                                        {action.description}
-                                    </span>
+                                    <span className="text-xs opacity-70">{action.description}</span>
                                 </div>
                             </Button>
                         ))}

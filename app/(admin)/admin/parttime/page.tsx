@@ -23,92 +23,6 @@ import { PracticalDataTable } from '@/components/common/practical-data-table';
 import { adminService } from '@/services/admin';
 import { ContactInput, RequirementsInput } from '@/components/parttime';
 
-interface Parttime {
-    id: string;
-    name: string;
-    salary: string;
-    worktime: string;
-    location: string;
-    description: string;
-    contact: string;
-    requirements?: string;
-    createdAt: string;
-}
-
-// 模拟数据
-const mockParttime: Parttime[] = [
-    {
-        id: '1',
-        name: '外卖配送员',
-        salary: '6-12元/单，日均150-300元',
-        time: '弹性时间，建议11:00-14:00, 17:00-21:00',
-        location: '武昌区、洪山区',
-        description: '负责外卖配送工作，熟悉当地路况',
-        tags: ['弹性时间', '高收入', '锻炼身体'],
-        createdAt: '2024-01-15',
-    },
-    {
-        id: '2',
-        name: '线上客服',
-        salary: '16-20元/小时',
-        time: '灵活时间，每天至少4小时',
-        location: '在线办公',
-        description: '处理客户咨询，解答问题',
-        tags: ['远程办公', '灵活时间'],
-        createdAt: '2024-01-14',
-    },
-    {
-        id: '3',
-        name: '咖啡厅服务员',
-        salary: '20元/小时',
-        time: '平日晚上 18:00-22:00',
-        location: '湖北大学附近',
-        description: '负责点餐、制作饮品、清洁等工作',
-        tags: ['学生友好', '技能提升'],
-        createdAt: '2024-01-13',
-    },
-    {
-        id: '4',
-        name: '图书馆助理',
-        salary: '15元/小时',
-        time: '周末 9:00-17:00',
-        location: '湖北大学图书馆',
-        description: '整理书籍，协助读者查找资料',
-        tags: ['安静环境', '学习氛围'],
-        createdAt: '2024-01-12',
-    },
-    {
-        id: '5',
-        name: '校园送餐员',
-        salary: '18-25元/小时',
-        time: '11:00-14:00, 17:00-20:00',
-        location: '湖北大学校内',
-        description: '负责校内餐饮配送',
-        tags: ['校内工作', '熟悉环境'],
-        createdAt: '2024-01-11',
-    },
-    {
-        id: '6',
-        name: '家教老师 - 高中数学',
-        salary: '80-120元/小时',
-        time: '工作日晚上 19:00-21:00',
-        location: '学生家中',
-        description: '辅导高中数学，要求数学基础扎实',
-        tags: ['高薪酬', '专业对口', '能力提升'],
-        createdAt: '2024-01-10',
-    },
-    {
-        id: '7',
-        name: '校园咖啡店服务员',
-        salary: '20元/小时',
-        time: '周末 9:00-18:00',
-        location: '湖北大学校内咖啡店',
-        description: '制作咖啡、服务客户、维护店面卫生',
-        tags: ['技能学习', '社交机会', '校内便利'],
-        createdAt: '2024-01-09',
-    },
-];
-
 export default function ParttimePage() {
     return (
         <AdminGuard>
@@ -295,7 +209,10 @@ function ParttimeManagement() {
             };
 
             if (editingItem) {
-                const response = await adminService.updateParttime(editingItem.id, dataWithDefaults);
+                const response = await adminService.updateParttime(
+                    editingItem.id,
+                    dataWithDefaults
+                );
                 if (response.status === 'success') {
                     await fetchParttimes();
                     onClose();
@@ -421,7 +338,6 @@ function ParttimeManagement() {
                                     description="选择性别要求并添加其他招聘条件"
                                 />
                             </div>
-
 
                             <div className="md:col-span-2">
                                 <Textarea
