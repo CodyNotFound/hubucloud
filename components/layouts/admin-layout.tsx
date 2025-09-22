@@ -192,14 +192,6 @@ export default function AdminLayout({
                     </div>
                 </main>
             </div>
-
-            {/* 移动端侧边栏遮罩 */}
-            {!sidebarCollapsed && (
-                <div
-                    className="fixed inset-0 bg-overlay/50 backdrop-blur-sm z-50 lg:hidden"
-                    onClick={() => setSidebarCollapsed(true)}
-                />
-            )}
         </div>
     );
 }

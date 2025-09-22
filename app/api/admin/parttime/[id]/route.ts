@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 import { db } from '@/lib/db';
 import { ResponseUtil } from '@/lib/response';
@@ -18,7 +18,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         });
 
         if (!existingParttime) {
-            return NextResponse.json(ResponseUtil.error('兼职不存在'), { status: 404 });
+            return ResponseUtil.error('兼职不存在', 404);
         }
 
         const { name, salary, worktime, location, description, contact, requirements, tags } = body;
@@ -38,10 +38,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             data: updateData,
         });
 
-        return NextResponse.json(ResponseUtil.success(updatedParttime, '兼职信息更新成功'));
+        return ResponseUtil.success(updatedParttime, '兼职信息更新成功');
     } catch (error) {
         console.error('管理员更新兼职失败:', error);
-        return NextResponse.json(ResponseUtil.error('更新兼职失败'), { status: 500 });
+        return ResponseUtil.serverError('更新兼职失败', error as Error);
     }
 }
 
@@ -60,16 +60,16 @@ export async function DELETE(
         });
 
         if (!existingParttime) {
-            return NextResponse.json(ResponseUtil.error('兼职不存在'), { status: 404 });
+            return ResponseUtil.error('兼职不存在', 404);
         }
 
         await db.parttime.delete({
             where: { id },
         });
 
-        return NextResponse.json(ResponseUtil.success(null, '兼职删除成功'));
+        return ResponseUtil.success(null, '兼职删除成功');
     } catch (error) {
         console.error('管理员删除兼职失败:', error);
-        return NextResponse.json(ResponseUtil.error('删除兼职失败'), { status: 500 });
+        return ResponseUtil.serverError('删除兼职失败', error as Error);
     }
 }

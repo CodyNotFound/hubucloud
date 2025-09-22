@@ -10,7 +10,12 @@
         "lint": "eslint . --fix --ext .ts,.tsx & prettier --write .",
         "db:generate": "prisma generate",
         "db:push": "prisma db push",
-        "db:studio": "prisma studio"
+        "db:studio": "prisma studio",
+        "add-user": "bun scripts/add-user.ts",
+        "list-users": "bun scripts/list-users.ts",
+        "reset-password": "bun scripts/reset-password.ts",
+        "backup": "bun scripts/backup-db.ts",
+        "restore": "bun scripts/restore-db.ts"
     },
     "dependencies": {
         "@heroui/accordion": "2.2.23",

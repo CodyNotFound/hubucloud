@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 import { db } from '@/lib/db';
 import { ResponseUtil } from '@/lib/response';
@@ -68,29 +68,21 @@ export async function POST(request: NextRequest) {
             rating = 0,
         } = body;
 
-        // 验证必填字段
-        if (
-            !name ||
-            !address ||
-            !phone ||
-            !description ||
-            !type ||
-            !openTime ||
-            !locationDescription
-        ) {
-            return NextResponse.json(ResponseUtil.error('缺少必填字段'), { status: 400 });
+        // 验证必填字段 - 只有名字是必须的
+        if (!name) {
+            return ResponseUtil.error('餐厅名称是必填字段', 400);
         }
 
         const restaurant = await db.restaurant.create({
             data: {
                 name,
-                address,
-                phone,
-                description,
-                type,
+                address: address || '',
+                phone: phone || '',
+                description: description || '',
+                type: type || 'mainfood', // 默认为主食类型
                 cover: cover || '',
-                openTime,
-                locationDescription,
+                openTime: openTime || '',
+                locationDescription: locationDescription || '',
                 latitude: latitude || 30.5951, // 默认湖北大学坐标
                 longitude: longitude || 114.4086,
                 tags,

@@ -28,7 +28,6 @@ import {
 
 import { siteConfig } from '@/config/site';
 import { ThemeSwitch } from '@/components/theme-switch';
-import { UserInfo } from '@/components/user-info';
 
 // 图标映射
 const iconMap = {
@@ -100,7 +99,6 @@ export const Navbar = () => {
             </NavbarContent>
 
             <NavbarContent className="basis-1 pl-4" justify="end">
-                <UserInfo />
                 <ThemeSwitch />
                 <NavbarMenuToggle className="lg:hidden" />
             </NavbarContent>

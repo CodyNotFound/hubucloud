@@ -1,12 +1,10 @@
 import Link from 'next/link';
 import {
     MessageSquare,
-    Calendar,
     UtensilsCrossed,
     Package,
-    ShoppingBag,
-    Search,
     Briefcase,
+    Car,
 } from 'lucide-react';
 
 import { HeroCarousel } from '@/components/hero-carousel';
@@ -20,13 +18,6 @@ const services = [
         color: 'bg-blue-50 hover:bg-blue-100 text-blue-600',
     },
     {
-        href: '/activity',
-        icon: Calendar,
-        title: '活动',
-        description: '校园活动信息',
-        color: 'bg-purple-50 hover:bg-purple-100 text-purple-600',
-    },
-    {
         href: '/food',
         icon: UtensilsCrossed,
         title: '美食',
@@ -34,32 +25,32 @@ const services = [
         color: 'bg-orange-50 hover:bg-orange-100 text-orange-600',
     },
     {
-        href: '/express',
-        icon: Package,
-        title: '快递',
-        description: '快递代收服务',
-        color: 'bg-green-50 hover:bg-green-100 text-green-600',
-    },
-    {
-        href: '/market',
-        icon: ShoppingBag,
-        title: '跳蚤市场',
-        description: '二手物品交易',
-        color: 'bg-yellow-50 hover:bg-yellow-100 text-yellow-600',
-    },
-    {
-        href: '/lost-found',
-        icon: Search,
-        title: '失物招领',
-        description: '帮助找回丢失物品',
-        color: 'bg-red-50 hover:bg-red-100 text-red-600',
-    },
-    {
         href: '/jobs',
         icon: Briefcase,
         title: '兼职',
         description: '校园兼职招聘',
         color: 'bg-indigo-50 hover:bg-indigo-100 text-indigo-600',
+    },
+    {
+        href: '/unicom',
+        icon: Package,
+        title: '联通',
+        description: '联通业务办理',
+        color: 'bg-red-50 hover:bg-red-100 text-red-600',
+    },
+    {
+        href: '/card',
+        icon: Package,
+        title: '黑卡',
+        description: '黑卡相关服务',
+        color: 'bg-purple-50 hover:bg-purple-100 text-purple-600',
+    },
+    {
+        href: '/drivingschool',
+        icon: Car,
+        title: '驾校',
+        description: '驾校报名服务',
+        color: 'bg-green-50 hover:bg-green-100 text-green-600',
     },
 ];
 

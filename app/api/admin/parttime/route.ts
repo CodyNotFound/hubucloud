@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 import { db } from '@/lib/db';
 import { ResponseUtil } from '@/lib/response';
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
 
         // 验证必填字段
         if (!name || !type || !salary || !worktime || !location || !description || !contact) {
-            return NextResponse.json(ResponseUtil.error('缺少必填字段'), { status: 400 });
+            return ResponseUtil.error('缺少必填字段', 400);
         }
 
         const parttime = await db.parttime.create({

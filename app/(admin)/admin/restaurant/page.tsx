@@ -205,17 +205,9 @@ function RestaurantManagement() {
 
     // 处理表单提交
     const handleSubmit = async () => {
-        // 验证必填字段
-        if (
-            !formData.name ||
-            !formData.type ||
-            !formData.address ||
-            !formData.phone ||
-            !formData.description ||
-            !formData.openTime ||
-            !formData.locationDescription
-        ) {
-            alert('请填写所有必填字段');
+        // 验证必填字段 - 只有名字是必须的
+        if (!formData.name) {
+            alert('请填写餐厅名称');
             return;
         }
 
@@ -317,7 +309,6 @@ function RestaurantManagement() {
                                     const selected = Array.from(keys)[0] as string;
                                     setFormData({ ...formData, type: selected || '' });
                                 }}
-                                isRequired
                             >
                                 {restaurantTypes.map((type) => (
                                     <SelectItem key={type}>{type}</SelectItem>
@@ -331,7 +322,6 @@ function RestaurantManagement() {
                                 onChange={(e) =>
                                     setFormData({ ...formData, phone: e.target.value })
                                 }
-                                isRequired
                             />
 
                             <Input
@@ -341,7 +331,6 @@ function RestaurantManagement() {
                                 onChange={(e) =>
                                     setFormData({ ...formData, openTime: e.target.value })
                                 }
-                                isRequired
                             />
 
                             <div className="md:col-span-2">
@@ -352,7 +341,6 @@ function RestaurantManagement() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, address: e.target.value })
                                     }
-                                    isRequired
                                 />
                             </div>
 
@@ -367,7 +355,6 @@ function RestaurantManagement() {
                                             locationDescription: e.target.value,
                                         })
                                     }
-                                    isRequired
                                 />
                             </div>
 
@@ -380,7 +367,6 @@ function RestaurantManagement() {
                                         setFormData({ ...formData, description: e.target.value })
                                     }
                                     rows={3}
-                                    isRequired
                                 />
                             </div>
 

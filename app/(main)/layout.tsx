@@ -7,6 +7,7 @@ import { Providers } from './providers';
 import { siteConfig } from '@/config/site';
 import { fontSans } from '@/config/fonts';
 import { Navbar } from '@/components/navbar';
+import { Footer } from '@/components/footer';
 
 export const metadata: Metadata = {
     title: {
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         <main className="flex-grow w-full px-4 py-4 pt-0 overflow-y-auto">
                             {children}
                         </main>
+                        <Footer />
                     </div>
                 </Providers>
             </body>
