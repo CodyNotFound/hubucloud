@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+
 import { db } from '@/lib/db';
 import { ResponseUtil } from '@/lib/response';
 
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
                 { name: { contains: keyword, mode: 'insensitive' as const } },
                 { description: { contains: keyword, mode: 'insensitive' as const } },
                 { address: { contains: keyword, mode: 'insensitive' as const } },
-                { type: { contains: keyword, mode: 'insensitive' as const } },
+                { tags: { hasSome: [keyword] } },
             ],
         };
 
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
                     rating: 'desc',
                 },
             }),
-            db.restaurant.count({ where })
+            db.restaurant.count({ where }),
         ]);
 
         return ResponseUtil.success({

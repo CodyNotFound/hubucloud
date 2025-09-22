@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+
 import { db } from '@/lib/db';
 import { ResponseUtil } from '@/lib/response';
 
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
                     createdAt: 'desc',
                 },
             }),
-            db.parttime.count({ where })
+            db.parttime.count({ where }),
         ]);
 
         return ResponseUtil.success({

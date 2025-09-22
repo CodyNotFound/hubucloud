@@ -159,15 +159,15 @@ export const PracticalDataTable = ({
                 </div>
             ) : (
                 <div className="overflow-x-auto">
-                    <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                    <table className="w-full border-collapse bg-content1 rounded-lg overflow-hidden shadow-sm">
                         <thead>
-                            <tr className="bg-default-50 border-b border-default-200">
+                            <tr className="bg-default-100 border-b border-default-200">
                                 {columns.map((column) => (
                                     <th
                                         key={column.key}
-                                        className={`px-4 py-3 text-left text-sm font-semibold text-default-700 ${
+                                        className={`px-4 py-3 text-left text-sm font-semibold text-foreground ${
                                             column.sortable
-                                                ? 'cursor-pointer hover:bg-default-100'
+                                                ? 'cursor-pointer hover:bg-default-200'
                                                 : ''
                                         } ${column.align === 'right' ? 'text-right' : ''}
                                         ${column.align === 'center' ? 'text-center' : ''}`}
@@ -183,7 +183,7 @@ export const PracticalDataTable = ({
                                     </th>
                                 ))}
                                 {(onEdit || onDelete) && (
-                                    <th className="px-4 py-3 text-center text-sm font-semibold text-default-700 w-24">
+                                    <th className="px-4 py-3 text-center text-sm font-semibold text-foreground w-24">
                                         操作
                                     </th>
                                 )}
@@ -193,14 +193,14 @@ export const PracticalDataTable = ({
                             {data.map((item, index) => (
                                 <tr
                                     key={item.id || index}
-                                    className={`border-b border-default-100 hover:bg-default-50 transition-colors ${
-                                        index % 2 === 0 ? 'bg-white' : 'bg-default-25'
+                                    className={`border-b border-default-200 hover:bg-default-100 transition-colors ${
+                                        index % 2 === 0 ? 'bg-content1' : 'bg-default-50'
                                     }`}
                                 >
                                     {columns.map((column) => (
                                         <td
                                             key={column.key}
-                                            className={`px-4 py-3 text-sm text-default-700 ${
+                                            className={`px-4 py-3 text-sm text-foreground ${
                                                 column.align === 'right' ? 'text-right' : ''
                                             } ${column.align === 'center' ? 'text-center' : ''}`}
                                         >

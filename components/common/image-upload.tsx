@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import { Button, Card, CardBody, Progress } from '@heroui/react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 
@@ -10,6 +11,8 @@ interface UploadedImage {
     size: number;
     originalSize: number;
     compressionRatio: number;
+    width?: number;
+    height?: number;
 }
 
 interface ImageUploadProps {
@@ -131,11 +134,19 @@ export function ImageUpload({
                 <CardBody className="p-0">
                     {preview ? (
                         <div className="relative">
-                            <div className="aspect-video bg-default-100 flex items-center justify-center overflow-hidden">
-                                <img
+                            <div className="aspect-video bg-default-100 flex items-center justify-center overflow-hidden relative">
+                                <Image
                                     src={preview}
                                     alt="预览图片"
-                                    className="w-full h-full object-cover"
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    onLoad={(e) => {
+                                        const img = e.target as HTMLImageElement;
+                                        console.log(
+                                            `图片尺寸: ${img.naturalWidth} x ${img.naturalHeight}`
+                                        );
+                                    }}
                                 />
                             </div>
 
@@ -352,11 +363,19 @@ export function MultiImageUpload({
                         className={`relative ${image.isCover && enableCover ? 'ring-2 ring-primary' : ''}`}
                     >
                         <CardBody className="p-0">
-                            <div className="aspect-square bg-default-100 overflow-hidden">
-                                <img
+                            <div className="aspect-square bg-default-100 overflow-hidden relative">
+                                <Image
                                     src={image.url}
                                     alt={`图片 ${index + 1}`}
-                                    className="w-full h-full object-cover"
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 768px) 50vw, 25vw"
+                                    onLoad={(e) => {
+                                        const img = e.target as HTMLImageElement;
+                                        console.log(
+                                            `图片${index + 1}尺寸: ${img.naturalWidth} x ${img.naturalHeight}`
+                                        );
+                                    }}
                                 />
                             </div>
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { useDisclosure } from '@heroui/react';
 import { Modal, ModalContent, ModalBody, Button, Tooltip } from '@heroui/react';
 import { ZoomIn, ZoomOut, RotateCw, X, Maximize2 } from 'lucide-react';
@@ -10,9 +11,18 @@ interface ImageViewerProps {
     alt: string;
     className?: string;
     thumbnailClassName?: string;
+    width?: number;
+    height?: number;
 }
 
-export function ImageViewer({ src, alt, className, thumbnailClassName }: ImageViewerProps) {
+export function ImageViewer({
+    src,
+    alt,
+    className,
+    thumbnailClassName,
+    width,
+    height,
+}: ImageViewerProps) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [scale, setScale] = useState(1);
     const [rotation, setRotation] = useState(0);
@@ -82,10 +92,17 @@ export function ImageViewer({ src, alt, className, thumbnailClassName }: ImageVi
                 className={`relative cursor-pointer group overflow-hidden ${thumbnailClassName}`}
                 onClick={onOpen}
             >
-                <img
+                <Image
                     src={src}
                     alt={alt}
+                    width={width || 300}
+                    height={height || 200}
                     className={`w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 ${className}`}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    onLoad={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        console.log(`缩略图尺寸: ${img.naturalWidth} x ${img.naturalHeight}`);
+                    }}
                 />
                 {/* 放大图标遮罩 */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
@@ -222,17 +239,31 @@ export function ImageViewer({ src, alt, className, thumbnailClassName }: ImageVi
                                     className="relative z-20 flex items-center justify-center h-full w-full"
                                     onClick={(e) => e.stopPropagation()}
                                 >
-                                    <img
-                                        src={src}
-                                        alt={alt}
-                                        className="max-w-none h-auto transition-transform duration-300 ease-out select-none"
+                                    <div
+                                        className="max-w-none h-auto transition-transform duration-300 ease-out select-none relative"
                                         style={{
                                             transform: `scale(${scale}) rotate(${rotation}deg)`,
                                             maxHeight: '90vh',
                                             maxWidth: '90vw',
                                         }}
-                                        draggable={false}
-                                    />
+                                    >
+                                        <Image
+                                            src={src}
+                                            alt={alt}
+                                            width={width || 800}
+                                            height={height || 600}
+                                            className="max-h-[90vh] max-w-[90vw] w-auto h-auto"
+                                            sizes="90vw"
+                                            priority
+                                            draggable={false}
+                                            onLoad={(e) => {
+                                                const img = e.target as HTMLImageElement;
+                                                console.log(
+                                                    `全屏图片尺寸: ${img.naturalWidth} x ${img.naturalHeight}`
+                                                );
+                                            }}
+                                        />
+                                    </div>
                                 </div>
                             </ModalBody>
                         </>

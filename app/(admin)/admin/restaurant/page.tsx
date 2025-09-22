@@ -139,6 +139,12 @@ function RestaurantManagement() {
             width: '120px',
         },
         {
+            key: 'rating',
+            label: '评分',
+            width: '80px',
+            render: (item: Restaurant) => `${item.rating}/5`,
+        },
+        {
             key: 'createdAt',
             label: '创建时间',
             width: '100px',
@@ -214,10 +220,12 @@ function RestaurantManagement() {
         setFormLoading(true);
         try {
             // 准备提交数据，包含所有字段
+            const previewUrls = imageUtils.getImageUrls(formData.preview);
             const submitData = {
                 ...formData,
                 type: typeMapping[formData.type as keyof typeof typeMapping] || formData.type, // 转换为后端枚举
-                preview: imageUtils.getImageUrls(formData.preview), // 转换为URL数组
+                preview: previewUrls, // 转换为URL数组
+                cover: previewUrls.length > 0 ? previewUrls[0] : '/logo.png', // 自动设置封面：第一张图片或logo
                 tags: [], // 暂时为空，后续可以添加标签功能
                 latitude: 30.5418, // 默认湖北大学纬度
                 longitude: 114.3468, // 默认湖北大学经度
@@ -330,6 +338,19 @@ function RestaurantManagement() {
                                 value={formData.openTime}
                                 onChange={(e) =>
                                     setFormData({ ...formData, openTime: e.target.value })
+                                }
+                            />
+
+                            <Input
+                                label="评分"
+                                placeholder="1-5分"
+                                type="number"
+                                min="1"
+                                max="5"
+                                step="0.1"
+                                value={formData.rating?.toString() || ''}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, rating: parseFloat(e.target.value) || 0 })
                                 }
                             />
 

@@ -1,11 +1,5 @@
 import Link from 'next/link';
-import {
-    MessageSquare,
-    UtensilsCrossed,
-    Package,
-    Briefcase,
-    Car,
-} from 'lucide-react';
+import { MessageSquare, UtensilsCrossed, Package, Briefcase, Car } from 'lucide-react';
 
 import { HeroCarousel } from '@/components/hero-carousel';
 
