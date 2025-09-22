@@ -350,7 +350,10 @@ function RestaurantManagement() {
                                 step="0.1"
                                 value={formData.rating?.toString() || ''}
                                 onChange={(e) =>
-                                    setFormData({ ...formData, rating: parseFloat(e.target.value) || 0 })
+                                    setFormData({
+                                        ...formData,
+                                        rating: parseFloat(e.target.value) || 0,
+                                    })
                                 }
                             />
 

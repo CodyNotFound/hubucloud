@@ -9,13 +9,14 @@ import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
     {
-        files: ['**/*.{jsx,ts,tsx}'],
-        ignores: ['node_modules/**', '.next/**', 'out/**', 'dist/**', 'build/**', '.turbo/**'],
+        files: ['**/*.{ts,tsx}'],
+        ignores: ['node_modules/**', '.next/**', 'out/**', 'dist/**', 'build/**', '.turbo/**', '**/*.js', '**/*.jsx'],
         languageOptions: {
             parser: tsParser,
             ecmaVersion: 'latest',
             sourceType: 'module',
             globals: {
+                ...globals.browser,
                 ...globals.es2021,
                 ...globals.node,
             },
@@ -71,10 +72,21 @@ export default defineConfig([
             ],
 
             // Next.js Rules
-            ...nextPlugin.configs.recommended.rules,
-            ...nextPlugin.configs['core-web-vitals'].rules,
+            '@next/next/google-font-display': 'warn',
+            '@next/next/google-font-preconnect': 'warn',
+            '@next/next/next-script-for-ga': 'warn',
+            '@next/next/no-before-interactive-script-outside-document': 'error',
+            '@next/next/no-css-tags': 'error',
+            '@next/next/no-head-element': 'error',
+            '@next/next/no-head-import-in-document': 'error',
             '@next/next/no-html-link-for-pages': 'error',
             '@next/next/no-img-element': 'warn',
+            '@next/next/no-page-custom-font': 'warn',
+            '@next/next/no-styled-jsx-in-document': 'error',
+            '@next/next/no-sync-scripts': 'error',
+            '@next/next/no-title-in-document-head': 'warn',
+            '@next/next/no-typos': 'warn',
+            '@next/next/no-unwanted-polyfillio': 'warn',
 
             // Base Rules
             'prettier/prettier': 'error',
