@@ -10,7 +10,16 @@ import { defineConfig } from 'eslint/config';
 export default defineConfig([
     {
         files: ['**/*.{ts,tsx}'],
-        ignores: ['node_modules/**', '.next/**', 'out/**', 'dist/**', 'build/**', '.turbo/**', '**/*.js', '**/*.jsx'],
+        ignores: [
+            'node_modules/**',
+            '.next/**',
+            'out/**',
+            'dist/**',
+            'build/**',
+            '.turbo/**',
+            '**/*.js',
+            '**/*.jsx',
+        ],
         languageOptions: {
             parser: tsParser,
             ecmaVersion: 'latest',

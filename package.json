@@ -16,7 +16,8 @@
         "reset-password": "bun scripts/reset-password.ts",
         "backup": "bun scripts/backup-db.ts",
         "restore": "bun scripts/restore-db.ts",
-        "fix-covers": "bun scripts/fix-restaurant-covers.ts"
+        "fix-covers": "bun scripts/fix-restaurant-covers.ts",
+        "migrate-images": "bun scripts/migrate-image-urls.ts"
     },
     "dependencies": {
         "@heroui/accordion": "2.2.23",

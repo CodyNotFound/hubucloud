@@ -81,8 +81,8 @@ async function fixRestaurantCovers() {
         console.log(`\n✅ 成功修复了 ${fixedCount} 个餐厅的封面`);
 
         // 显示修复统计
-        const logoCoverCount = updates.filter(u => u.newCover === '/logo.png').length;
-        const imageCoverCount = updates.filter(u => u.newCover !== '/logo.png').length;
+        const logoCoverCount = updates.filter((u) => u.newCover === '/logo.png').length;
+        const imageCoverCount = updates.filter((u) => u.newCover !== '/logo.png').length;
 
         console.log('\n修复统计:');
         console.log(`  设置为logo封面: ${logoCoverCount} 个`);
