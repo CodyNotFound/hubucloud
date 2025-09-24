@@ -231,7 +231,10 @@ async function checkUserAvatars(): Promise<MigrationResult> {
 
             if (user.avatar.includes('dicebear.com')) {
                 dicebearCount++;
-            } else if (user.avatar.includes('/uploads/images/') || user.avatar.includes('/api/images/')) {
+            } else if (
+                user.avatar.includes('/uploads/images/') ||
+                user.avatar.includes('/api/images/')
+            ) {
                 localImageCount++;
             } else {
                 otherCount++;

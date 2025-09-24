@@ -3,7 +3,14 @@
  */
 
 // 餐厅类型枚举
-export type RestaurantType = 'campusfood' | 'mainfood' | 'drinks' | 'nightmarket';
+export type RestaurantType =
+    | 'campusfood'
+    | 'mainfood'
+    | 'drinks'
+    | 'nightmarket'
+    | 'fruit'
+    | 'dessert'
+    | 'snacks';
 
 // 餐厅类型中文名称映射
 export const RestaurantTypeLabels: Record<RestaurantType, string> = {
@@ -11,6 +18,9 @@ export const RestaurantTypeLabels: Record<RestaurantType, string> = {
     mainfood: '主食',
     drinks: '饮品店',
     nightmarket: '夜市',
+    fruit: '水果',
+    dessert: '甜品',
+    snacks: '小吃',
 };
 
 export interface Restaurant {

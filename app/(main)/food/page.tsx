@@ -14,6 +14,9 @@ const restaurantTypeMap: Record<string, string> = {
     mainfood: '主食',
     drinks: '饮品店',
     nightmarket: '夜市',
+    fruit: '水果',
+    dessert: '甜品',
+    snacks: '小吃',
 };
 
 // 分类到后端枚举的映射
@@ -22,6 +25,9 @@ const categoryToTypeMap: Record<string, string> = {
     主食: 'mainfood',
     饮品店: 'drinks',
     夜市: 'nightmarket',
+    水果: 'fruit',
+    甜品: 'dessert',
+    小吃: 'snacks',
 };
 
 // 餐厅数据类型（对应后端）
@@ -79,7 +85,7 @@ const fetchRestaurants = async (endpoint: string, params: Record<string, any> = 
     }
 };
 
-const categories = ['全部', '校园食堂', '主食', '饮品店', '夜市'];
+const categories = ['全部', '校园食堂', '主食', '饮品店', '夜市', '水果', '甜品', '小吃'];
 
 export default function FoodPage() {
     const router = useRouter();

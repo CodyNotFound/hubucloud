@@ -68,7 +68,7 @@ function RestaurantManagement() {
     });
 
     // 餐厅类型选项
-    const restaurantTypes = ['校园食堂', '主食', '饮品店', '夜市'];
+    const restaurantTypes = ['校园食堂', '主食', '饮品店', '夜市', '水果', '甜品', '小吃'];
 
     // 类型映射：前端显示 -> 后端枚举
     const typeMapping = {
@@ -76,6 +76,9 @@ function RestaurantManagement() {
         主食: 'mainfood',
         饮品店: 'drinks',
         夜市: 'nightmarket',
+        水果: 'fruit',
+        甜品: 'dessert',
+        小吃: 'snacks',
     };
 
     // 反向映射：后端枚举 -> 前端显示
@@ -84,6 +87,9 @@ function RestaurantManagement() {
         mainfood: '主食',
         drinks: '饮品店',
         nightmarket: '夜市',
+        fruit: '水果',
+        dessert: '甜品',
+        snacks: '小吃',
     };
 
     // 获取餐厅列表

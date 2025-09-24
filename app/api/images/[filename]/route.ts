@@ -8,9 +8,12 @@ import { NextRequest, NextResponse } from 'next/server';
  * 获取图片API端点
  * 用于解决生产环境中静态文件访问问题
  */
-export async function GET(request: NextRequest, { params }: { params: { filename: string } }) {
+export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ filename: string }> }
+) {
     try {
-        const { filename } = params;
+        const { filename } = await params;
 
         // 验证文件名格式，防止路径遍历攻击
         if (!filename || typeof filename !== 'string') {
