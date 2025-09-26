@@ -89,7 +89,7 @@ export function ImageUpload({
 
             if (result.status === 'success') {
                 const uploadedImage: UploadedImage = result.data;
-                const fullUrl = `${API_BASE_URL.replace('/api', '')}${uploadedImage.url}`;
+                const fullUrl = uploadedImage.url;
                 onChange?.(fullUrl);
                 setProgress(100);
             } else {
@@ -287,7 +287,7 @@ export function MultiImageUpload({
 
                 if (result.status === 'success') {
                     const uploadedImage: UploadedImage = result.data;
-                    const fullUrl = `${API_BASE_URL.replace('/api', '')}${uploadedImage.url}`;
+                    const fullUrl = uploadedImage.url;
                     newImages.push({
                         url: fullUrl,
                         isCover: enableCover && value.length === 0 && i === 0, // 第一张图设为封面
