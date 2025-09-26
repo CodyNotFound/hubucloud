@@ -96,9 +96,20 @@ function RestaurantManagement() {
     const fetchRestaurants = async () => {
         setLoading(true);
         try {
+            // 将筛选类型从中文转换为英文枚举
+            const filterType = selectedType !== 'all'
+                ? (typeMapping[selectedType as keyof typeof typeMapping] || selectedType)
+                : undefined;
+
+            console.log('🔍 筛选条件调试:', {
+                选择的类型: selectedType,
+                转换后类型: filterType,
+                搜索关键词: searchTerm
+            });
+
             const response = await adminService.getRestaurantList({
                 keyword: searchTerm || undefined,
-                type: selectedType !== 'all' ? selectedType : undefined,
+                type: filterType,
             });
 
             if (response.status === 'success' && response.data) {
@@ -227,12 +238,13 @@ function RestaurantManagement() {
         try {
             // 准备提交数据，包含所有字段
             const previewUrls = imageUtils.getImageUrls(formData.preview);
-            const mappedType = typeMapping[formData.type as keyof typeof typeMapping] || formData.type;
+            const mappedType =
+                typeMapping[formData.type as keyof typeof typeMapping] || formData.type;
 
             console.log('🔍 类型映射调试:', {
                 前端类型: formData.type,
                 映射后类型: mappedType,
-                类型映射表: typeMapping
+                类型映射表: typeMapping,
             });
 
             const submitData = {

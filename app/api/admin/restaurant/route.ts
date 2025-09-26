@@ -13,6 +13,8 @@ export async function GET(request: NextRequest) {
         const keyword = searchParams.get('keyword');
         const type = searchParams.get('type');
 
+        console.log('🔍 后端查询参数:', { keyword, type });
+
         const where: any = {};
         if (keyword) {
             where.OR = [
@@ -26,10 +28,21 @@ export async function GET(request: NextRequest) {
             where.type = type;
         }
 
+        console.log('🔍 数据库查询条件:', where);
+
         const restaurants = await db.restaurant.findMany({
             where,
             orderBy: { updatedAt: 'desc' },
         });
+
+        console.log(`📋 查询结果: 找到 ${restaurants.length} 个餐厅`);
+        if (restaurants.length > 0) {
+            console.log('前3个餐厅:', restaurants.slice(0, 3).map(r => ({
+                id: r.id,
+                name: r.name,
+                type: r.type
+            })));
+        }
 
         return ResponseUtil.success({
             list: restaurants,
@@ -74,10 +87,21 @@ export async function POST(request: NextRequest) {
         }
 
         // 验证餐厅类型
-        const validTypes = ['campusfood', 'mainfood', 'drinks', 'nightmarket', 'fruit', 'dessert', 'snacks'];
+        const validTypes = [
+            'campusfood',
+            'mainfood',
+            'drinks',
+            'nightmarket',
+            'fruit',
+            'dessert',
+            'snacks',
+        ];
         const finalType = type || 'mainfood';
         if (!validTypes.includes(finalType)) {
-            return ResponseUtil.error(`无效的餐厅类型: ${finalType}，有效类型为: ${validTypes.join(', ')}`, 400);
+            return ResponseUtil.error(
+                `无效的餐厅类型: ${finalType}，有效类型为: ${validTypes.join(', ')}`,
+                400
+            );
         }
 
         const restaurant = await db.restaurant.create({
