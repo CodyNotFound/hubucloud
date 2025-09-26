@@ -65,4 +65,7 @@ enum RestaurantType {
   mainfood
   drinks
   nightmarket
+  fruit
+  dessert
+  snacks
 }

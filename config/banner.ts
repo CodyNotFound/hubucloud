@@ -23,7 +23,7 @@ export const defaultSlides: CarouselItem[] = [
     },
     {
         id: 3,
-        title: ' 众城驾校',
+        title: ' 众诚驾校',
         subtitle: '学校学车更方便',
         image: '/banner/drivingschool.webp',
         link: '/drivingschool',
