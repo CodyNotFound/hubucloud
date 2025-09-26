@@ -33,7 +33,7 @@ model Restaurant {
   tags                String[]
   preview             String[]
   openTime            String
-  rating              Int
+  rating              Float
   latitude            Float
   longitude           Float
   createdAt           DateTime       @default(now())

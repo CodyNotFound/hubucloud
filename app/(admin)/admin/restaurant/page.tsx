@@ -227,15 +227,25 @@ function RestaurantManagement() {
         try {
             // 准备提交数据，包含所有字段
             const previewUrls = imageUtils.getImageUrls(formData.preview);
+            const mappedType = typeMapping[formData.type as keyof typeof typeMapping] || formData.type;
+
+            console.log('🔍 类型映射调试:', {
+                前端类型: formData.type,
+                映射后类型: mappedType,
+                类型映射表: typeMapping
+            });
+
             const submitData = {
                 ...formData,
-                type: typeMapping[formData.type as keyof typeof typeMapping] || formData.type, // 转换为后端枚举
+                type: mappedType, // 转换为后端枚举
                 preview: previewUrls, // 转换为URL数组
                 cover: previewUrls.length > 0 ? previewUrls[0] : '/logo.png', // 自动设置封面：第一张图片或logo
                 tags: [], // 暂时为空，后续可以添加标签功能
                 latitude: 30.5418, // 默认湖北大学纬度
                 longitude: 114.3468, // 默认湖北大学经度
             };
+
+            console.log('📤 提交数据:', submitData);
 
             if (editingItem) {
                 // 更新

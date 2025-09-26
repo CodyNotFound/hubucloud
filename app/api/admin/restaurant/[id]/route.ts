@@ -37,6 +37,17 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             rating,
         } = body;
 
+        // 验证餐厅类型
+        const validTypes = ['campusfood', 'mainfood', 'drinks', 'nightmarket', 'fruit', 'dessert', 'snacks'];
+        if (type !== undefined && !validTypes.includes(type)) {
+            console.error('❌ 无效的餐厅类型:', { type, validTypes });
+            return ResponseUtil.error(`无效的餐厅类型: ${type}，有效类型为: ${validTypes.join(', ')}`, 400);
+        }
+
+        if (type !== undefined) {
+            console.log('✅ 餐厅类型验证通过:', { type, restaurantId: id });
+        }
+
         const updateData: any = {};
         if (name !== undefined) updateData.name = name;
         if (address !== undefined) updateData.address = address;
