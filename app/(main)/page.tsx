@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MessageSquare, UtensilsCrossed, Package, Briefcase, Car } from 'lucide-react';
+import { MessageSquare, UtensilsCrossed, Package, Briefcase, Car, GraduationCap, Building2 } from 'lucide-react';
 
 import { HeroCarousel } from '@/components/hero-carousel';
 
@@ -46,6 +46,20 @@ const services = [
         description: '驾校报名服务',
         color: 'bg-green-50 hover:bg-green-100 text-green-600',
     },
+    {
+        href: 'https://jwxt.hubu.edu.cn/',
+        icon: GraduationCap,
+        title: '教务系统',
+        description: '学生教务管理',
+        color: 'bg-teal-50 hover:bg-teal-100 text-teal-600',
+    },
+    {
+        href: 'https://one.hubu.edu.cn/#/index51',
+        icon: Building2,
+        title: '智慧琴园',
+        description: '校园服务平台',
+        color: 'bg-cyan-50 hover:bg-cyan-100 text-cyan-600',
+    },
 ];
 
 export default function Home() {
@@ -73,10 +87,16 @@ export default function Home() {
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
                         {services.map((service) => {
                             const IconComponent = service.icon;
+                            const isExternal = service.href.startsWith('http');
+
                             return (
                                 <Link
                                     key={service.href}
                                     href={service.href}
+                                    {...(isExternal && {
+                                        target: '_blank',
+                                        rel: 'noopener noreferrer nofollow'
+                                    })}
                                     className={`
                                         rounded-xl p-4 md:p-6 lg:p-8 text-center
                                         transition-all duration-300
