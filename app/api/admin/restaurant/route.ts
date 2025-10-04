@@ -37,11 +37,14 @@ export async function GET(request: NextRequest) {
 
         console.log(`📋 查询结果: 找到 ${restaurants.length} 个餐厅`);
         if (restaurants.length > 0) {
-            console.log('前3个餐厅:', restaurants.slice(0, 3).map(r => ({
-                id: r.id,
-                name: r.name,
-                type: r.type
-            })));
+            console.log(
+                '前3个餐厅:',
+                restaurants.slice(0, 3).map((r) => ({
+                    id: r.id,
+                    name: r.name,
+                    type: r.type,
+                }))
+            );
         }
 
         return ResponseUtil.success({

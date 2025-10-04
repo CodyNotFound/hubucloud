@@ -97,14 +97,15 @@ function RestaurantManagement() {
         setLoading(true);
         try {
             // 将筛选类型从中文转换为英文枚举
-            const filterType = selectedType !== 'all'
-                ? (typeMapping[selectedType as keyof typeof typeMapping] || selectedType)
-                : undefined;
+            const filterType =
+                selectedType !== 'all'
+                    ? typeMapping[selectedType as keyof typeof typeMapping] || selectedType
+                    : undefined;
 
             console.log('🔍 筛选条件调试:', {
                 选择的类型: selectedType,
                 转换后类型: filterType,
-                搜索关键词: searchTerm
+                搜索关键词: searchTerm,
             });
 
             const response = await adminService.getRestaurantList({
