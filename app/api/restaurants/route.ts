@@ -28,9 +28,10 @@ export async function GET(request: NextRequest) {
                 where,
                 skip,
                 take: limit,
-                orderBy: {
-                    rating: 'desc',
-                },
+                orderBy: [
+                    { rating: 'desc' },
+                    { id: 'asc' }, // 添加唯一标识符作为第二排序字段，确保分页稳定性
+                ],
             }),
             db.restaurant.count({ where }),
         ]);

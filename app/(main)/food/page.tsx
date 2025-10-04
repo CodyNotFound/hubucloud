@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardBody, Chip, Pagination } from '@heroui/react';
 import { MapPin, Star, Loader2 } from 'lucide-react';
@@ -96,45 +96,76 @@ export default function FoodPage() {
     const [total, setTotal] = useState(0);
     const itemsPerPage = 10;
 
+    // 使用ref跟踪上一次的分类,用于检测分类是否变化
+    const prevCategoryRef = useRef(selectedCategory);
+
     // 加载餐厅数据
-    const loadRestaurants = async () => {
-        setLoading(true);
-        try {
-            const params: any = {
-                page: currentPage,
-                limit: itemsPerPage,
-            };
+    useEffect(() => {
+        // 检测分类是否变化
+        const categoryChanged = prevCategoryRef.current !== selectedCategory;
 
-            if (selectedCategory !== '全部') {
-                params.type = categoryToTypeMap[selectedCategory] || selectedCategory;
+        // 如果分类变化且当前页不是第1页,先不加载数据,等待页码重置
+        if (categoryChanged && currentPage !== 1) {
+            prevCategoryRef.current = selectedCategory;
+            setCurrentPage(1); // 重置页码,会触发下一次useEffect
+            return;
+        }
+
+        // 更新ref
+        prevCategoryRef.current = selectedCategory;
+
+        let cancelled = false;
+
+        const loadRestaurants = async () => {
+            setLoading(true);
+            try {
+                const params: any = {
+                    page: currentPage,
+                    limit: itemsPerPage,
+                };
+
+                if (selectedCategory !== '全部') {
+                    params.type = categoryToTypeMap[selectedCategory] || selectedCategory;
+                }
+
+                const response = await fetchRestaurants('', params);
+
+                if (!cancelled) {
+                    if (response.status === 'success' && response.data) {
+                        setRestaurants(response.data.restaurants || []);
+                        setTotal(response.data.pagination?.total || 0);
+                    } else {
+                        setRestaurants([]);
+                        setTotal(0);
+                    }
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    console.error('加载餐厅数据失败:', error);
+                    setRestaurants([]);
+                    setTotal(0);
+                }
+            } finally {
+                if (!cancelled) {
+                    setLoading(false);
+                }
             }
+        };
 
-            let response = await fetchRestaurants('', params);
+        loadRestaurants();
 
-            if (response.status === 'success' && response.data) {
-                setRestaurants(response.data.restaurants || []);
-                setTotal(response.data.pagination?.total || 0);
-            }
-        } catch (error) {
-            console.error('加载餐厅数据失败:', error);
-            setRestaurants([]);
-            setTotal(0);
-        } finally {
-            setLoading(false);
+        return () => {
+            cancelled = true;
+        };
+    }, [currentPage, selectedCategory, itemsPerPage]);
+
+    // 切换分类处理函数
+    const handleCategoryChange = (category: string) => {
+        if (category !== selectedCategory) {
+            setSelectedCategory(category);
+            // 页码重置会在useEffect中自动处理
         }
     };
-
-    // 初始化和筛选条件变化时重新加载数据
-    useEffect(() => {
-        loadRestaurants();
-    }, [currentPage, selectedCategory]);
-
-    // 当筛选条件改变时重置到第一页
-    useEffect(() => {
-        if (currentPage !== 1) {
-            setCurrentPage(1);
-        }
-    }, [selectedCategory]);
 
     const totalPages = Math.ceil(total / itemsPerPage);
 
@@ -166,7 +197,7 @@ export default function FoodPage() {
                             variant={selectedCategory === category ? 'solid' : 'flat'}
                             color={selectedCategory === category ? 'primary' : 'default'}
                             size="sm"
-                            onClick={() => setSelectedCategory(category)}
+                            onClick={() => handleCategoryChange(category)}
                             className="cursor-pointer"
                         >
                             {category}

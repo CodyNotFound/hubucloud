@@ -32,7 +32,10 @@ export async function GET(request: NextRequest) {
 
         const restaurants = await db.restaurant.findMany({
             where,
-            orderBy: { updatedAt: 'desc' },
+            orderBy: [
+                { updatedAt: 'desc' },
+                { id: 'asc' }, // 添加唯一标识符确保排序稳定性
+            ],
         });
 
         console.log(`📋 查询结果: 找到 ${restaurants.length} 个餐厅`);

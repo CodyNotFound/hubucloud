@@ -34,7 +34,10 @@ export async function GET(request: NextRequest) {
                 where,
                 skip,
                 take: limit,
-                orderBy: { updatedAt: 'desc' },
+                orderBy: [
+                    { updatedAt: 'desc' },
+                    { id: 'asc' }, // 添加唯一标识符作为第二排序字段，确保分页稳定性
+                ],
             }),
             db.parttime.count({ where }),
         ]);
