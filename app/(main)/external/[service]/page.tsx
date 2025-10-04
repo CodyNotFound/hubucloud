@@ -36,12 +36,7 @@ export default function ExternalServicePage() {
         <div className="flex flex-col h-[calc(100vh-64px)]">
             {/* 顶部导航栏 */}
             <div className="flex items-center gap-3 py-3 border-b border-default-200 bg-background">
-                <Button
-                    isIconOnly
-                    variant="light"
-                    onPress={() => router.back()}
-                    aria-label="返回"
-                >
+                <Button isIconOnly variant="light" onPress={() => router.back()} aria-label="返回">
                     <ArrowLeft size={20} />
                 </Button>
                 <h1 className="text-lg font-semibold">{serviceConfig.title}</h1>
