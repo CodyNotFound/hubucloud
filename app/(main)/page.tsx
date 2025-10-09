@@ -13,7 +13,7 @@ import { HeroCarousel } from '@/components/hero-carousel';
 
 const services = [
     {
-        href: 'https://jwxt.hubu.edu.cn/',
+        href: 'https://sso.hubu.edu.cn/lyuapServer/login?service=https%3A%2F%2Fjwxt.hubu.edu.cn%2Fsso.jsp',
         icon: GraduationCap,
         title: '教务系统',
         description: '学生教务管理',
