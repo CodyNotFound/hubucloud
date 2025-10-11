@@ -36,14 +36,9 @@ const fetchRestaurantDetail = async (id: string): Promise<ApiResponse<Restaurant
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
     const url = `${API_BASE_URL}/restaurants/${id}`;
 
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('API请求失败:', error);
-        throw error;
-    }
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
 };
 
 export default function RestaurantDetailPage() {
@@ -54,6 +49,18 @@ export default function RestaurantDetailPage() {
     const [error, setError] = useState<string | null>(null);
 
     const restaurantId = params?.id as string;
+
+    // 智能返回函数：解决微信/QQ浏览器无历史记录时直接退出的问题
+    const handleBack = () => {
+        // 检查是否有历史记录（>1 表示有前一个页面）
+        if (typeof window !== 'undefined' && window.history.length > 1) {
+            // 有历史记录，正常返回
+            router.back();
+        } else {
+            // 无历史记录（直接从外部进入），跳转到列表页
+            router.push('/food');
+        }
+    };
 
     // 加载餐厅详情
     const loadRestaurantDetail = async () => {
@@ -110,7 +117,7 @@ export default function RestaurantDetailPage() {
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <p className="text-danger mb-4">{error || '餐厅不存在'}</p>
-                    <Button color="primary" variant="light" onPress={() => router.back()}>
+                    <Button color="primary" variant="light" onPress={handleBack}>
                         返回
                     </Button>
                 </div>
@@ -123,7 +130,7 @@ export default function RestaurantDetailPage() {
             {/* 顶部导航 */}
             <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-divider">
                 <div className="flex items-center justify-between px-4 py-3">
-                    <Button isIconOnly variant="light" size="sm" onPress={() => router.back()}>
+                    <Button isIconOnly variant="light" size="sm" onPress={handleBack}>
                         <ArrowLeft size={20} />
                     </Button>
                     <h1 className="font-semibold truncate mx-4">{restaurant.name}</h1>

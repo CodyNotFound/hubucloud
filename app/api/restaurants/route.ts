@@ -10,31 +10,44 @@ export async function GET(request: NextRequest) {
         const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '10')));
         const type = searchParams.get('type');
         const tags = searchParams.get('tags');
+        const ids = searchParams.get('ids'); // 新增：支持按ID查询
         const skip = (page - 1) * limit;
 
         const where: any = {};
-        if (type) {
-            where.type = type;
-        }
-        if (tags) {
-            const tagArray = tags.split(',');
-            where.tags = {
-                hasSome: tagArray,
+
+        // 如果指定了IDs，优先按IDs查询（用于搜索结果）
+        if (ids) {
+            const idArray = ids.split(',').filter((id) => id.trim());
+            where.id = {
+                in: idArray,
             };
+        } else {
+            // 否则按其他条件查询
+            if (type) {
+                where.type = type;
+            }
+            if (tags) {
+                const tagArray = tags.split(',');
+                where.tags = {
+                    hasSome: tagArray,
+                };
+            }
         }
 
-        const [restaurants, total] = await Promise.all([
-            db.restaurant.findMany({
-                where,
-                skip,
-                take: limit,
-                orderBy: [
-                    { rating: 'desc' },
-                    { id: 'asc' }, // 添加唯一标识符作为第二排序字段，确保分页稳定性
-                ],
-            }),
-            db.restaurant.count({ where }),
-        ]);
+        // 按ID查询时不需要分页和排序（由客户端控制顺序）
+        const restaurants = await db.restaurant.findMany({
+            where,
+            skip: ids ? 0 : skip,
+            take: ids ? undefined : limit,
+            orderBy: ids
+                ? undefined
+                : [
+                      { rating: 'desc' },
+                      { id: 'asc' }, // 添加唯一标识符作为第二排序字段，确保分页稳定性
+                  ],
+        });
+
+        const total = ids ? restaurants.length : await db.restaurant.count({ where });
 
         return ResponseUtil.success({
             restaurants,

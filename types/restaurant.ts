@@ -78,3 +78,14 @@ export interface RestaurantQuery {
     locationDescription?: string;
     radius?: number;
 }
+
+/**
+ * 餐厅搜索数据（轻量级，用于客户端缓存和本地搜索）
+ */
+export interface RestaurantSearchItem {
+    id: string;
+    name: string;
+    type: RestaurantType;
+    locationDescription: string;
+    tags: string[];
+}
