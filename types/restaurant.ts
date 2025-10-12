@@ -36,6 +36,7 @@ export interface Restaurant {
     openTime: string;
     rating: number;
     locationDescription: string;
+    orderQrCode?: string; // 点餐码图片URL
     createdAt?: string;
     updatedAt?: string;
     distance?: number; // 计算出的距离
@@ -53,6 +54,7 @@ export interface CreateRestaurantData {
     openTime: string;
     rating: number;
     locationDescription: string;
+    orderQrCode?: string; // 点餐码图片URL
 }
 
 export interface UpdateRestaurantData {
@@ -67,6 +69,7 @@ export interface UpdateRestaurantData {
     openTime?: string;
     rating?: number;
     locationDescription?: string;
+    orderQrCode?: string; // 点餐码图片URL
 }
 
 export interface RestaurantQuery {

@@ -70,6 +70,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         if (body.tags !== undefined) updateData.tags = body.tags;
         if (body.preview !== undefined) updateData.preview = body.preview;
         if (body.openTime !== undefined) updateData.openTime = body.openTime;
+        if (body.orderQrCode !== undefined) updateData.orderQrCode = body.orderQrCode;
         if (body.rating !== undefined) {
             if (body.rating < 1 || body.rating > 5) {
                 return ResponseUtil.clientError('评分必须在1-5之间');

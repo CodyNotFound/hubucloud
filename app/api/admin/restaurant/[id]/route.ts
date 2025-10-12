@@ -35,6 +35,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             tags,
             preview,
             rating,
+            orderQrCode,
         } = body;
 
         // 验证餐厅类型
@@ -73,6 +74,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         if (tags !== undefined) updateData.tags = tags;
         if (preview !== undefined) updateData.preview = preview;
         if (rating !== undefined) updateData.rating = rating;
+        if (orderQrCode !== undefined) updateData.orderQrCode = orderQrCode;
 
         const updatedRestaurant = await db.restaurant.update({
             where: { id },

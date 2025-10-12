@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
             tags = [],
             preview = [],
             rating = 0,
+            orderQrCode,
         } = body;
 
         // 验证必填字段 - 只有名字是必须的
@@ -125,6 +126,7 @@ export async function POST(request: NextRequest) {
                 tags,
                 preview,
                 rating,
+                orderQrCode,
             },
         });
 

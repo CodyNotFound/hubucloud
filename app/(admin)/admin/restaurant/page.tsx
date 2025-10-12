@@ -22,7 +22,7 @@ import { AdminGuard } from '@/components/common/admin-guard';
 import AdminLayout from '@/components/layouts/admin-layout';
 import { useAdmin } from '@/hooks/use-admin';
 import { PracticalDataTable } from '@/components/common/practical-data-table';
-import { MultiImageUpload, imageUtils } from '@/components/common/image-upload';
+import { MultiImageUpload, ImageUpload, imageUtils } from '@/components/common/image-upload';
 import { adminService } from '@/services/admin';
 
 export default function RestaurantPage() {
@@ -65,6 +65,7 @@ function RestaurantManagement() {
         openTime: '',
         rating: 0,
         locationDescription: '',
+        orderQrCode: '', // 点餐码
     });
 
     // 餐厅类型选项
@@ -184,6 +185,7 @@ function RestaurantManagement() {
             openTime: '',
             rating: 0,
             locationDescription: '',
+            orderQrCode: '',
         });
         onOpen();
     };
@@ -203,6 +205,7 @@ function RestaurantManagement() {
             openTime: item.openTime,
             rating: item.rating,
             locationDescription: item.locationDescription || '',
+            orderQrCode: item.orderQrCode || '',
         });
         onOpen();
     };
@@ -433,6 +436,19 @@ function RestaurantManagement() {
                                 />
                                 <p className="text-xs text-default-400 mt-1">
                                     最多上传6张餐厅环境或菜品图片
+                                </p>
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="text-sm font-medium mb-2 block">点餐码</label>
+                                <ImageUpload
+                                    value={formData.orderQrCode}
+                                    onChange={(url) => setFormData({ ...formData, orderQrCode: url })}
+                                    onError={setUploadError}
+                                    placeholder="点击上传点餐码(微信/支付宝/美团小程序码)"
+                                />
+                                <p className="text-xs text-default-400 mt-1">
+                                    上传微信、支付宝、美团等平台的点餐小程序码或二维码
                                 </p>
                             </div>
                         </div>

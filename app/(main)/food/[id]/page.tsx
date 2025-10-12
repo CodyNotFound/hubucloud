@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Card, CardBody, Chip, Button, Divider } from '@heroui/react';
-import { ArrowLeft, MapPin, Star, Clock, Phone, Heart } from 'lucide-react';
+import { ArrowLeft, MapPin, Star, Clock, Phone, Heart, QrCode, Download } from 'lucide-react';
 
 import { ImageViewer } from '@/components/common/image-viewer';
 import { RestaurantType, RestaurantTypeLabels } from '@/types/restaurant';
@@ -22,6 +22,7 @@ interface Restaurant {
     openTime: string;
     rating: number;
     locationDescription: string;
+    orderQrCode?: string; // 点餐码
 }
 
 // API响应类型
@@ -88,6 +89,30 @@ export default function RestaurantDetailPage() {
     useEffect(() => {
         loadRestaurantDetail();
     }, [restaurantId]);
+
+    // 保存点餐码图片
+    const handleSaveQrCode = async () => {
+        if (!restaurant?.orderQrCode) return;
+
+        try {
+            // 获取图片
+            const response = await fetch(restaurant.orderQrCode);
+            const blob = await response.blob();
+
+            // 创建下载链接
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${restaurant.name}-点餐码.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('保存图片失败:', error);
+            alert('保存失败，请长按图片手动保存');
+        }
+    };
 
     const renderStars = (rating: number) => {
         return Array.from({ length: 5 }, (_, index) => (
@@ -241,6 +266,44 @@ export default function RestaurantDetailPage() {
                         </div>
                     </CardBody>
                 </Card>
+
+                {/* 点餐码 */}
+                {restaurant.orderQrCode && (
+                    <Card className="mx-4 mt-4">
+                        <CardBody className="p-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2">
+                                    <QrCode size={18} className="text-primary" />
+                                    <h3 className="text-sm font-medium">扫码点餐</h3>
+                                </div>
+                                <Button
+                                    size="sm"
+                                    variant="flat"
+                                    color="primary"
+                                    startContent={<Download size={16} />}
+                                    onPress={handleSaveQrCode}
+                                >
+                                    保存图片
+                                </Button>
+                            </div>
+                            <div className="flex justify-center bg-default-50 rounded-lg p-6">
+                                <img
+                                    src={restaurant.orderQrCode}
+                                    alt="点餐码"
+                                    className="w-full max-w-sm rounded-lg object-contain"
+                                    style={{ maxHeight: '70vh' }}
+                                    onContextMenu={(e) => {
+                                        // 允许长按保存
+                                        e.stopPropagation();
+                                    }}
+                                />
+                            </div>
+                            <p className="text-xs text-default-500 text-center mt-3">
+                                长按图片保存或点击"保存图片"按钮，使用微信/支付宝/美团扫码点餐
+                            </p>
+                        </CardBody>
+                    </Card>
+                )}
 
                 {/* 预览图片 */}
                 {restaurant.preview.length > 0 && (

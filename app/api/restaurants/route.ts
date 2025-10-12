@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
             rating,
             latitude = 30.5951,
             longitude = 114.4086,
+            orderQrCode,
         } = body;
 
         if (!name || name.length < 1 || name.length > 100) {
@@ -120,6 +121,7 @@ export async function POST(request: NextRequest) {
                 rating,
                 latitude,
                 longitude,
+                orderQrCode,
             },
         });
 
