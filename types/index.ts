@@ -72,6 +72,7 @@ export interface Restaurant {
     latitude: number;
     longitude: number;
     locationDescription?: string;
+    orderQrCode?: string; // 点餐码图片URL
     distance?: number;
     createdAt?: string;
     updatedAt?: string;

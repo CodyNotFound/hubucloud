@@ -443,7 +443,9 @@ function RestaurantManagement() {
                                 <label className="text-sm font-medium mb-2 block">点餐码</label>
                                 <ImageUpload
                                     value={formData.orderQrCode}
-                                    onChange={(url) => setFormData({ ...formData, orderQrCode: url })}
+                                    onChange={(url) =>
+                                        setFormData({ ...formData, orderQrCode: url })
+                                    }
                                     onError={setUploadError}
                                     placeholder="点击上传点餐码(微信/支付宝/美团小程序码)"
                                 />

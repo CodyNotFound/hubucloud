@@ -7,7 +7,7 @@ import { ResponseUtil } from '@/lib/response';
  * 获取餐厅搜索数据（轻量级，用于客户端缓存和本地搜索）
  * GET /api/restaurants/search-data
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
     try {
         // 获取所有餐厅的搜索相关字段
         const restaurants = await db.restaurant.findMany({
