@@ -1,6 +1,7 @@
 import '@/styles/globals.css';
 import { Metadata, Viewport } from 'next';
 import clsx from 'clsx';
+import Script from 'next/script';
 
 import { Providers } from './providers';
 
@@ -38,6 +39,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     fontSans.variable
                 )}
             >
+                <Script
+                    defer
+                    src="https://umami-three-ruddy.vercel.app/script.js"
+                    data-website-id="1ad8aefd-1c15-471a-8b84-5658525686a4"
+                    strategy="afterInteractive"
+                />
                 <Providers themeProps={{ attribute: 'class', defaultTheme: 'light' }}>
                     <BrowserBackHandler />
                     <div className="relative flex flex-col min-h-screen">
