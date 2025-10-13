@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "next dev --turbopack",
         "build": "rm -r .next && bun lint && prisma generate --no-engine && next build",
-        "start": "next start",
+        "start": "next start -p 13000",
         "lint": "eslint . --fix --ext .ts,.tsx & prettier --write .",
         "db:generate": "prisma generate",
         "db:push": "prisma db push",
