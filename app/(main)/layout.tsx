@@ -41,10 +41,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             >
                 <Script
                     defer
-                    src="https://umami-three-ruddy.vercel.app/script.js"
-                    data-website-id="1ad8aefd-1c15-471a-8b84-5658525686a4"
+                    src="https://umami.hubucloud.com/script.js"
+                    data-website-id="8c2107ef-77f6-436d-a9bc-30d4a71e961d"
                     strategy="afterInteractive"
-                />
+                ></Script>
                 <Providers themeProps={{ attribute: 'class', defaultTheme: 'light' }}>
                     <BrowserBackHandler />
                     <div className="relative flex flex-col min-h-screen">
