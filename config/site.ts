@@ -16,6 +16,11 @@ export const siteConfig = {
             icon: 'Home',
         },
         {
+            label: '活动专区',
+            href: '/activity',
+            icon: 'Calendar',
+        },
+        {
             label: '论坛',
             href: '/forum',
             icon: 'MessageSquare',
@@ -45,6 +50,10 @@ export const siteConfig = {
         {
             label: '首页',
             href: '/',
+        },
+        {
+            label: '活动专区',
+            href: '/activity',
         },
         {
             label: '论坛',

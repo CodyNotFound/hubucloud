@@ -11,7 +11,7 @@ import {
     Avatar,
     Link,
 } from '@heroui/react';
-import { LayoutDashboard, Store, Briefcase, Settings, LogOut, Menu, X, Home } from 'lucide-react';
+import { LayoutDashboard, Store, Briefcase, Settings, LogOut, Menu, X, Home, Calendar } from 'lucide-react';
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -42,6 +42,12 @@ const sidebarItems: SidebarItem[] = [
         label: '兼职管理',
         icon: <Briefcase className="w-5 h-5" />,
         href: '/admin/parttime',
+    },
+    {
+        key: 'activity',
+        label: '活动管理',
+        icon: <Calendar className="w-5 h-5" />,
+        href: '/admin/activity',
     },
 ];
 

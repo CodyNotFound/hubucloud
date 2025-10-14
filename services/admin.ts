@@ -1,4 +1,5 @@
 import type { Parttime, Restaurant } from '@/types';
+import type { Activity, ActivityFormData } from '@/types/activity';
 
 import { apiClient } from './api-client';
 
@@ -221,6 +222,56 @@ class AdminService {
      */
     async deleteRestaurant(id: string): Promise<{ status: string; data?: null; message?: string }> {
         return apiClient.delete(`/api/admin/restaurant/${id}`);
+    }
+
+    // ============ 活动管理相关方法 ============
+
+    /**
+     * 获取活动列表（管理员）
+     */
+    async getActivityList(
+        params: {
+            page?: number;
+            limit?: number;
+            keyword?: string;
+            status?: string;
+            enabled?: boolean;
+        } = {}
+    ): Promise<{ status: string; data?: PaginatedResponse<Activity>; message?: string }> {
+        const queryParams = new URLSearchParams();
+
+        if (params.page) queryParams.append('page', params.page.toString());
+        if (params.limit) queryParams.append('limit', params.limit.toString());
+        if (params.keyword) queryParams.append('keyword', params.keyword);
+        if (params.status) queryParams.append('status', params.status);
+        if (params.enabled !== undefined) queryParams.append('enabled', params.enabled.toString());
+
+        const query = queryParams.toString();
+        return apiClient.get(`/api/admin/activity${query ? `?${query}` : ''}`);
+    }
+
+    /**
+     * 创建活动（管理员）
+     */
+    async createActivity(data: ActivityFormData): Promise<{ status: string; data?: Activity; message?: string }> {
+        return apiClient.post('/api/admin/activity', data);
+    }
+
+    /**
+     * 更新活动信息（管理员）
+     */
+    async updateActivity(
+        id: string,
+        data: Partial<ActivityFormData>
+    ): Promise<{ status: string; data?: Activity; message?: string }> {
+        return apiClient.put(`/api/admin/activity/${id}`, data);
+    }
+
+    /**
+     * 删除活动（管理员）
+     */
+    async deleteActivity(id: string): Promise<{ status: string; data?: null; message?: string }> {
+        return apiClient.delete(`/api/admin/activity/${id}`);
     }
 }
 

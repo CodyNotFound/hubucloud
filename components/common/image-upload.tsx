@@ -29,7 +29,7 @@ export function ImageUpload({
     value,
     onChange,
     onError,
-    maxSize = 10,
+    maxSize = 20,
     accept = 'image/*',
     placeholder = '点击上传图片',
     className = '',
@@ -229,7 +229,7 @@ export function MultiImageUpload({
     onChange,
     onError,
     maxCount = 10,
-    maxSize = 10,
+    maxSize = 20,
     enableCover = false,
     className = '',
 }: MultiImageUploadProps) {

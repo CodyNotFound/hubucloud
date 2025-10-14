@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardBody, CardHeader, Button, Chip, Spacer } from '@heroui/react';
-import { Users, Store, Briefcase, BarChart3, ArrowRight, RefreshCw, Activity } from 'lucide-react';
+import { Users, Store, Briefcase, BarChart3, ArrowRight, RefreshCw, Activity, Calendar } from 'lucide-react';
 import Link from 'next/link';
 
 import { AdminGuard } from '@/components/common/admin-guard';
@@ -85,6 +85,13 @@ function DashboardContent() {
             icon: <Briefcase className="w-5 h-5" />,
             href: '/admin/parttime',
             color: 'success',
+        },
+        {
+            title: '活动管理',
+            description: '发布和管理校园活动',
+            icon: <Calendar className="w-5 h-5" />,
+            href: '/admin/activity',
+            color: 'secondary',
         },
     ];
 
