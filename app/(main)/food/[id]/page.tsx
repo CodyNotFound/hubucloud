@@ -287,6 +287,7 @@ export default function RestaurantDetailPage() {
                                 </Button>
                             </div>
                             <div className="flex justify-center bg-default-50 rounded-lg p-6">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                     src={restaurant.orderQrCode}
                                     alt="点餐码"

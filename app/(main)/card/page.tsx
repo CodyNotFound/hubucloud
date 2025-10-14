@@ -3,7 +3,6 @@
 import { useState, useRef } from 'react';
 import { Spinner } from '@heroui/spinner';
 import { Utensils, Home, Play } from 'lucide-react';
-import Image from 'next/image';
 
 // 总页数
 const TOTAL_PAGES = 49;
@@ -20,7 +19,11 @@ export default function CardPage() {
     const pageRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
     const handleImageLoad = (pageNumber: number) => {
-        setLoadedImages((prev) => new Set([...prev, pageNumber]));
+        setLoadedImages((prev) => {
+            const newSet = new Set(prev);
+            newSet.add(pageNumber);
+            return newSet;
+        });
     };
 
     const scrollToPage = (pageNumber: number) => {
@@ -70,11 +73,10 @@ export default function CardPage() {
                                         <Spinner size="lg" />
                                     </div>
                                 )}
-                                <Image
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
                                     src={`/card-images/page-${pageNumber}.webp`}
                                     alt={`黑卡权益第 ${pageNumber} 页`}
-                                    width={800}
-                                    height={1131}
                                     className="w-full h-auto rounded-lg"
                                     loading={pageNumber <= 3 ? 'eager' : 'lazy'}
                                     onLoad={() => handleImageLoad(pageNumber)}

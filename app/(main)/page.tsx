@@ -7,11 +7,19 @@ import {
     Car,
     GraduationCap,
     Building2,
+    Wifi,
 } from 'lucide-react';
 
 import { HeroCarousel } from '@/components/hero-carousel';
 
 const services = [
+    {
+        href: 'http://122.204.223.188/',
+        icon: Wifi,
+        title: '校园网登录',
+        description: '校园网络认证',
+        color: 'bg-sky-50 hover:bg-sky-100 text-sky-600',
+    },
     {
         href: 'https://sso.hubu.edu.cn/lyuapServer/login?service=https%3A%2F%2Fjwxt.hubu.edu.cn%2Fsso.jsp',
         icon: GraduationCap,
