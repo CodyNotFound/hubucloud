@@ -2,7 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardBody, CardHeader, Button, Chip, Spacer } from '@heroui/react';
-import { Users, Store, Briefcase, BarChart3, ArrowRight, RefreshCw, Activity, Calendar } from 'lucide-react';
+import {
+    Users,
+    Store,
+    Briefcase,
+    BarChart3,
+    ArrowRight,
+    RefreshCw,
+    Activity,
+    Calendar,
+} from 'lucide-react';
 import Link from 'next/link';
 
 import { AdminGuard } from '@/components/common/admin-guard';

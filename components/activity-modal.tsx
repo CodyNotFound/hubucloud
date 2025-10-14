@@ -1,5 +1,7 @@
 'use client';
 
+import type { Activity } from '@/types/activity';
+
 import { useState, useEffect } from 'react';
 import {
     Modal,
@@ -13,7 +15,6 @@ import {
     CardBody,
 } from '@heroui/react';
 import { X } from 'lucide-react';
-import type { Activity } from '@/types/activity';
 
 interface ActivityModalProps {
     modal: Activity;
@@ -27,11 +28,7 @@ interface ActivityModalProps {
  * 活动弹窗组件
  * 支持图片和文字两种类型的内容展示
  */
-export function ActivityModalComponent({
-    modal,
-    isOpen,
-    onClose,
-}: ActivityModalProps) {
+export function ActivityModalComponent({ modal, isOpen, onClose }: ActivityModalProps) {
     return (
         <Modal
             isOpen={isOpen}
@@ -50,9 +47,7 @@ export function ActivityModalComponent({
                     <>
                         <ModalHeader className="flex flex-col gap-1">
                             <div className="flex justify-between items-center">
-                                <h3 className="text-lg font-bold">
-                                    {modal.title}
-                                </h3>
+                                <h3 className="text-lg font-bold">{modal.title}</h3>
                                 <Button
                                     isIconOnly
                                     size="sm"
@@ -84,11 +79,7 @@ export function ActivityModalComponent({
                             )}
                         </ModalBody>
                         <ModalFooter>
-                            <Button
-                                color="primary"
-                                onPress={onModalClose}
-                                className="w-full"
-                            >
+                            <Button color="primary" onPress={onModalClose} className="w-full">
                                 {modal.buttonText || '确定'}
                             </Button>
                         </ModalFooter>
@@ -118,18 +109,14 @@ export function ManualModalCard({ modal, onOpen }: ManualModalCardProps) {
             <CardBody className="p-4">
                 <div className="flex items-center justify-between">
                     <div className="flex-1">
-                        <h4 className="font-semibold text-base mb-1">
-                            {modal.title}
-                        </h4>
+                        <h4 className="font-semibold text-base mb-1">{modal.title}</h4>
                         {modal.type === 'TEXT' && modal.content && (
                             <p className="text-sm text-default-600 line-clamp-2">
                                 {modal.content.split('\n')[0]}
                             </p>
                         )}
                         {modal.type === 'IMAGE' && (
-                            <p className="text-sm text-default-600">
-                                点击查看活动详情
-                            </p>
+                            <p className="text-sm text-default-600">点击查看活动详情</p>
                         )}
                     </div>
                     <Button size="sm" color="primary" variant="flat">
@@ -149,18 +136,14 @@ interface ActivityModalsContainerProps {
  * 活动弹窗容器组件
  * 管理多个弹窗的显示逻辑
  */
-export function ActivityModalsContainer({
-    modals,
-}: ActivityModalsContainerProps) {
+export function ActivityModalsContainer({ modals }: ActivityModalsContainerProps) {
     const [openModalId, setOpenModalId] = useState<string | null>(null);
     const [hasAutoOpened, setHasAutoOpened] = useState(false);
 
     // 页面加载时自动打开第一个启用且自动打开的弹窗
     useEffect(() => {
         if (!hasAutoOpened) {
-            const autoOpenModal = modals.find(
-                (m) => m.enabled && m.autoOpen
-            );
+            const autoOpenModal = modals.find((m) => m.enabled && m.autoOpen);
             if (autoOpenModal) {
                 setOpenModalId(autoOpenModal.id);
                 setHasAutoOpened(true);

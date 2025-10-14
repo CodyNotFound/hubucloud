@@ -50,10 +50,7 @@ export async function GET(request: NextRequest) {
                 return ResponseUtil.authError(ERROR_MESSAGES.UNAUTHORIZED);
             }
             if (error.message === 'FORBIDDEN') {
-                return ResponseUtil.authError(
-                    ERROR_MESSAGES.ADMIN_REQUIRED,
-                    403
-                );
+                return ResponseUtil.authError(ERROR_MESSAGES.ADMIN_REQUIRED, 403);
             }
         }
         return ResponseUtil.serverError('获取活动列表失败', error as Error);
@@ -91,10 +88,7 @@ export async function POST(request: NextRequest) {
                 return ResponseUtil.authError(ERROR_MESSAGES.UNAUTHORIZED);
             }
             if (error.message === 'FORBIDDEN') {
-                return ResponseUtil.authError(
-                    ERROR_MESSAGES.ADMIN_REQUIRED,
-                    403
-                );
+                return ResponseUtil.authError(ERROR_MESSAGES.ADMIN_REQUIRED, 403);
             }
         }
         return ResponseUtil.serverError('发布活动失败', error as Error);

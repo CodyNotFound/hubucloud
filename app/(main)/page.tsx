@@ -1,5 +1,7 @@
 'use client';
 
+import type { Activity } from '@/types/activity';
+
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
@@ -18,7 +20,6 @@ import {
 import { Modal, ModalContent, ModalBody, Button } from '@heroui/react';
 
 import { HeroCarousel } from '@/components/hero-carousel';
-import type { Activity } from '@/types/activity';
 import { ImageViewer } from '@/components/common/image-viewer';
 
 const STORAGE_KEY_PREFIX = 'activity_hidden_';
@@ -240,18 +241,27 @@ export default function Home() {
                                     <div>
                                         <p className="font-semibold">湖大萧云</p>
                                         <p className="text-xs text-default-500">
-                                            {new Date(modalActivity.createdAt).toLocaleString('zh-CN')}
+                                            {new Date(modalActivity.createdAt).toLocaleString(
+                                                'zh-CN'
+                                            )}
                                         </p>
                                     </div>
                                 </div>
-                                <Button isIconOnly size="sm" variant="light" onPress={() => setModalActivity(null)}>
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    onPress={() => setModalActivity(null)}
+                                >
                                     <X size={20} />
                                 </Button>
                             </div>
 
                             {/* 内容 */}
                             <div className="space-y-4">
-                                <p className="text-default-700 whitespace-pre-wrap">{modalActivity.content}</p>
+                                <p className="text-default-700 whitespace-pre-wrap">
+                                    {modalActivity.content}
+                                </p>
 
                                 {/* 图片 */}
                                 {modalActivity.images.length > 0 && (
@@ -259,7 +269,8 @@ export default function Home() {
                                         className={`grid gap-2 ${
                                             modalActivity.images.length === 1
                                                 ? 'grid-cols-1'
-                                                : modalActivity.images.length === 2 || modalActivity.images.length === 4
+                                                : modalActivity.images.length === 2 ||
+                                                    modalActivity.images.length === 4
                                                   ? 'grid-cols-2'
                                                   : 'grid-cols-3'
                                         }`}
@@ -287,7 +298,11 @@ export default function Home() {
                                 >
                                     七天内不再显示
                                 </Button>
-                                <Button color="primary" className="flex-1" onPress={() => setModalActivity(null)}>
+                                <Button
+                                    color="primary"
+                                    className="flex-1"
+                                    onPress={() => setModalActivity(null)}
+                                >
                                     知道了
                                 </Button>
                             </div>

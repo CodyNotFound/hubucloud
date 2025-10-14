@@ -9,10 +9,7 @@ import { ERROR_MESSAGES } from '@/lib/response';
  * PUT /api/admin/activity/[id]
  * 更新活动信息（管理员）
  */
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         await requireAdmin(request);
         const { id } = await params;
@@ -45,10 +42,7 @@ export async function PUT(
                 return ResponseUtil.authError(ERROR_MESSAGES.UNAUTHORIZED);
             }
             if (error.message === 'FORBIDDEN') {
-                return ResponseUtil.authError(
-                    ERROR_MESSAGES.ADMIN_REQUIRED,
-                    403
-                );
+                return ResponseUtil.authError(ERROR_MESSAGES.ADMIN_REQUIRED, 403);
             }
         }
         return ResponseUtil.serverError('更新活动失败', error as Error);
@@ -87,10 +81,7 @@ export async function DELETE(
                 return ResponseUtil.authError(ERROR_MESSAGES.UNAUTHORIZED);
             }
             if (error.message === 'FORBIDDEN') {
-                return ResponseUtil.authError(
-                    ERROR_MESSAGES.ADMIN_REQUIRED,
-                    403
-                );
+                return ResponseUtil.authError(ERROR_MESSAGES.ADMIN_REQUIRED, 403);
             }
         }
         return ResponseUtil.serverError('删除活动失败', error as Error);

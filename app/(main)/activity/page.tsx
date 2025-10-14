@@ -1,9 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Card, CardBody, CardHeader, Spinner, Modal, ModalContent, ModalBody, Button } from '@heroui/react';
-import { Heart, MessageCircle, Share2, X, EyeOff } from 'lucide-react';
 import type { Activity } from '@/types/activity';
+
+import { useEffect, useState } from 'react';
+import {
+    Card,
+    CardBody,
+    CardHeader,
+    Spinner,
+    Modal,
+    ModalContent,
+    ModalBody,
+    Button,
+} from '@heroui/react';
+import { Heart, MessageCircle, Share2, X, EyeOff } from 'lucide-react';
+
 import { ImageViewer } from '@/components/common/image-viewer';
 
 const STORAGE_KEY_PREFIX = 'activity_hidden_';
@@ -50,7 +61,8 @@ export default function ActivityPage() {
 
         for (const activity of acts) {
             // 检查是否被永久隐藏
-            const isPermanentlyHidden = localStorage.getItem(STORAGE_KEY_PREFIX + activity.id) === 'true';
+            const isPermanentlyHidden =
+                localStorage.getItem(STORAGE_KEY_PREFIX + activity.id) === 'true';
             if (isPermanentlyHidden) continue;
 
             // 检查今天是否已显示过
@@ -111,19 +123,24 @@ export default function ActivityPage() {
                                         <div className="flex-1">
                                             <p className="font-semibold">湖大萧云</p>
                                             <p className="text-xs text-default-500">
-                                                {new Date(activity.createdAt).toLocaleString('zh-CN', {
-                                                    month: 'numeric',
-                                                    day: 'numeric',
-                                                    hour: '2-digit',
-                                                    minute: '2-digit',
-                                                })}
+                                                {new Date(activity.createdAt).toLocaleString(
+                                                    'zh-CN',
+                                                    {
+                                                        month: 'numeric',
+                                                        day: 'numeric',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                    }
+                                                )}
                                             </p>
                                         </div>
                                     </div>
                                 </CardHeader>
                                 <CardBody className="pt-2">
                                     {/* 文字内容 */}
-                                    <p className="text-default-700 whitespace-pre-wrap mb-3">{activity.content}</p>
+                                    <p className="text-default-700 whitespace-pre-wrap mb-3">
+                                        {activity.content}
+                                    </p>
 
                                     {/* 图片网格 - 使用 ImageViewer */}
                                     {activity.images.length > 0 && (
@@ -131,7 +148,8 @@ export default function ActivityPage() {
                                             className={`grid gap-1 ${
                                                 activity.images.length === 1
                                                     ? 'grid-cols-1'
-                                                    : activity.images.length === 2 || activity.images.length === 4
+                                                    : activity.images.length === 2 ||
+                                                        activity.images.length === 4
                                                       ? 'grid-cols-2'
                                                       : 'grid-cols-3'
                                             }`}
@@ -195,7 +213,9 @@ export default function ActivityPage() {
                                     <div>
                                         <p className="font-semibold">湖大萧云</p>
                                         <p className="text-xs text-default-500">
-                                            {new Date(modalActivity.createdAt).toLocaleString('zh-CN')}
+                                            {new Date(modalActivity.createdAt).toLocaleString(
+                                                'zh-CN'
+                                            )}
                                         </p>
                                     </div>
                                 </div>
@@ -211,7 +231,9 @@ export default function ActivityPage() {
 
                             {/* 内容 */}
                             <div className="space-y-4">
-                                <p className="text-default-700 whitespace-pre-wrap">{modalActivity.content}</p>
+                                <p className="text-default-700 whitespace-pre-wrap">
+                                    {modalActivity.content}
+                                </p>
 
                                 {/* 图片 - 使用 ImageViewer */}
                                 {modalActivity.images.length > 0 && (
@@ -219,7 +241,8 @@ export default function ActivityPage() {
                                         className={`grid gap-2 ${
                                             modalActivity.images.length === 1
                                                 ? 'grid-cols-1'
-                                                : modalActivity.images.length === 2 || modalActivity.images.length === 4
+                                                : modalActivity.images.length === 2 ||
+                                                    modalActivity.images.length === 4
                                                   ? 'grid-cols-2'
                                                   : 'grid-cols-3'
                                         }`}
@@ -247,7 +270,11 @@ export default function ActivityPage() {
                                 >
                                     不再显示
                                 </Button>
-                                <Button color="primary" className="flex-1" onPress={() => setModalActivity(null)}>
+                                <Button
+                                    color="primary"
+                                    className="flex-1"
+                                    onPress={() => setModalActivity(null)}
+                                >
                                     知道了
                                 </Button>
                             </div>

@@ -40,7 +40,8 @@ export const activityModals: ActivityModal[] = [
         id: 'activity-notice',
         title: '活动通知',
         type: 'text',
-        content: '本周末将举办校园文化节，欢迎大家积极参与！\n\n时间：本周六 14:00\n地点：学生活动中心\n\n期待您的到来！',
+        content:
+            '本周末将举办校园文化节，欢迎大家积极参与！\n\n时间：本周六 14:00\n地点：学生活动中心\n\n期待您的到来！',
         autoOpen: false,
         buttonText: '查看详情',
         enabled: true,

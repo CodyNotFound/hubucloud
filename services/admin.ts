@@ -253,7 +253,9 @@ class AdminService {
     /**
      * 创建活动（管理员）
      */
-    async createActivity(data: ActivityFormData): Promise<{ status: string; data?: Activity; message?: string }> {
+    async createActivity(
+        data: ActivityFormData
+    ): Promise<{ status: string; data?: Activity; message?: string }> {
         return apiClient.post('/api/admin/activity', data);
     }
 

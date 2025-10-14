@@ -98,7 +98,11 @@ function ActivityManagement() {
             label: '图片',
             width: '100px',
             render: (item: Activity) => (
-                <Chip size="sm" variant="flat" color={item.images.length > 0 ? 'primary' : 'default'}>
+                <Chip
+                    size="sm"
+                    variant="flat"
+                    color={item.images.length > 0 ? 'primary' : 'default'}
+                >
                     {item.images.length} 张
                 </Chip>
             ),
