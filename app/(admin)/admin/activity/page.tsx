@@ -5,6 +5,7 @@ import type { Activity } from '@/types/activity';
 import { useState, useEffect } from 'react';
 import {
     Button,
+    Input,
     Textarea,
     Modal,
     ModalContent,
@@ -14,6 +15,8 @@ import {
     useDisclosure,
     Switch,
     Chip,
+    Select,
+    SelectItem,
 } from '@heroui/react';
 import { Calendar } from 'lucide-react';
 
@@ -52,9 +55,14 @@ function ActivityManagement() {
 
     // 表单数据
     const [formData, setFormData] = useState({
+        title: '',
         content: '',
         images: [] as ImageItem[],
         enabled: true,
+        type: 'TEXT' as 'IMAGE' | 'TEXT',
+        imageUrl: '',
+        buttonText: '确定',
+        autoOpen: true,
     });
 
     // 获取活动列表
@@ -83,6 +91,17 @@ function ActivityManagement() {
 
     // 表格列定义
     const columns = [
+        {
+            key: 'title',
+            label: '标题',
+            sortable: true,
+            width: '200px',
+            render: (item: Activity) => (
+                <div className="max-w-xs">
+                    <p className="font-medium line-clamp-1">{item.title}</p>
+                </div>
+            ),
+        },
         {
             key: 'content',
             label: '内容',
@@ -128,9 +147,14 @@ function ActivityManagement() {
     const handleAdd = () => {
         setEditingItem(null);
         setFormData({
+            title: '',
             content: '',
             images: [],
             enabled: true,
+            type: 'TEXT',
+            imageUrl: '',
+            buttonText: '确定',
+            autoOpen: true,
         });
         onOpen();
     };
@@ -139,9 +163,14 @@ function ActivityManagement() {
     const handleEdit = (item: Activity) => {
         setEditingItem(item);
         setFormData({
+            title: item.title,
             content: item.content,
             images: imageUtils.createFromUrls(item.images || []),
             enabled: item.enabled,
+            type: item.type || 'TEXT',
+            imageUrl: item.imageUrl || '',
+            buttonText: item.buttonText || '确定',
+            autoOpen: item.autoOpen ?? true,
         });
         onOpen();
     };
@@ -168,6 +197,10 @@ function ActivityManagement() {
 
     // 处理表单提交
     const handleSubmit = async () => {
+        if (!formData.title.trim()) {
+            alert('请填写活动标题');
+            return;
+        }
         if (!formData.content.trim()) {
             alert('请填写活动内容');
             return;
@@ -176,9 +209,14 @@ function ActivityManagement() {
         setFormLoading(true);
         try {
             const submitData = {
+                title: formData.title,
                 content: formData.content,
                 images: imageUtils.getImageUrls(formData.images),
                 enabled: formData.enabled,
+                type: formData.type,
+                imageUrl: formData.imageUrl,
+                buttonText: formData.buttonText,
+                autoOpen: formData.autoOpen,
             };
 
             if (editingItem) {
@@ -239,6 +277,15 @@ function ActivityManagement() {
                         </div>
                     </ModalHeader>
                     <ModalBody className="gap-4">
+                        <Input
+                            label="活动标题"
+                            placeholder="请输入活动标题"
+                            value={formData.title}
+                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                            isRequired
+                            description="弹窗显示的标题"
+                        />
+
                         <Textarea
                             label="活动内容"
                             placeholder="分享你想说的...（类似朋友圈）"
@@ -260,6 +307,51 @@ function ActivityManagement() {
                                 maxSize={10}
                             />
                         </div>
+
+                        <Select
+                            label="展示类型"
+                            placeholder="选择展示类型"
+                            selectedKeys={[formData.type]}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    type: e.target.value as 'IMAGE' | 'TEXT',
+                                })
+                            }
+                            description="选择弹窗内容的展示方式"
+                        >
+                            <SelectItem key="TEXT">文字内容</SelectItem>
+                            <SelectItem key="IMAGE">图片海报</SelectItem>
+                        </Select>
+
+                        {formData.type === 'IMAGE' && (
+                            <Input
+                                label="图片URL"
+                                placeholder="请输入图片URL"
+                                value={formData.imageUrl}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, imageUrl: e.target.value })
+                                }
+                                description="弹窗中显示的图片地址"
+                            />
+                        )}
+
+                        <Input
+                            label="按钮文字"
+                            placeholder="确定"
+                            value={formData.buttonText}
+                            onChange={(e) =>
+                                setFormData({ ...formData, buttonText: e.target.value })
+                            }
+                            description="弹窗底部按钮显示的文字"
+                        />
+
+                        <Switch
+                            isSelected={formData.autoOpen}
+                            onValueChange={(value) => setFormData({ ...formData, autoOpen: value })}
+                        >
+                            自动打开弹窗
+                        </Switch>
 
                         <Switch
                             isSelected={formData.enabled}
