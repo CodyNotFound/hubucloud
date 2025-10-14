@@ -1,25 +1,12 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Spinner } from '@heroui/spinner';
-import { Card, CardBody } from '@heroui/card';
 import { Utensils, Home, Play } from 'lucide-react';
-import dynamic from 'next/dynamic';
+import Image from 'next/image';
 
-// 动态导入 react-pdf 组件以避免 SSR 问题
-const Document = dynamic(() => import('react-pdf').then((mod) => mod.Document), {
-    ssr: false,
-});
-const Page = dynamic(() => import('react-pdf').then((mod) => mod.Page), {
-    ssr: false,
-});
-
-// 动态设置 PDF.js worker
-if (typeof window !== 'undefined') {
-    import('react-pdf').then((pdfjs) => {
-        pdfjs.pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
-    });
-}
+// 总页数
+const TOTAL_PAGES = 49;
 
 // 悬浮菜单项配置 - 低调优雅的配色方案
 const menuItems = [
@@ -29,27 +16,12 @@ const menuItems = [
 ];
 
 export default function CardPage() {
-    const [numPages, setNumPages] = useState<number>(0);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [pdfWidth, setPdfWidth] = useState<number>(400);
+    const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
     const pageRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
-    useEffect(() => {
-        const updatePdfWidth = () => {
-            if (typeof window !== 'undefined') {
-                setPdfWidth(Math.min(window.innerWidth, 480));
-            }
-        };
-
-        updatePdfWidth();
-        window.addEventListener('resize', updatePdfWidth);
-        return () => window.removeEventListener('resize', updatePdfWidth);
-    }, []);
-
-    function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
-        setNumPages(numPages);
-        setIsLoading(false);
-    }
+    const handleImageLoad = (pageNumber: number) => {
+        setLoadedImages((prev) => new Set([...prev, pageNumber]));
+    };
 
     const scrollToPage = (pageNumber: number) => {
         const pageElement = pageRefs.current[pageNumber];
@@ -80,45 +52,36 @@ export default function CardPage() {
                 </div>
             </section>
 
-            {/* PDF 展示区域 - 纵向滚动显示所有页面 */}
+            {/* 图片展示区域 - 纵向滚动显示所有页面 */}
             <section className="w-full">
-                {isLoading && (
-                    <div className="flex justify-center items-center h-64">
-                        <Spinner size="lg" />
-                    </div>
-                )}
-
-                <div className="w-full max-w-full overflow-hidden">
-                    <Document
-                        file="/萧云黑卡权益一览.pdf"
-                        onLoadSuccess={onDocumentLoadSuccess}
-                        loading={<Spinner size="lg" />}
-                        error={
-                            <Card>
-                                <CardBody>
-                                    <p className="text-red-500 text-center">PDF 加载失败</p>
-                                </CardBody>
-                            </Card>
-                        }
-                    >
-                        {!isLoading &&
-                            Array.from(new Array(numPages), (_, index) => (
-                                <div
-                                    key={`page_${index + 1}`}
-                                    ref={(el) => {
-                                        pageRefs.current[index + 1] = el;
-                                    }}
-                                    className="mb-4 w-full flex justify-center"
-                                >
-                                    <Page
-                                        pageNumber={index + 1}
-                                        width={pdfWidth}
-                                        renderTextLayer={false}
-                                        renderAnnotationLayer={false}
-                                    />
-                                </div>
-                            ))}
-                    </Document>
+                <div className="w-full max-w-full overflow-hidden space-y-4">
+                    {Array.from({ length: TOTAL_PAGES }, (_, index) => {
+                        const pageNumber = index + 1;
+                        return (
+                            <div
+                                key={`page_${pageNumber}`}
+                                ref={(el) => {
+                                    pageRefs.current[pageNumber] = el;
+                                }}
+                                className="w-full flex justify-center relative"
+                            >
+                                {!loadedImages.has(pageNumber) && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-default-100 rounded-lg">
+                                        <Spinner size="lg" />
+                                    </div>
+                                )}
+                                <Image
+                                    src={`/card-images/page-${pageNumber}.webp`}
+                                    alt={`黑卡权益第 ${pageNumber} 页`}
+                                    width={800}
+                                    height={1131}
+                                    className="w-full h-auto rounded-lg"
+                                    loading={pageNumber <= 3 ? 'eager' : 'lazy'}
+                                    onLoad={() => handleImageLoad(pageNumber)}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
             </section>
 
