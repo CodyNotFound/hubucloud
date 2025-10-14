@@ -30,11 +30,11 @@ export const siteConfig = {
             href: '/jobs',
             icon: 'Briefcase',
         },
-        {
-            label: '联通',
-            href: '/unicom',
-            icon: 'Briefcase',
-        },
+        // {
+        //     label: '联通',
+        //     href: '/unicom',
+        //     icon: 'Briefcase',
+        // },
         {
             label: '黑卡',
             href: '/card',
@@ -63,10 +63,10 @@ export const siteConfig = {
             label: '兼职',
             href: '/jobs',
         },
-        {
-            label: '联通',
-            href: '/unicom',
-        },
+        // {
+        //     label: '联通',
+        //     href: '/unicom',
+        // },
         {
             label: '黑卡',
             href: '/card',

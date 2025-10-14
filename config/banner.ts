@@ -7,13 +7,13 @@ export interface CarouselItem {
 }
 
 export const defaultSlides: CarouselItem[] = [
-    {
-        id: 1,
-        title: '联通校园卡',
-        subtitle: '超多流量 高速宽带',
-        image: '/banner/unicom.webp',
-        link: '/unicom',
-    },
+    // {
+    //     id: 1,
+    //     title: '联通校园卡',
+    //     subtitle: '超多流量 高速宽带',
+    //     image: '/banner/unicom.webp',
+    //     link: '/unicom',
+    // },
     {
         id: 2,
         title: '萧云黑卡',

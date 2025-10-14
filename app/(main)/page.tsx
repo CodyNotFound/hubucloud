@@ -48,13 +48,6 @@ const services = [
         color: 'bg-indigo-50 hover:bg-indigo-100 text-indigo-600',
     },
     {
-        href: '/unicom',
-        icon: Package,
-        title: '联通',
-        description: '联通业务办理',
-        color: 'bg-red-50 hover:bg-red-100 text-red-600',
-    },
-    {
         href: '/card',
         icon: Package,
         title: '黑卡',
