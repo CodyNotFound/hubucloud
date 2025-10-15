@@ -1,5 +1,6 @@
 import type { PrecacheEntry, SerwistGlobalConfig } from 'serwist';
-import { Serwist } from 'serwist';
+
+import { CacheFirst, NetworkFirst, NetworkOnly, Serwist } from 'serwist';
 
 // 声明 Service Worker 全局作用域
 declare global {
@@ -25,73 +26,55 @@ const serwist = new Serwist({
         {
             matcher: ({ request, url }) =>
                 request.mode === 'navigate' && !url.pathname.startsWith('/admin'),
-            handler: 'NetworkFirst',
-            options: {
+            handler: new NetworkFirst({
                 cacheName: 'pages-cache',
-                expiration: {
-                    maxEntries: 50,
-                    maxAgeSeconds: 30 * 24 * 60 * 60, // 30 天
-                },
                 networkTimeoutSeconds: 3,
-            },
+                plugins: [
+                    {
+                        cacheWillUpdate: async ({ response }) => {
+                            return response.status === 200 ? response : null;
+                        },
+                    },
+                ],
+            }),
         },
         // 2. 静态资源（JS、CSS）- CacheFirst 策略
         {
             matcher: ({ request, url }) =>
                 (request.destination === 'script' || request.destination === 'style') &&
                 !url.pathname.startsWith('/admin'),
-            handler: 'CacheFirst',
-            options: {
+            handler: new CacheFirst({
                 cacheName: 'static-resources',
-                expiration: {
-                    maxEntries: 100,
-                    maxAgeSeconds: 30 * 24 * 60 * 60, // 30 天
-                },
-            },
+            }),
         },
         // 3. 图片资源 - CacheFirst 策略（图片永不变更）
         {
             matcher: ({ request, url }) =>
                 request.destination === 'image' && !url.pathname.startsWith('/admin'),
-            handler: 'CacheFirst',
-            options: {
+            handler: new CacheFirst({
                 cacheName: 'images-cache',
-                expiration: {
-                    maxEntries: 200,
-                    maxAgeSeconds: 365 * 24 * 60 * 60, // 1 年
-                },
-            },
+            }),
         },
         // 4. 字体文件 - CacheFirst 策略
         {
             matcher: ({ request, url }) =>
                 request.destination === 'font' && !url.pathname.startsWith('/admin'),
-            handler: 'CacheFirst',
-            options: {
+            handler: new CacheFirst({
                 cacheName: 'fonts-cache',
-                expiration: {
-                    maxEntries: 30,
-                    maxAgeSeconds: 365 * 24 * 60 * 60, // 1 年
-                },
-            },
+            }),
         },
         // 5. API 请求 - NetworkOnly 策略（不缓存）
         {
             matcher: ({ url }) => url.pathname.startsWith('/api/'),
-            handler: 'NetworkOnly',
+            handler: new NetworkOnly(),
         },
         // 6. 用户上传的图片 - CacheFirst 策略（图片永不变更）
         {
             matcher: ({ url }) =>
                 url.pathname.startsWith('/uploads/') && !url.pathname.startsWith('/admin'),
-            handler: 'CacheFirst',
-            options: {
+            handler: new CacheFirst({
                 cacheName: 'user-uploads-cache',
-                expiration: {
-                    maxEntries: 100,
-                    maxAgeSeconds: 365 * 24 * 60 * 60, // 1 年
-                },
-            },
+            }),
         },
     ],
 });

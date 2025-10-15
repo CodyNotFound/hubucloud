@@ -50,7 +50,7 @@ export function SWAutoUpdate() {
                     async () => {
                         await registration.update();
                     },
-                    60 * 60 * 1000,
+                    60 * 60 * 1000
                 );
 
                 return () => clearInterval(interval);
