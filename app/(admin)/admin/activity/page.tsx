@@ -288,7 +288,7 @@ function ActivityManagement() {
 
                         <Textarea
                             label="活动内容"
-                            placeholder="分享你想说的...（类似朋友圈）"
+                            placeholder=""
                             value={formData.content}
                             onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                             minRows={6}
@@ -304,7 +304,7 @@ function ActivityManagement() {
                                 onChange={(images) => setFormData({ ...formData, images })}
                                 onError={(error) => alert(error)}
                                 maxCount={9}
-                                maxSize={10}
+                                maxSize={20}
                             />
                         </div>
 
@@ -366,7 +366,7 @@ function ActivityManagement() {
                                 <li>用户首次打开活动页面时会自动弹窗显示</li>
                                 <li>弹窗在一天内只显示一次</li>
                                 <li>用户可以选择"不再显示"永久关闭当前活动</li>
-                                <li>图片支持JPG、PNG、GIF、WebP格式，最大10MB</li>
+                                <li>图片支持JPG、PNG、GIF、WebP格式，最大20MB</li>
                             </ul>
                         </div>
                     </ModalBody>

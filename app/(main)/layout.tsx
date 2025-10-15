@@ -10,6 +10,7 @@ import { fontSans } from '@/config/fonts';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { BrowserBackHandler } from '@/components/browser-back-handler';
+import { SWAutoUpdate } from '@/components/sw-auto-update';
 
 export const metadata: Metadata = {
     title: {
@@ -19,6 +20,16 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     icons: {
         icon: '/favicon.ico',
+        apple: '/logod.png',
+    },
+    manifest: '/manifest.json',
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: 'default',
+        title: siteConfig.name,
+    },
+    formatDetection: {
+        telephone: false,
     },
 };
 
@@ -47,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 ></Script>
                 <Providers themeProps={{ attribute: 'class', defaultTheme: 'light' }}>
                     <BrowserBackHandler />
+                    <SWAutoUpdate />
                     <div className="relative flex flex-col min-h-screen">
                         <Navbar />
                         <main className="flex-grow w-full px-4 py-4 pt-0 overflow-y-auto">
