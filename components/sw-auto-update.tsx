@@ -15,7 +15,15 @@ export function SWAutoUpdate() {
 
         const handleUpdate = async () => {
             try {
-                const registration = await navigator.serviceWorker.ready;
+                // 注册 Service Worker
+                const registration = await navigator.serviceWorker.register('/sw.js', {
+                    scope: '/',
+                });
+
+                console.log('Service Worker 注册成功:', registration.scope);
+
+                // 等待 Service Worker 准备就绪
+                await navigator.serviceWorker.ready;
 
                 // 监听新的 Service Worker 安装
                 registration.addEventListener('updatefound', () => {

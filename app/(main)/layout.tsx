@@ -25,11 +25,20 @@ export const metadata: Metadata = {
     manifest: '/manifest.json',
     appleWebApp: {
         capable: true,
-        statusBarStyle: 'default',
-        title: siteConfig.name,
+        statusBarStyle: 'black-translucent',
+        title: '湖大萧云',
+        startupImage: [
+            {
+                url: '/logod.png',
+                media: '(device-width: 375px) and (device-height: 812px)',
+            },
+        ],
     },
     formatDetection: {
         telephone: false,
+    },
+    other: {
+        'mobile-web-app-capable': 'yes',
     },
 };
 
