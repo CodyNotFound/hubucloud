@@ -21,6 +21,7 @@ import {
     X,
     Home,
     Calendar,
+    Package,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -46,6 +47,12 @@ const sidebarItems: SidebarItem[] = [
         label: '餐厅管理',
         icon: <Store className="w-5 h-5" />,
         href: '/admin/restaurant',
+    },
+    {
+        key: 'content',
+        label: '其他内容',
+        icon: <Package className="w-5 h-5" />,
+        href: '/admin/content',
     },
     {
         key: 'parttime',

@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
         const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
         const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '10')));
         const type = searchParams.get('type');
+        const types = searchParams.get('types'); // 新增：支持多类型查询（逗号分隔）
         const tags = searchParams.get('tags');
         const ids = searchParams.get('ids'); // 新增：支持按ID查询
         const skip = (page - 1) * limit;
@@ -23,7 +24,14 @@ export async function GET(request: NextRequest) {
             };
         } else {
             // 否则按其他条件查询
-            if (type) {
+            if (types) {
+                // 支持多类型查询（用于餐饮区"全部"分类）
+                const typeArray = types.split(',').filter((t) => t.trim());
+                where.type = {
+                    in: typeArray,
+                };
+            } else if (type) {
+                // 单类型查询
                 where.type = type;
             }
             if (tags) {

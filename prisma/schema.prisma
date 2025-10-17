@@ -37,6 +37,7 @@ model Restaurant {
   latitude            Float
   longitude           Float
   orderQrCode         String?
+  blackCardAccepted   Boolean        @default(false)
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
   locationDescription String         @default("")
@@ -69,6 +70,8 @@ enum RestaurantType {
   fruit
   dessert
   snacks
+  life
+  entertainment
 }
 
 model Activity {

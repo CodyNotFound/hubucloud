@@ -26,26 +26,26 @@ import { PracticalDataTable } from '@/components/common/practical-data-table';
 import { MultiImageUpload, ImageUpload, imageUtils } from '@/components/common/image-upload';
 import { adminService } from '@/services/admin';
 
-export default function RestaurantPage() {
+export default function ContentPage() {
     return (
         <AdminGuard>
-            <RestaurantPageWithLayout />
+            <ContentPageWithLayout />
         </AdminGuard>
     );
 }
 
-function RestaurantPageWithLayout() {
+function ContentPageWithLayout() {
     const { user, adminStats, logout } = useAdmin();
 
     return (
         <AdminLayout user={user || undefined} adminStats={adminStats} onLogout={logout}>
-            <RestaurantManagement />
+            <ContentManagement />
         </AdminLayout>
     );
 }
 
-function RestaurantManagement() {
-    const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+function ContentManagement() {
+    const [contents, setContents] = useState<Restaurant[]>([]);
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedType, setSelectedType] = useState('all');
@@ -70,33 +70,23 @@ function RestaurantManagement() {
         blackCardAccepted: false, // 黑卡可用
     });
 
-    // 餐厅类型选项（仅餐饮类型）
-    const restaurantTypes = ['校园食堂', '主食', '饮品店', '夜市', '水果', '甜品', '小吃'];
+    // 内容类型选项（仅生活和娱乐）
+    const contentTypes = ['生活', '娱乐'];
 
     // 类型映射：前端显示 -> 后端枚举
     const typeMapping = {
-        校园食堂: 'campusfood',
-        主食: 'mainfood',
-        饮品店: 'drinks',
-        夜市: 'nightmarket',
-        水果: 'fruit',
-        甜品: 'dessert',
-        小吃: 'snacks',
+        生活: 'life',
+        娱乐: 'entertainment',
     };
 
     // 反向映射：后端枚举 -> 前端显示
     const reverseTypeMapping = {
-        campusfood: '校园食堂',
-        mainfood: '主食',
-        drinks: '饮品店',
-        nightmarket: '夜市',
-        fruit: '水果',
-        dessert: '甜品',
-        snacks: '小吃',
+        life: '生活',
+        entertainment: '娱乐',
     };
 
-    // 获取餐厅列表
-    const fetchRestaurants = async () => {
+    // 获取内容列表
+    const fetchContents = async () => {
         setLoading(true);
         try {
             // 将筛选类型从中文转换为英文枚举
@@ -111,16 +101,16 @@ function RestaurantManagement() {
                 搜索关键词: searchTerm,
             });
 
-            const response = await adminService.getRestaurantList({
+            const response = await adminService.getContentList({
                 keyword: searchTerm || undefined,
                 type: filterType,
             });
 
             if (response.status === 'success' && response.data) {
-                setRestaurants(response.data.list || []);
+                setContents(response.data.list || []);
             }
         } catch (error) {
-            console.error('获取餐厅列表失败:', error);
+            console.error('获取内容列表失败:', error);
         } finally {
             setLoading(false);
         }
@@ -128,14 +118,14 @@ function RestaurantManagement() {
 
     // 初始加载和搜索/筛选变化时重新获取
     useEffect(() => {
-        fetchRestaurants();
+        fetchContents();
     }, [searchTerm, selectedType]);
 
     // 表格列定义
     const columns = [
         {
             key: 'name',
-            label: '餐厅名称',
+            label: '名称',
             sortable: true,
         },
         {
@@ -221,9 +211,9 @@ function RestaurantManagement() {
         }
 
         try {
-            const response = await adminService.deleteRestaurant(item.id);
+            const response = await adminService.deleteContent(item.id);
             if (response.status === 'success') {
-                await fetchRestaurants(); // 重新加载数据
+                await fetchContents(); // 重新加载数据
                 alert('删除成功！');
             } else {
                 alert('删除失败：' + (response.message || '未知错误'));
@@ -269,9 +259,9 @@ function RestaurantManagement() {
 
             if (editingItem) {
                 // 更新
-                const response = await adminService.updateRestaurant(editingItem.id, submitData);
+                const response = await adminService.updateContent(editingItem.id, submitData);
                 if (response.status === 'success') {
-                    await fetchRestaurants();
+                    await fetchContents();
                     onClose();
                     alert('更新成功！');
                 } else {
@@ -279,9 +269,9 @@ function RestaurantManagement() {
                 }
             } else {
                 // 创建
-                const response = await adminService.createRestaurant(submitData);
+                const response = await adminService.createContent(submitData);
                 if (response.status === 'success') {
-                    await fetchRestaurants();
+                    await fetchContents();
                     onClose();
                     alert('创建成功！');
                 } else {
@@ -300,23 +290,23 @@ function RestaurantManagement() {
         <div>
             {/* 使用新的实用数据表格 */}
             <PracticalDataTable
-                title="餐厅管理"
+                title="其他内容管理"
                 columns={columns}
-                data={restaurants}
+                data={contents}
                 loading={loading}
                 searchPlaceholder="搜索名称或地址..."
                 searchValue={searchTerm}
                 onSearchChange={setSearchTerm}
                 filterOptions={[
                     { key: 'all', label: '全部类型' },
-                    ...restaurantTypes.map((type) => ({ key: type, label: type })),
+                    ...contentTypes.map((type) => ({ key: type, label: type })),
                 ]}
                 filterValue={selectedType}
                 onFilterChange={setSelectedType}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onAdd={handleAdd}
-                addButtonText="添加餐厅"
+                addButtonText="添加内容"
                 emptyMessage="暂无数据"
             />
 
@@ -332,14 +322,14 @@ function RestaurantManagement() {
                     <ModalHeader>
                         <div className="flex items-center gap-2">
                             <Store className="w-5 h-5 text-primary" />
-                            {editingItem ? '编辑餐厅' : '添加餐厅'}
+                            {editingItem ? '编辑内容' : '添加内容'}
                         </div>
                     </ModalHeader>
                     <ModalBody className="gap-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Input
-                                label="餐厅名称"
-                                placeholder="请输入餐厅名称"
+                                label="名称"
+                                placeholder="请输入名称"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 isRequired
@@ -354,7 +344,7 @@ function RestaurantManagement() {
                                     setFormData({ ...formData, type: selected || '' });
                                 }}
                             >
-                                {restaurantTypes.map((type) => (
+                                {contentTypes.map((type) => (
                                     <SelectItem key={type}>{type}</SelectItem>
                                 ))}
                             </Select>
@@ -438,9 +428,7 @@ function RestaurantManagement() {
                                     onError={setUploadError}
                                     maxCount={6}
                                 />
-                                <p className="text-xs text-default-400 mt-1">
-                                    最多上传6张图片
-                                </p>
+                                <p className="text-xs text-default-400 mt-1">最多上传6张图片</p>
                             </div>
 
                             <div className="md:col-span-2">

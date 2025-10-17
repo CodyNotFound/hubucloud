@@ -224,6 +224,80 @@ class AdminService {
         return apiClient.delete(`/api/admin/restaurant/${id}`);
     }
 
+    // ============ 其他内容管理相关方法 ============
+
+    /**
+     * 获取其他内容列表（管理员）- 生活和娱乐
+     */
+    async getContentList(
+        params: {
+            page?: number;
+            limit?: number;
+            keyword?: string;
+            type?: string;
+        } = {}
+    ): Promise<{ status: string; data?: PaginatedResponse<Restaurant>; message?: string }> {
+        const queryParams = new URLSearchParams();
+
+        if (params.page) queryParams.append('page', params.page.toString());
+        if (params.limit) queryParams.append('limit', params.limit.toString());
+        if (params.keyword) queryParams.append('keyword', params.keyword);
+        if (params.type) queryParams.append('type', params.type);
+
+        const query = queryParams.toString();
+        return apiClient.get(`/api/admin/content${query ? `?${query}` : ''}`);
+    }
+
+    /**
+     * 创建其他内容（管理员）- 生活和娱乐
+     */
+    async createContent(data: {
+        name: string;
+        address: string;
+        phone: string;
+        description: string;
+        type: string;
+        cover: string;
+        openTime: string;
+        latitude: number;
+        longitude: number;
+        tags?: string[];
+        preview?: string[];
+        rating?: number;
+    }): Promise<{ status: string; data?: Restaurant; message?: string }> {
+        return apiClient.post('/api/admin/content', data);
+    }
+
+    /**
+     * 更新其他内容信息（管理员）- 生活和娱乐
+     */
+    async updateContent(
+        id: string,
+        data: {
+            name?: string;
+            address?: string;
+            phone?: string;
+            description?: string;
+            type?: string;
+            cover?: string;
+            openTime?: string;
+            latitude?: number;
+            longitude?: number;
+            tags?: string[];
+            preview?: string[];
+            rating?: number;
+        }
+    ): Promise<{ status: string; data?: Restaurant; message?: string }> {
+        return apiClient.put(`/api/admin/content/${id}`, data);
+    }
+
+    /**
+     * 删除其他内容（管理员）- 生活和娱乐
+     */
+    async deleteContent(id: string): Promise<{ status: string; data?: null; message?: string }> {
+        return apiClient.delete(`/api/admin/content/${id}`);
+    }
+
     // ============ 活动管理相关方法 ============
 
     /**

@@ -10,7 +10,9 @@ export type RestaurantType =
     | 'nightmarket'
     | 'fruit'
     | 'dessert'
-    | 'snacks';
+    | 'snacks'
+    | 'life'
+    | 'entertainment';
 
 // 餐厅类型中文名称映射
 export const RestaurantTypeLabels: Record<RestaurantType, string> = {
@@ -21,6 +23,8 @@ export const RestaurantTypeLabels: Record<RestaurantType, string> = {
     fruit: '水果',
     dessert: '甜品',
     snacks: '小吃',
+    life: '生活',
+    entertainment: '娱乐',
 };
 
 export interface Restaurant {
@@ -37,6 +41,7 @@ export interface Restaurant {
     rating: number;
     locationDescription: string;
     orderQrCode?: string; // 点餐码图片URL
+    blackCardAccepted?: boolean; // 是否支持黑卡
     createdAt?: string;
     updatedAt?: string;
     distance?: number; // 计算出的距离
@@ -55,6 +60,7 @@ export interface CreateRestaurantData {
     rating: number;
     locationDescription: string;
     orderQrCode?: string; // 点餐码图片URL
+    blackCardAccepted?: boolean; // 是否支持黑卡
 }
 
 export interface UpdateRestaurantData {
@@ -70,6 +76,7 @@ export interface UpdateRestaurantData {
     rating?: number;
     locationDescription?: string;
     orderQrCode?: string; // 点餐码图片URL
+    blackCardAccepted?: boolean; // 是否支持黑卡
 }
 
 export interface RestaurantQuery {

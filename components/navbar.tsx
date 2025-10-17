@@ -24,10 +24,12 @@ import {
     Briefcase,
     User,
     Car,
+    Gamepad2,
 } from 'lucide-react';
 
 import { siteConfig } from '@/config/site';
 import { ThemeSwitch } from '@/components/theme-switch';
+import { InstallButton } from '@/components/pwa-install-prompt';
 
 // 图标映射
 const iconMap = {
@@ -40,6 +42,7 @@ const iconMap = {
     Briefcase,
     User,
     Car,
+    Gamepad2,
 } as const;
 
 export const Navbar = () => {
@@ -98,7 +101,8 @@ export const Navbar = () => {
                 })}
             </NavbarContent>
 
-            <NavbarContent className="basis-1 pl-4" justify="end">
+            <NavbarContent className="basis-1 pl-4 gap-2" justify="end">
+                <InstallButton />
                 <ThemeSwitch />
                 <NavbarMenuToggle className="lg:hidden" />
             </NavbarContent>

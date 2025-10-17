@@ -1,3 +1,9 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+---
+
 # 湖大萧云项目 - Claude AI 指导文档
 
 ## 项目概述
@@ -8,8 +14,11 @@
 
 - **框架**: Next.js 15 (App Router)
 - **UI库**: HeroUI (基于React Aria)
+- **数据库**: PostgreSQL + Prisma ORM
+- **认证**: JWT (jsonwebtoken)
 - **样式**: Tailwind CSS
 - **图标**: Lucide React (优先使用)
+- **PWA**: Serwist (Service Worker)
 - **包管理器**: Bun (永远不要使用npm)
 - **语言**: TypeScript + 简体中文
 
@@ -149,20 +158,171 @@ export default function PageName() {
 
 ## 常用命令
 
+### 开发与构建
+
 ```bash
-# 开发
+# 开发服务器 (使用 Turbopack)
 bun run dev
 
-# 构建
+# 生产构建 (会自动运行 lint 和 prisma generate)
 bun run build
 
-# 代码检查
+# 启动生产服务器 (端口 13000)
+bun run start
+
+# 代码检查与自动修复
 bun run lint
 
 # 安装依赖
 bun add <package-name>
 ```
 
+### 数据库管理
+
+```bash
+# 生成 Prisma Client
+bun run db:generate
+
+# 推送 schema 变更到数据库 (无需迁移文件)
+bun run db:push
+
+# 打开 Prisma Studio (数据库可视化工具)
+bun run db:studio
+```
+
+### 数据库管理脚本
+
+```bash
+# 用户管理
+bun run add-user          # 添加新用户
+bun run list-users        # 列出所有用户
+bun run reset-password    # 重置用户密码
+
+# 数据备份与恢复
+bun run backup            # 备份数据库
+bun run restore           # 恢复数据库
+
+# 数据迁移工具
+bun run fix-covers        # 修复餐厅封面图
+bun run migrate-images    # 迁移图片 URL
+```
+
+## 核心架构
+
+### 目录结构
+
+```
+/
+├── app/
+│   ├── (main)/              # 主应用路由组 (带导航栏和页脚)
+│   │   ├── layout.tsx       # 统一布局 (Navbar + Footer + 全局间距)
+│   │   ├── page.tsx         # 首页
+│   │   ├── food/            # 美食页面
+│   │   ├── activity/        # 活动页面
+│   │   ├── jobs/            # 兼职页面
+│   │   └── ...              # 其他功能页面
+│   ├── (admin)/             # 管理后台路由组
+│   │   └── admin/           # 管理页面
+│   ├── api/                 # API 路由
+│   │   ├── users/           # 用户相关 API
+│   │   ├── admin/           # 管理员 API (需要认证)
+│   │   ├── restaurants/     # 餐厅 API
+│   │   ├── parttime/        # 兼职 API
+│   │   ├── activity/        # 活动 API
+│   │   └── upload/          # 文件上传 API
+│   └── sw.ts                # Service Worker 配置
+├── components/              # React 组件
+│   ├── navbar.tsx           # 全局导航栏
+│   ├── footer.tsx           # 全局页脚
+│   └── ...
+├── lib/                     # 核心工具库
+│   ├── db.ts                # Prisma 数据库实例
+│   ├── jwt.ts               # JWT 工具类 (生成/验证 token)
+│   ├── auth.ts              # 认证中间件 (authenticateRequest/requireAuth/requireAdmin)
+│   ├── response.ts          # API 响应工具
+│   └── search-utils.ts      # 搜索工具 (支持拼音搜索)
+├── services/                # 前端服务层
+│   ├── api-client.ts        # HTTP 客户端 (统一请求封装)
+│   ├── api.ts               # API 调用封装
+│   └── admin.ts             # 管理员相关 API
+├── types/                   # TypeScript 类型定义
+├── config/                  # 配置文件
+│   ├── site.ts              # 站点配置 (导航菜单等)
+│   └── fonts.ts             # 字体配置
+├── scripts/                 # 管理脚本
+├── prisma/
+│   └── schema.prisma        # 数据库模型定义
+└── public/                  # 静态资源
+```
+
+### API 认证架构
+
+项目使用 JWT 进行认证，认证流程：
+
+1. **登录**: `POST /api/users/login` 返回 JWT token
+2. **前端存储**: token 存储在 `localStorage.auth_token`
+3. **请求认证**: 通过 `Authorization: Bearer <token>` 头传递
+4. **服务端验证**: 使用 [lib/auth.ts](lib/auth.ts) 中的认证中间件
+
+#### 认证中间件使用
+
+```typescript
+// lib/auth.ts 提供三个认证函数
+import { authenticateRequest, requireAuth, requireAdmin } from '@/lib/auth';
+
+// 1. authenticateRequest - 可选认证 (返回 null 或用户信息)
+const user = await authenticateRequest(request);
+
+// 2. requireAuth - 必需认证 (未登录抛出 UNAUTHORIZED)
+const user = await requireAuth(request);
+
+// 3. requireAdmin - 必需管理员 (非管理员抛出 FORBIDDEN)
+const admin = await requireAdmin(request);
+```
+
+### 数据库模型
+
+主要模型 (详见 [prisma/schema.prisma](prisma/schema.prisma)):
+
+- **User**: 用户表 (包含学生信息)
+- **Restaurant**: 餐厅表 (包含位置、类型、标签等)
+- **Parttime**: 兼职信息表
+- **Activity**: 活动表
+
+### PWA 配置
+
+- Service Worker 使用 Serwist 管理
+- 配置文件: [app/sw.ts](app/sw.ts)
+- 构建配置: [next.config.js](next.config.js)
+- 开发环境下 SW 功能被禁用
+- 排除大文件 (图片、视频) 避免过度缓存
+
+### TypeScript 路径别名
+
+项目使用 `@/*` 作为根目录别名:
+
+```typescript
+import { db } from '@/lib/db';
+import { Navbar } from '@/components/navbar';
+import { siteConfig } from '@/config/site';
+```
+
+## 环境变量
+
+项目需要在 `.env` 文件中配置以下变量:
+
+```bash
+# 数据库连接
+DATABASE_URL="postgresql://user:password@localhost:5432/hubu"
+
+# JWT 配置
+JWT_SECRET="your-secret-key"
+JWT_EXPIRES_IN="7d"
+
+# API 基础 URL (可选)
+NEXT_PUBLIC_API_BASE_URL=""
+```
+
 ---
 
-最后更新: 2025-01-11
+最后更新: 2025-01-17

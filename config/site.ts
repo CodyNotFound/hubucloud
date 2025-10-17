@@ -31,6 +31,16 @@ export const siteConfig = {
             icon: 'UtensilsCrossed',
         },
         {
+            label: '生活',
+            href: '/life',
+            icon: 'Home',
+        },
+        {
+            label: '娱乐',
+            href: '/entertainment',
+            icon: 'Gamepad2',
+        },
+        {
             label: '兼职',
             href: '/jobs',
             icon: 'Briefcase',
@@ -62,6 +72,14 @@ export const siteConfig = {
         {
             label: '美食',
             href: '/food',
+        },
+        {
+            label: '生活',
+            href: '/life',
+        },
+        {
+            label: '娱乐',
+            href: '/entertainment',
         },
         {
             label: '兼职',

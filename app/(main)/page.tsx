@@ -16,6 +16,8 @@ import {
     Calendar,
     X,
     EyeOff,
+    Home as HomeIcon,
+    Gamepad2,
 } from 'lucide-react';
 import { Modal, ModalContent, ModalBody, Button } from '@heroui/react';
 
@@ -67,6 +69,20 @@ const services = [
         title: '美食',
         description: '校园周边美食',
         color: 'bg-orange-50 hover:bg-orange-100 text-orange-600',
+    },
+    {
+        href: '/life',
+        icon: HomeIcon,
+        title: '生活',
+        description: '生活好物推荐',
+        color: 'bg-amber-50 hover:bg-amber-100 text-amber-600',
+    },
+    {
+        href: '/entertainment',
+        icon: Gamepad2,
+        title: '娱乐',
+        description: '放松身心好去处',
+        color: 'bg-violet-50 hover:bg-violet-100 text-violet-600',
     },
     {
         href: '/jobs',
@@ -226,27 +242,16 @@ export default function Home() {
                     onClose={() => setModalActivity(null)}
                     size="2xl"
                     scrollBehavior="inside"
+                    hideCloseButton
                     classNames={{
-                        base: 'mx-4',
+                        base: 'mx-4 mt-16',
+                        body: 'p-4',
                     }}
                 >
                     <ModalContent>
-                        <ModalBody className="p-6">
-                            {/* 头部 */}
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-semibold">
-                                        湖
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">湖大萧云</p>
-                                        <p className="text-xs text-default-500">
-                                            {new Date(modalActivity.createdAt).toLocaleString(
-                                                'zh-CN'
-                                            )}
-                                        </p>
-                                    </div>
-                                </div>
+                        <ModalBody>
+                            {/* 关闭按钮 */}
+                            <div className="flex justify-end mb-2">
                                 <Button
                                     isIconOnly
                                     size="sm"

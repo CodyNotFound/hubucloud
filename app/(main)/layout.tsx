@@ -11,6 +11,7 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { BrowserBackHandler } from '@/components/browser-back-handler';
 import { SWAutoUpdate } from '@/components/sw-auto-update';
+import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
 
 export const metadata: Metadata = {
     title: {
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Providers themeProps={{ attribute: 'class', defaultTheme: 'light' }}>
                     <BrowserBackHandler />
                     <SWAutoUpdate />
+                    <PWAInstallPrompt />
                     <div className="relative flex flex-col min-h-screen">
                         <Navbar />
                         <main className="flex-grow w-full px-4 py-4 pt-0 overflow-y-auto">
