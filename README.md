@@ -1,53 +1,118 @@
-# Next.js & HeroUI Template
+# 湖大萧云
 
-This is a template for creating applications using Next.js 14 (app directory) and HeroUI (v2).
+校园生活服务平台，基于 Next.js 15 + HeroUI v2 + Prisma + PostgreSQL 构建。
 
-[Try it on CodeSandbox](https://githubbox.com/heroui-inc/heroui/next-app-template)
+## 快速开始
 
-## Technologies Used
-
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [HeroUI v2](https://heroui.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
-
-## How to Use
-
-### Use the template with create-next-app
-
-To create a new project based on this template using `create-next-app`, run the following command:
+### 安装依赖
 
 ```bash
-npx create-next-app -e https://github.com/heroui-inc/next-app-template
+bun install
 ```
 
-### Install dependencies
+### 配置环境变量
 
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
+复制 `.env.example` 为 `.env` 并配置：
+
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
+JWT_SECRET="your-secret-key"
+```
+
+### 初始化数据库
 
 ```bash
-npm install
+bun db:push
 ```
 
-### Run the development server
+### 启动开发服务器
 
 ```bash
-npm run dev
+bun dev
 ```
 
-### Setup pnpm (optional)
+访问 http://localhost:3000
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
+## 生产部署
+
+### 构建
 
 ```bash
-public-hoist-pattern[]=*@heroui/*
+bun run build
 ```
 
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
+### 启动生产服务器
 
-## License
+```bash
+bun start
+```
 
-Licensed under the [MIT license](https://github.com/heroui-inc/next-app-template/blob/main/LICENSE).
+默认端口为 13000。
+
+### 使用 PM2
+
+```bash
+pm2 start ecosystem.config.cjs --env production
+pm2 save
+pm2 startup
+```
+
+## 数据库管理
+
+### 备份数据库
+
+```bash
+bun backup
+```
+
+### 恢复数据库
+
+```bash
+bun restore
+```
+
+## 用户管理
+
+### 添加用户
+
+```bash
+bun add-user
+```
+
+### 重置密码
+
+```bash
+bun reset-password
+```
+
+### 查看所有用户
+
+```bash
+bun list-users
+```
+
+## 维护脚本
+
+```bash
+# 清理未使用的图片
+bun clean-images
+
+# 修复餐厅封面图
+bun fix-covers
+
+# 迁移图片 URL
+bun migrate-images
+```
+
+## 技术栈
+
+- **框架**: Next.js 15 (App Router)
+- **UI**: HeroUI v2, Tailwind CSS
+- **数据库**: PostgreSQL + Prisma ORM
+- **认证**: JWT
+- **PWA**: @serwist/next
+- **部署**: PM2
+
+## 许可证
+
+MIT

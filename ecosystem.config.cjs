@@ -4,7 +4,7 @@ module.exports = {
             name: 'hubu-dev',
             script: 'npm',
             args: 'run dev',
-            cwd: '/Users/cody/Code/hubu',
+            cwd: '.',
             instances: 1,
             autorestart: true,
             watch: false,
