@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  user      String   @unique
+  password  String
+  role      Role     @default(USER)
+  name      String
+  avatar    String
+  phone     String
+  studentId String   @unique
+  major     String
+  grade     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Restaurant {
+  id                  String         @id @default(cuid())
+  name                String
+  address             String
+  phone               String?
+  description         String
+  type                RestaurantType
+  cover               String
+  tags                String[]
+  preview             String[]
+  openTime            String
+  rating              Float
+  latitude            Float
+  longitude           Float
+  orderQrCode         String?
+  blackCardAccepted   Boolean        @default(false)
+  menuText            String         @default("")
+  menuImages          String[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  locationDescription String         @default("")
+}
+
+model Parttime {
+  id           String   @id @default(cuid())
+  type         String
+  salary       String
+  location     String
+  name         String
+  description  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  contact      String
+  requirements String?
+  worktime     String
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum RestaurantType {
+  campusfood
+  mainfood
+  drinks
+  nightmarket
+  fruit
+  dessert
+  snacks
+  life
+  entertainment
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  images    String[]
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,68 @@
+{
+    "name": "湖大萧云 - 湖北大学校园生活平台",
+    "short_name": "湖大萧云",
+    "description": "湖北大学学生服务的校园生活平台，提供论坛、活动、快递、跳蚤市场、失物招领、兼职等服务",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#007850",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/favicon.ico",
+            "sizes": "64x64",
+            "type": "image/x-icon"
+        },
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-512-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "categories": ["education", "lifestyle", "social"],
+    "screenshots": [],
+    "shortcuts": [
+        {
+            "name": "活动专区",
+            "short_name": "活动",
+            "description": "查看校园活动",
+            "url": "/activity",
+            "icons": []
+        },
+        {
+            "name": "论坛",
+            "short_name": "论坛",
+            "description": "校园论坛讨论",
+            "url": "/forum",
+            "icons": []
+        },
+        {
+            "name": "美食",
+            "short_name": "美食",
+            "description": "校园美食推荐",
+            "url": "/food",
+            "icons": []
+        },
+        {
+            "name": "兼职",
+            "short_name": "兼职",
+            "description": "查找兼职信息",
+            "url": "/jobs",
+            "icons": []
+        }
+    ],
+    "prefer_related_applications": false
+}

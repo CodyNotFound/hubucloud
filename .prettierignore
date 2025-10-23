@@ -1,0 +1,29 @@
+*.js
+node_modules/
+.next/
+out/
+dist/
+build/
+.turbo/
+
+# 图片和媒体文件
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+*.ico
+*.mp4
+*.webm
+*.ogg
+*.mp3
+*.wav
+
+# 上传目录
+uploads/
+
+# 其他二进制文件
+*.pdf
+*.zip
+*.tar.gz
