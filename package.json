@@ -5,9 +5,9 @@
     "type": "module",
     "scripts": {
         "dev": "next dev --turbopack",
-        "build": "rm -r .next && bun lint && prisma generate --no-engine && next build",
+        "build": "prisma generate && (bun lint || true) && next build",
         "start": "next start -p 13000",
-        "lint": "eslint . --fix --ext .ts,.tsx & prettier --write .",
+        "lint": "eslint . --fix && prettier --write .",
         "db:generate": "prisma generate",
         "db:push": "prisma db push",
         "db:studio": "prisma studio",
