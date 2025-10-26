@@ -15,7 +15,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         const { id } = await params;
 
         const body = await request.json();
-        const { content, images, enabled } = body;
+        const { title, content, images, enabled, type, imageUrl, buttonText, autoOpen } = body;
 
         // 检查活动是否存在
         const existingActivity = await db.activity.findUnique({
@@ -29,9 +29,14 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         const activity = await db.activity.update({
             where: { id },
             data: {
+                ...(title !== undefined && { title }),
                 ...(content !== undefined && { content }),
                 ...(images !== undefined && { images }),
                 ...(enabled !== undefined && { enabled }),
+                ...(type !== undefined && { type }),
+                ...(imageUrl !== undefined && { imageUrl }),
+                ...(buttonText !== undefined && { buttonText }),
+                ...(autoOpen !== undefined && { autoOpen }),
             },
         });
 
