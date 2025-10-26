@@ -18,6 +18,7 @@ import {
     EyeOff,
     Home as HomeIcon,
     Gamepad2,
+    Sparkles,
 } from 'lucide-react';
 import { Modal, ModalContent, ModalBody, Button, useDisclosure } from '@heroui/react';
 
@@ -106,12 +107,25 @@ const services = [
         description: '驾校报名服务',
         color: 'bg-green-50 hover:bg-green-100 text-green-600',
     },
+    {
+        href: '#',
+        icon: Sparkles,
+        title: '到梦空间',
+        description: '校园活动',
+        color: 'bg-pink-50 hover:bg-pink-100 text-pink-600',
+        isComingSoon: true,
+    },
 ];
 
 export default function Home() {
     const [modalActivity, setModalActivity] = useState<Activity | null>(null);
     const [pendingUrl, setPendingUrl] = useState<string | null>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const {
+        isOpen: isComingSoonOpen,
+        onOpen: onComingSoonOpen,
+        onClose: onComingSoonClose,
+    } = useDisclosure();
 
     useEffect(() => {
         // 首页加载时检查是否需要显示活动弹窗
@@ -170,12 +184,24 @@ export default function Home() {
     };
 
     // 处理外部链接点击
-    const handleServiceClick = (e: React.MouseEvent, href: string) => {
+    const handleServiceClick = (e: React.MouseEvent, href: string, isComingSoon?: boolean) => {
+        // 处理"开发中"功能
+        if (isComingSoon) {
+            e.preventDefault();
+            onComingSoonOpen();
+            return;
+        }
         // 判断是否为外部链接
         if (href.startsWith('http://') || href.startsWith('https://')) {
             e.preventDefault();
-            setPendingUrl(href);
-            onOpen();
+            // 只有校园网登录需要提示
+            if (href.startsWith('http://122.204.223.188/')) {
+                setPendingUrl(href);
+                onOpen();
+            } else {
+                // 其他外部链接直接打开
+                window.open(href, '_blank');
+            }
         }
     };
 
@@ -217,7 +243,13 @@ export default function Home() {
                                     <Link
                                         key={service.href}
                                         href={service.href}
-                                        onClick={(e) => handleServiceClick(e, service.href)}
+                                        onClick={(e) =>
+                                            handleServiceClick(
+                                                e,
+                                                service.href,
+                                                (service as any).isComingSoon
+                                            )
+                                        }
                                         className={`
                                             rounded-xl p-4 md:p-6 lg:p-8 text-center
                                             transition-all duration-300
@@ -345,6 +377,28 @@ export default function Home() {
                 onConfirm={handleConfirmNavigation}
                 targetUrl={pendingUrl || undefined}
             />
+
+            {/* 开发中提示弹窗 */}
+            <Modal isOpen={isComingSoonOpen} onClose={onComingSoonClose} size="sm">
+                <ModalContent>
+                    <ModalBody className="py-6">
+                        <div className="text-center space-y-4">
+                            <div className="flex justify-center">
+                                <div className="p-4 bg-pink-50 rounded-full">
+                                    <Sparkles size={32} className="text-pink-600" />
+                                </div>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">功能开发中</h3>
+                                <p className="text-default-600 text-sm">敬请期待...</p>
+                            </div>
+                            <Button color="primary" onPress={onComingSoonClose} className="w-full">
+                                知道了
+                            </Button>
+                        </div>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
         </>
     );
 }

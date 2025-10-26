@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useRef, useCallback, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardBody, Chip, Pagination, Input } from '@heroui/react';
 import { MapPin, Star, Loader2, Search } from 'lucide-react';
 
@@ -44,15 +44,20 @@ const fetchRestaurants = async (endpoint: string, params: Record<string, any> = 
 
 const categories = ['全部', '校园食堂', '主食', '饮品店', '夜市', '水果', '甜品', '小吃'];
 
-export default function FoodPage() {
+function FoodPageContent() {
     const router = useRouter();
-    const [selectedCategory, setSelectedCategory] = useState('全部');
-    const [currentPage, setCurrentPage] = useState(1);
+    const searchParams = useSearchParams();
+
+    // 从 URL 初始化状态
+    const [selectedCategory, setSelectedCategory] = useState(
+        searchParams.get('category') || '全部'
+    );
+    const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page')) || 1);
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
-    const [searchKeyword, setSearchKeyword] = useState(''); // 搜索关键词（实际生效的）
-    const [searchInput, setSearchInput] = useState(''); // 搜索输入框的值（用于防抖）
+    const [searchKeyword, setSearchKeyword] = useState(searchParams.get('q') || ''); // 搜索关键词（实际生效的）
+    const [searchInput, setSearchInput] = useState(searchParams.get('q') || ''); // 搜索输入框的值（用于防抖）
     const [searchData, setSearchData] = useState<RestaurantSearchItem[]>([]); // 搜索索引数据（轻量级）
     const [searchDataLoading, setSearchDataLoading] = useState(true);
     const itemsPerPage = 10;
@@ -60,6 +65,41 @@ export default function FoodPage() {
     // 使用ref跟踪上一次的分类,用于检测分类是否变化
     const prevCategoryRef = useRef(selectedCategory);
     const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null); // 防抖定时器
+
+    // 更新 URL 参数的辅助函数
+    const updateURL = useCallback(
+        (updates: { category?: string; page?: number; q?: string }) => {
+            const params = new URLSearchParams(searchParams.toString());
+
+            if (updates.category !== undefined) {
+                if (updates.category === '全部') {
+                    params.delete('category');
+                } else {
+                    params.set('category', updates.category);
+                }
+            }
+
+            if (updates.page !== undefined) {
+                if (updates.page === 1) {
+                    params.delete('page');
+                } else {
+                    params.set('page', updates.page.toString());
+                }
+            }
+
+            if (updates.q !== undefined) {
+                if (updates.q === '') {
+                    params.delete('q');
+                } else {
+                    params.set('q', updates.q);
+                }
+            }
+
+            const newURL = params.toString() ? `?${params.toString()}` : '/food';
+            router.replace(newURL, { scroll: false });
+        },
+        [router, searchParams]
+    );
 
     // 首次加载：获取搜索索引数据（仅用于拼音搜索）
     useEffect(() => {
@@ -228,7 +268,8 @@ export default function FoodPage() {
     const handleSearchDebounce = useCallback(() => {
         setSearchKeyword(searchInput);
         setCurrentPage(1); // 搜索时重置页码
-    }, [searchInput]);
+        updateURL({ q: searchInput, page: 1 });
+    }, [searchInput, updateURL]);
 
     useEffect(() => {
         // 清除之前的定时器
@@ -253,7 +294,8 @@ export default function FoodPage() {
     const handleCategoryChange = (category: string) => {
         if (category !== selectedCategory) {
             setSelectedCategory(category);
-            // 页码重置会在useEffect中自动处理
+            setCurrentPage(1);
+            updateURL({ category, page: 1 });
         }
     };
 
@@ -266,6 +308,7 @@ export default function FoodPage() {
     const handleClearSearch = () => {
         setSearchInput('');
         setSearchKeyword('');
+        updateURL({ q: '' });
     };
 
     const totalPages = Math.ceil(total / itemsPerPage);
@@ -501,7 +544,10 @@ export default function FoodPage() {
                             showControls
                             total={totalPages}
                             page={currentPage}
-                            onChange={setCurrentPage}
+                            onChange={(page) => {
+                                setCurrentPage(page);
+                                updateURL({ page });
+                            }}
                             color="primary"
                             size="sm"
                         />
@@ -509,5 +555,20 @@ export default function FoodPage() {
                 )}
             </section>
         </>
+    );
+}
+
+export default function FoodPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="text-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+                    <p className="text-default-500">加载中...</p>
+                </div>
+            }
+        >
+            <FoodPageContent />
+        </Suspense>
     );
 }

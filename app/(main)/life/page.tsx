@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useRef, useCallback, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardBody, Chip, Pagination, Input } from '@heroui/react';
 import { MapPin, Star, Loader2, Search } from 'lucide-react';
 
@@ -31,19 +31,49 @@ const fetchRestaurants = async (endpoint: string, params: Record<string, any> = 
     }
 };
 
-export default function LifePage() {
+function LifePageContent() {
     const router = useRouter();
-    const [currentPage, setCurrentPage] = useState(1);
+    const searchParams = useSearchParams();
+
+    // 从 URL 初始化状态
+    const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page')) || 1);
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
-    const [searchKeyword, setSearchKeyword] = useState('');
-    const [searchInput, setSearchInput] = useState('');
+    const [searchKeyword, setSearchKeyword] = useState(searchParams.get('q') || '');
+    const [searchInput, setSearchInput] = useState(searchParams.get('q') || '');
     const [searchData, setSearchData] = useState<RestaurantSearchItem[]>([]);
     const [searchDataLoading, setSearchDataLoading] = useState(true);
     const itemsPerPage = 10;
 
     const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // 更新 URL 参数的辅助函数
+    const updateURL = useCallback(
+        (updates: { page?: number; q?: string }) => {
+            const params = new URLSearchParams(searchParams.toString());
+
+            if (updates.page !== undefined) {
+                if (updates.page === 1) {
+                    params.delete('page');
+                } else {
+                    params.set('page', updates.page.toString());
+                }
+            }
+
+            if (updates.q !== undefined) {
+                if (updates.q === '') {
+                    params.delete('q');
+                } else {
+                    params.set('q', updates.q);
+                }
+            }
+
+            const newURL = params.toString() ? `?${params.toString()}` : '/life';
+            router.replace(newURL, { scroll: false });
+        },
+        [router, searchParams]
+    );
 
     // 首次加载：获取搜索数据并缓存到本地
     useEffect(() => {
@@ -192,7 +222,8 @@ export default function LifePage() {
     const handleSearchDebounce = useCallback(() => {
         setSearchKeyword(searchInput);
         setCurrentPage(1);
-    }, [searchInput]);
+        updateURL({ q: searchInput, page: 1 });
+    }, [searchInput, updateURL]);
 
     useEffect(() => {
         if (searchTimeoutRef.current) {
@@ -217,6 +248,7 @@ export default function LifePage() {
     const handleClearSearch = () => {
         setSearchInput('');
         setSearchKeyword('');
+        updateURL({ q: '' });
     };
 
     const totalPages = Math.ceil(total / itemsPerPage);
@@ -434,7 +466,10 @@ export default function LifePage() {
                             showControls
                             total={totalPages}
                             page={currentPage}
-                            onChange={setCurrentPage}
+                            onChange={(page) => {
+                                setCurrentPage(page);
+                                updateURL({ page });
+                            }}
                             color="primary"
                             size="sm"
                         />
@@ -442,5 +477,20 @@ export default function LifePage() {
                 )}
             </section>
         </>
+    );
+}
+
+export default function LifePage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="text-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+                    <p className="text-default-500">加载中...</p>
+                </div>
+            }
+        >
+            <LifePageContent />
+        </Suspense>
     );
 }
