@@ -5,7 +5,6 @@ import type { Activity } from '@/types/activity';
 import { useState, useEffect } from 'react';
 import {
     Button,
-    Input,
     Textarea,
     Modal,
     ModalContent,
@@ -15,8 +14,6 @@ import {
     useDisclosure,
     Switch,
     Chip,
-    Select,
-    SelectItem,
 } from '@heroui/react';
 import { Calendar } from 'lucide-react';
 
