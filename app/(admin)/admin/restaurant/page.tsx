@@ -24,7 +24,6 @@ import QrScanner from 'qr-scanner';
 import { AdminGuard } from '@/components/common/admin-guard';
 import AdminLayout from '@/components/layouts/admin-layout';
 import { useAdmin } from '@/hooks/use-admin';
-import { usePaginatedData } from '@/hooks/usePaginatedData';
 import { PracticalDataTable } from '@/components/common/practical-data-table';
 import { MultiImageUpload, ImageUpload, imageUtils } from '@/components/common/image-upload';
 import { adminService } from '@/services/admin';
@@ -48,6 +47,8 @@ function RestaurantPageWithLayout() {
 }
 
 function RestaurantManagement() {
+    const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+    const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedType, setSelectedType] = useState('all');
     const [editingItem, setEditingItem] = useState<Restaurant | null>(null);
@@ -58,22 +59,6 @@ function RestaurantManagement() {
     );
     const [qrScanMessage, setQrScanMessage] = useState<string>('');
     const { isOpen, onOpen, onClose } = useDisclosure();
-
-    // 使用分页 Hook
-    const {
-        data: restaurants,
-        loading,
-        total,
-        currentPage,
-        goToPage,
-        refresh,
-        updateFilters,
-    } = usePaginatedData<Restaurant>({
-        fetchFn: (params) => adminService.getRestaurantList(params),
-        itemsPerPage: 10,
-        dataKey: 'list',
-        initialFilters: {},
-    });
 
     // 表单数据
     const [formData, setFormData] = useState({
@@ -119,29 +104,34 @@ function RestaurantManagement() {
         snacks: '小吃',
     };
 
-    // 处理搜索变化
-    const handleSearchChange = (value: string) => {
-        setSearchTerm(value);
-        const filterType =
-            selectedType !== 'all'
-                ? typeMapping[selectedType as keyof typeof typeMapping] || selectedType
-                : undefined;
-        updateFilters({
-            keyword: value || undefined,
-            type: filterType,
-        });
+    // 获取餐厅列表
+    const fetchRestaurants = async () => {
+        setLoading(true);
+        try {
+            const filterType =
+                selectedType !== 'all'
+                    ? typeMapping[selectedType as keyof typeof typeMapping] || selectedType
+                    : undefined;
+
+            const response = await adminService.getRestaurantList({
+                keyword: searchTerm || undefined,
+                type: filterType,
+            });
+
+            if (response.status === 'success' && response.data) {
+                setRestaurants(response.data.list || []);
+            }
+        } catch (error) {
+            console.error('获取餐厅列表失败:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    // 处理筛选类型变化
-    const handleFilterChange = (value: string) => {
-        setSelectedType(value);
-        const filterType =
-            value !== 'all' ? typeMapping[value as keyof typeof typeMapping] || value : undefined;
-        updateFilters({
-            keyword: searchTerm || undefined,
-            type: filterType,
-        });
-    };
+    // 初始加载和搜索/筛选变化时重新获取
+    useEffect(() => {
+        fetchRestaurants();
+    }, [searchTerm, selectedType]);
 
     // 表格列定义
     const columns = [
@@ -241,7 +231,7 @@ function RestaurantManagement() {
         try {
             const response = await adminService.deleteRestaurant(item.id);
             if (response.status === 'success') {
-                refresh(); // 刷新当前页数据
+                await fetchRestaurants(); // 重新加载数据
                 alert('删除成功！');
             } else {
                 alert('删除失败：' + (response.message || '未知错误'));
@@ -353,7 +343,7 @@ function RestaurantManagement() {
                 // 更新
                 const response = await adminService.updateRestaurant(editingItem.id, submitData);
                 if (response.status === 'success') {
-                    refresh();
+                    await fetchRestaurants();
                     onClose();
                     alert('更新成功！');
                 } else {
@@ -363,7 +353,7 @@ function RestaurantManagement() {
                 // 创建
                 const response = await adminService.createRestaurant(submitData);
                 if (response.status === 'success') {
-                    refresh();
+                    await fetchRestaurants();
                     onClose();
                     alert('创建成功！');
                 } else {
@@ -388,23 +378,18 @@ function RestaurantManagement() {
                 loading={loading}
                 searchPlaceholder="搜索名称或地址..."
                 searchValue={searchTerm}
-                onSearchChange={handleSearchChange}
+                onSearchChange={setSearchTerm}
                 filterOptions={[
                     { key: 'all', label: '全部类型' },
                     ...restaurantTypes.map((type) => ({ key: type, label: type })),
                 ]}
                 filterValue={selectedType}
-                onFilterChange={handleFilterChange}
+                onFilterChange={setSelectedType}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onAdd={handleAdd}
                 addButtonText="添加餐厅"
                 emptyMessage="暂无数据"
-                enablePagination={true}
-                total={total}
-                page={currentPage}
-                pageSize={10}
-                onPageChange={goToPage}
             />
 
             {/* 表单弹窗 */}
