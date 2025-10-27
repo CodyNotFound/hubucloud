@@ -2,7 +2,7 @@
 
 import type { ApiResponse, FilterParams } from '@/types';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface PaginatedDataOptions<T> {
     /** API获取函数 */
@@ -15,8 +15,6 @@ interface PaginatedDataOptions<T> {
     dataKey?: string;
     /** 初始筛选参数 */
     initialFilters?: FilterParams;
-    /** 依赖项数组，当这些值变化时重新加载数据 */
-    dependencies?: any[];
 }
 
 interface PaginatedDataState<T> {
@@ -33,7 +31,6 @@ export function usePaginatedData<T>({
     itemsPerPage = 10,
     dataKey,
     initialFilters = {},
-    dependencies = [],
 }: PaginatedDataOptions<T>) {
     const [state, setState] = useState<PaginatedDataState<T>>({
         data: [],
@@ -46,16 +43,23 @@ export function usePaginatedData<T>({
 
     const [filters, setFilters] = useState<FilterParams>(initialFilters);
 
-    // 加载数据
+    // 使用 ref 保存最新的 filters，避免闭包问题
+    const filtersRef = useRef<FilterParams>(initialFilters);
+
+    useEffect(() => {
+        filtersRef.current = filters;
+    }, [filters]);
+
+    // 加载数据 - 使用 ref 避免依赖 filters
     const loadData = useCallback(
-        async (page: number = state.currentPage, currentFilters: FilterParams = filters) => {
+        async (page: number, currentFilters?: FilterParams) => {
             setState((prev) => ({ ...prev, loading: true, error: null }));
 
             try {
                 const params: FilterParams = {
                     page,
                     limit: itemsPerPage,
-                    ...currentFilters,
+                    ...(currentFilters || {}),
                 };
 
                 const response = await fetchFn(params);
@@ -102,17 +106,20 @@ export function usePaginatedData<T>({
                 }));
             }
         },
-        [fetchFn, itemsPerPage, dataKey, filters]
+        [fetchFn, itemsPerPage, dataKey]
     );
 
     // 更新筛选条件
     const updateFilters = useCallback(
         (newFilters: FilterParams) => {
-            setFilters((prev) => ({ ...prev, ...newFilters }));
-            // 筛选条件改变时重置到第一页
-            loadData(1, { ...filters, ...newFilters });
+            setFilters((prev) => {
+                const updated = { ...prev, ...newFilters };
+                // 筛选条件改变时重置到第一页
+                loadData(1, updated);
+                return updated;
+            });
         },
-        [loadData, filters]
+        [loadData]
     );
 
     // 重置筛选条件
@@ -121,32 +128,25 @@ export function usePaginatedData<T>({
         loadData(1, initialFilters);
     }, [loadData, initialFilters]);
 
-    // 跳转到指定页面
+    // 跳转到指定页面 - 使用 ref 避免依赖 filters
     const goToPage = useCallback(
         (page: number) => {
             if (page >= 1 && page <= state.totalPages && page !== state.currentPage) {
-                loadData(page);
+                loadData(page, filtersRef.current);
             }
         },
         [loadData, state.totalPages, state.currentPage]
     );
 
-    // 刷新数据
+    // 刷新数据 - 使用 ref 避免依赖 filters
     const refresh = useCallback(() => {
-        loadData(state.currentPage, filters);
-    }, [loadData, state.currentPage, filters]);
+        loadData(state.currentPage, filtersRef.current);
+    }, [loadData, state.currentPage]);
 
-    // 初始加载和依赖项变化时重新加载
+    // 初始加载 - 只在组件挂载时执行一次
     useEffect(() => {
-        loadData(1, filters);
-    }, [loadData, ...dependencies]);
-
-    // 筛选条件重置页面
-    useEffect(() => {
-        if (state.currentPage !== 1) {
-            setState((prev) => ({ ...prev, currentPage: 1 }));
-        }
-    }, [filters]);
+        loadData(1, initialFilters);
+    }, [loadData, initialFilters]);
 
     return {
         // 状态

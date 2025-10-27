@@ -12,8 +12,10 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const keyword = searchParams.get('keyword');
         const type = searchParams.get('type');
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '10');
 
-        console.log('🔍 后端查询参数:', { keyword, type });
+        console.log('🔍 后端查询参数:', { keyword, type, page, limit });
 
         // 餐饮类型列表
         const foodTypes = [
@@ -50,28 +52,33 @@ export async function GET(request: NextRequest) {
 
         console.log('🔍 数据库查询条件:', where);
 
+        // 计算分页参数
+        const skip = (page - 1) * limit;
+
+        // 获取总数
+        const total = await db.restaurant.count({ where });
+
+        // 获取分页数据
         const restaurants = await db.restaurant.findMany({
             where,
             orderBy: [
                 { updatedAt: 'desc' },
                 { id: 'asc' }, // 添加唯一标识符确保排序稳定性
             ],
+            skip,
+            take: limit,
         });
 
-        console.log(`📋 查询结果: 找到 ${restaurants.length} 个餐厅`);
-        if (restaurants.length > 0) {
-            console.log(
-                '前3个餐厅:',
-                restaurants.slice(0, 3).map((r) => ({
-                    id: r.id,
-                    name: r.name,
-                    type: r.type,
-                }))
-            );
-        }
+        console.log(`📋 查询结果: 找到 ${restaurants.length}/${total} 个餐厅 (第${page}页)`);
 
         return ResponseUtil.success({
             list: restaurants,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit),
+            },
         });
     } catch (error) {
         if (error instanceof Error) {

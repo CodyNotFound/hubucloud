@@ -37,6 +37,7 @@ model Restaurant {
   latitude            Float
   longitude           Float
   orderQrCode         String?
+  orderLink           String?
   blackCardAccepted   Boolean        @default(false)
   menuText            String         @default("")
   menuImages          String[]

@@ -41,6 +41,7 @@ export interface Restaurant {
     rating: number;
     locationDescription: string;
     orderQrCode?: string; // 点餐码图片URL
+    orderLink?: string; // 点餐直链URL
     blackCardAccepted?: boolean; // 是否支持黑卡
     menuText?: string; // 菜单文字描述
     menuImages?: string[]; // 菜单图片URL数组
@@ -62,6 +63,7 @@ export interface CreateRestaurantData {
     rating: number;
     locationDescription: string;
     orderQrCode?: string; // 点餐码图片URL
+    orderLink?: string; // 点餐直链URL
     blackCardAccepted?: boolean; // 是否支持黑卡
     menuText?: string; // 菜单文字描述
     menuImages?: string[]; // 菜单图片URL数组
@@ -80,6 +82,7 @@ export interface UpdateRestaurantData {
     rating?: number;
     locationDescription?: string;
     orderQrCode?: string; // 点餐码图片URL
+    orderLink?: string; // 点餐直链URL
     blackCardAccepted?: boolean; // 是否支持黑卡
     menuText?: string; // 菜单文字描述
     menuImages?: string[]; // 菜单图片URL数组

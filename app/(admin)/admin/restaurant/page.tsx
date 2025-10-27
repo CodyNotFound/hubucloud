@@ -16,12 +16,15 @@ import {
     ModalFooter,
     useDisclosure,
     Switch,
+    Chip,
 } from '@heroui/react';
-import { Store } from 'lucide-react';
+import { Store, Scan } from 'lucide-react';
+import QrScanner from 'qr-scanner';
 
 import { AdminGuard } from '@/components/common/admin-guard';
 import AdminLayout from '@/components/layouts/admin-layout';
 import { useAdmin } from '@/hooks/use-admin';
+import { usePaginatedData } from '@/hooks/usePaginatedData';
 import { PracticalDataTable } from '@/components/common/practical-data-table';
 import { MultiImageUpload, ImageUpload, imageUtils } from '@/components/common/image-upload';
 import { adminService } from '@/services/admin';
@@ -45,14 +48,32 @@ function RestaurantPageWithLayout() {
 }
 
 function RestaurantManagement() {
-    const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-    const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedType, setSelectedType] = useState('all');
     const [editingItem, setEditingItem] = useState<Restaurant | null>(null);
     const [formLoading, setFormLoading] = useState(false);
     const [_uploadError, setUploadError] = useState<string | null>(null);
+    const [qrScanStatus, setQrScanStatus] = useState<'idle' | 'scanning' | 'success' | 'error'>(
+        'idle'
+    );
+    const [qrScanMessage, setQrScanMessage] = useState<string>('');
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    // 使用分页 Hook
+    const {
+        data: restaurants,
+        loading,
+        total,
+        currentPage,
+        goToPage,
+        refresh,
+        updateFilters,
+    } = usePaginatedData<Restaurant>({
+        fetchFn: (params) => adminService.getRestaurantList(params),
+        itemsPerPage: 10,
+        dataKey: 'list',
+        initialFilters: {},
+    });
 
     // 表单数据
     const [formData, setFormData] = useState({
@@ -67,6 +88,7 @@ function RestaurantManagement() {
         rating: 0,
         locationDescription: '',
         orderQrCode: '', // 点餐码/二维码
+        orderLink: '', // 点餐直链
         blackCardAccepted: false, // 黑卡可用
         menuText: '', // 菜单文字描述
         menuImages: [] as any[], // 菜单图片
@@ -97,41 +119,29 @@ function RestaurantManagement() {
         snacks: '小吃',
     };
 
-    // 获取餐厅列表
-    const fetchRestaurants = async () => {
-        setLoading(true);
-        try {
-            // 将筛选类型从中文转换为英文枚举
-            const filterType =
-                selectedType !== 'all'
-                    ? typeMapping[selectedType as keyof typeof typeMapping] || selectedType
-                    : undefined;
-
-            console.log('🔍 筛选条件调试:', {
-                选择的类型: selectedType,
-                转换后类型: filterType,
-                搜索关键词: searchTerm,
-            });
-
-            const response = await adminService.getRestaurantList({
-                keyword: searchTerm || undefined,
-                type: filterType,
-            });
-
-            if (response.status === 'success' && response.data) {
-                setRestaurants(response.data.list || []);
-            }
-        } catch (error) {
-            console.error('获取餐厅列表失败:', error);
-        } finally {
-            setLoading(false);
-        }
+    // 处理搜索变化
+    const handleSearchChange = (value: string) => {
+        setSearchTerm(value);
+        const filterType =
+            selectedType !== 'all'
+                ? typeMapping[selectedType as keyof typeof typeMapping] || selectedType
+                : undefined;
+        updateFilters({
+            keyword: value || undefined,
+            type: filterType,
+        });
     };
 
-    // 初始加载和搜索/筛选变化时重新获取
-    useEffect(() => {
-        fetchRestaurants();
-    }, [searchTerm, selectedType]);
+    // 处理筛选类型变化
+    const handleFilterChange = (value: string) => {
+        setSelectedType(value);
+        const filterType =
+            value !== 'all' ? typeMapping[value as keyof typeof typeMapping] || value : undefined;
+        updateFilters({
+            keyword: searchTerm || undefined,
+            type: filterType,
+        });
+    };
 
     // 表格列定义
     const columns = [
@@ -190,6 +200,7 @@ function RestaurantManagement() {
             rating: 0,
             locationDescription: '',
             orderQrCode: '',
+            orderLink: '',
             blackCardAccepted: false,
             menuText: '',
             menuImages: [],
@@ -213,6 +224,7 @@ function RestaurantManagement() {
             rating: item.rating,
             locationDescription: item.locationDescription || '',
             orderQrCode: item.orderQrCode || '',
+            orderLink: item.orderLink || '',
             blackCardAccepted: item.blackCardAccepted || false,
             menuText: item.menuText || '',
             menuImages: imageUtils.createFromUrls(item.menuImages || []),
@@ -229,7 +241,7 @@ function RestaurantManagement() {
         try {
             const response = await adminService.deleteRestaurant(item.id);
             if (response.status === 'success') {
-                await fetchRestaurants(); // 重新加载数据
+                refresh(); // 刷新当前页数据
                 alert('删除成功！');
             } else {
                 alert('删除失败：' + (response.message || '未知错误'));
@@ -239,6 +251,68 @@ function RestaurantManagement() {
             alert('删除失败：' + (error instanceof Error ? error.message : '未知错误'));
         }
     };
+
+    // 二维码识别函数
+    const handleQrCodeScan = async (imageUrl: string) => {
+        if (!imageUrl) {
+            return;
+        }
+
+        setQrScanStatus('scanning');
+        setQrScanMessage('正在识别二维码...');
+
+        try {
+            // 从URL创建图片元素
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+                img.src = imageUrl;
+            });
+
+            // 使用 QrScanner 解析二维码
+            const result = await QrScanner.scanImage(img);
+
+            if (result && typeof result === 'string') {
+                // 检查是否为URL
+                const isUrl =
+                    result.startsWith('http://') ||
+                    result.startsWith('https://') ||
+                    result.startsWith('weixin://') ||
+                    result.startsWith('alipays://');
+
+                if (isUrl) {
+                    // 自动填充到 orderLink
+                    setFormData((prev) => ({ ...prev, orderLink: result }));
+                    setQrScanStatus('success');
+                    setQrScanMessage(`识别成功: ${result.substring(0, 50)}...`);
+                } else {
+                    setQrScanStatus('error');
+                    setQrScanMessage(`识别到内容但非URL: ${result}`);
+                }
+            } else {
+                setQrScanStatus('error');
+                setQrScanMessage('未能识别二维码内容');
+            }
+        } catch (error) {
+            console.error('二维码识别失败:', error);
+            setQrScanStatus('error');
+            setQrScanMessage('识别失败，请确认图片包含有效的二维码');
+        }
+    };
+
+    // 监听二维码图片变化，自动识别
+    useEffect(() => {
+        if (formData.orderQrCode) {
+            handleQrCodeScan(formData.orderQrCode);
+        } else {
+            // 清空识别状态
+            setQrScanStatus('idle');
+            setQrScanMessage('');
+        }
+    }, [formData.orderQrCode]);
 
     // 处理表单提交
     const handleSubmit = async () => {
@@ -279,7 +353,7 @@ function RestaurantManagement() {
                 // 更新
                 const response = await adminService.updateRestaurant(editingItem.id, submitData);
                 if (response.status === 'success') {
-                    await fetchRestaurants();
+                    refresh();
                     onClose();
                     alert('更新成功！');
                 } else {
@@ -289,7 +363,7 @@ function RestaurantManagement() {
                 // 创建
                 const response = await adminService.createRestaurant(submitData);
                 if (response.status === 'success') {
-                    await fetchRestaurants();
+                    refresh();
                     onClose();
                     alert('创建成功！');
                 } else {
@@ -314,18 +388,23 @@ function RestaurantManagement() {
                 loading={loading}
                 searchPlaceholder="搜索名称或地址..."
                 searchValue={searchTerm}
-                onSearchChange={setSearchTerm}
+                onSearchChange={handleSearchChange}
                 filterOptions={[
                     { key: 'all', label: '全部类型' },
                     ...restaurantTypes.map((type) => ({ key: type, label: type })),
                 ]}
                 filterValue={selectedType}
-                onFilterChange={setSelectedType}
+                onFilterChange={handleFilterChange}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onAdd={handleAdd}
                 addButtonText="添加餐厅"
                 emptyMessage="暂无数据"
+                enablePagination={true}
+                total={total}
+                page={currentPage}
+                pageSize={10}
+                onPageChange={goToPage}
             />
 
             {/* 表单弹窗 */}
@@ -450,7 +529,27 @@ function RestaurantManagement() {
                             </div>
 
                             <div className="md:col-span-2">
-                                <label className="text-sm font-medium mb-2 block">二维码</label>
+                                <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+                                    二维码
+                                    {qrScanStatus === 'scanning' && (
+                                        <Chip size="sm" color="primary" variant="flat">
+                                            <div className="flex items-center gap-1">
+                                                <Scan size={12} className="animate-pulse" />
+                                                识别中...
+                                            </div>
+                                        </Chip>
+                                    )}
+                                    {qrScanStatus === 'success' && (
+                                        <Chip size="sm" color="success" variant="flat">
+                                            识别成功
+                                        </Chip>
+                                    )}
+                                    {qrScanStatus === 'error' && (
+                                        <Chip size="sm" color="warning" variant="flat">
+                                            识别失败
+                                        </Chip>
+                                    )}
+                                </label>
                                 <ImageUpload
                                     value={formData.orderQrCode}
                                     onChange={(url) =>
@@ -460,8 +559,27 @@ function RestaurantManagement() {
                                     placeholder="点击上传二维码(可选)"
                                 />
                                 <p className="text-xs text-default-400 mt-1">
-                                    上传相关的小程序码或二维码（如微信、支付宝等）
+                                    上传相关的小程序码或二维码（如微信、支付宝等），系统将自动识别链接
                                 </p>
+                                {qrScanMessage && (
+                                    <p
+                                        className={`text-xs mt-1 ${qrScanStatus === 'success' ? 'text-success' : qrScanStatus === 'error' ? 'text-warning' : 'text-default-500'}`}
+                                    >
+                                        {qrScanMessage}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <Input
+                                    label="点餐链接"
+                                    placeholder="例如: https://xxx.com/order 或从二维码自动识别"
+                                    value={formData.orderLink}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, orderLink: e.target.value })
+                                    }
+                                    description="用户可以直接点击跳转到点餐页面，可手动修改自动识别的结果"
+                                />
                             </div>
 
                             <div className="md:col-span-2">

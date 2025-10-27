@@ -52,7 +52,8 @@ function FoodPageContent() {
     const [selectedCategory, setSelectedCategory] = useState(
         searchParams.get('category') || '全部'
     );
-    const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page')) || 1);
+    const initialPage = Number(searchParams.get('page')) || 1;
+    const [currentPage, setCurrentPage] = useState(initialPage);
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
@@ -264,13 +265,7 @@ function FoodPageContent() {
         };
     }, [currentPage, selectedCategory, searchKeyword, itemsPerPage, searchData, searchDataLoading]);
 
-    // 搜索防抖处理
-    const handleSearchDebounce = useCallback(() => {
-        setSearchKeyword(searchInput);
-        setCurrentPage(1); // 搜索时重置页码
-        updateURL({ q: searchInput, page: 1 });
-    }, [searchInput, updateURL]);
-
+    // 搜索防抖处理 - 直接在 useEffect 中处理，避免依赖问题
     useEffect(() => {
         // 清除之前的定时器
         if (searchTimeoutRef.current) {
@@ -279,7 +274,9 @@ function FoodPageContent() {
 
         // 设置新的定时器（300ms防抖）
         searchTimeoutRef.current = setTimeout(() => {
-            handleSearchDebounce();
+            setSearchKeyword(searchInput);
+            setCurrentPage(1);
+            updateURL({ q: searchInput, page: 1 });
         }, 300);
 
         // 清理函数
@@ -288,7 +285,7 @@ function FoodPageContent() {
                 clearTimeout(searchTimeoutRef.current);
             }
         };
-    }, [handleSearchDebounce]);
+    }, [searchInput, updateURL]); // 依赖 searchInput 和 updateURL
 
     // 切换分类处理函数
     const handleCategoryChange = (category: string) => {

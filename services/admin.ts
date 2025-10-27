@@ -1,4 +1,4 @@
-import type { Parttime, Restaurant } from '@/types';
+import type { Parttime, Restaurant, ApiResponse } from '@/types';
 import type { Activity, ActivityFormData } from '@/types/activity';
 
 import { apiClient } from './api-client';
@@ -38,49 +38,35 @@ class AdminService {
     /**
      * 检查管理员权限
      */
-    async checkAdminRole(): Promise<{
-        status: string;
-        data?: AdminCheckResponse;
-        message?: string;
-    }> {
+    async checkAdminRole(): Promise<ApiResponse<AdminCheckResponse>> {
         return apiClient.get('/api/admin/check');
     }
 
     /**
      * 初始化第一个管理员
      */
-    async initFirstAdmin(
-        userId: string
-    ): Promise<{ status: string; data?: any; message?: string }> {
+    async initFirstAdmin(userId: string): Promise<ApiResponse<any>> {
         return apiClient.post('/api/admin/init-admin', { userId });
     }
 
     /**
      * 获取管理员统计数据
      */
-    async getAdminStats(): Promise<{
-        status: string;
-        data?: { stats: AdminStats };
-        message?: string;
-    }> {
+    async getAdminStats(): Promise<ApiResponse<{ stats: AdminStats }>> {
         return apiClient.get('/api/admin/stats');
     }
 
     /**
      * 提升用户为管理员
      */
-    async promoteUser(
-        targetUserId: string
-    ): Promise<{ status: string; data?: any; message?: string }> {
+    async promoteUser(targetUserId: string): Promise<ApiResponse<any>> {
         return apiClient.post('/api/admin/promote-user', { targetUserId });
     }
 
     /**
      * 撤销用户的管理员权限
      */
-    async demoteAdmin(
-        targetUserId: string
-    ): Promise<{ status: string; data?: any; message?: string }> {
+    async demoteAdmin(targetUserId: string): Promise<ApiResponse<any>> {
         return apiClient.post('/api/admin/demote-admin', { targetUserId });
     }
 
@@ -96,7 +82,7 @@ class AdminService {
             keyword?: string;
             type?: string;
         } = {}
-    ): Promise<{ status: string; data?: PaginatedResponse<Parttime>; message?: string }> {
+    ): Promise<ApiResponse<{ list: Parttime[]; pagination: any }>> {
         const queryParams = new URLSearchParams();
 
         if (params.page) queryParams.append('page', params.page.toString());
@@ -120,7 +106,7 @@ class AdminService {
         description: string;
         contact: string;
         requirements?: string;
-    }): Promise<{ status: string; data?: Parttime; message?: string }> {
+    }): Promise<ApiResponse<Parttime>> {
         return apiClient.post('/api/admin/parttime', data);
     }
 
@@ -139,14 +125,14 @@ class AdminService {
             contact?: string;
             requirements?: string;
         }
-    ): Promise<{ status: string; data?: Parttime; message?: string }> {
+    ): Promise<ApiResponse<Parttime>> {
         return apiClient.put(`/api/admin/parttime/${id}`, data);
     }
 
     /**
      * 删除兼职（管理员）
      */
-    async deleteParttime(id: string): Promise<{ status: string; data?: null; message?: string }> {
+    async deleteParttime(id: string): Promise<ApiResponse<null>> {
         return apiClient.delete(`/api/admin/parttime/${id}`);
     }
 
@@ -162,7 +148,7 @@ class AdminService {
             keyword?: string;
             type?: string;
         } = {}
-    ): Promise<{ status: string; data?: PaginatedResponse<Restaurant>; message?: string }> {
+    ): Promise<ApiResponse<{ list: Restaurant[]; pagination: any }>> {
         const queryParams = new URLSearchParams();
 
         if (params.page) queryParams.append('page', params.page.toString());
@@ -192,7 +178,7 @@ class AdminService {
         rating?: number;
         menuText?: string;
         menuImages?: string[];
-    }): Promise<{ status: string; data?: Restaurant; message?: string }> {
+    }): Promise<ApiResponse<Restaurant>> {
         return apiClient.post('/api/admin/restaurant', data);
     }
 
@@ -217,14 +203,14 @@ class AdminService {
             menuText?: string;
             menuImages?: string[];
         }
-    ): Promise<{ status: string; data?: Restaurant; message?: string }> {
+    ): Promise<ApiResponse<Restaurant>> {
         return apiClient.put(`/api/admin/restaurant/${id}`, data);
     }
 
     /**
      * 删除餐厅（管理员）
      */
-    async deleteRestaurant(id: string): Promise<{ status: string; data?: null; message?: string }> {
+    async deleteRestaurant(id: string): Promise<ApiResponse<null>> {
         return apiClient.delete(`/api/admin/restaurant/${id}`);
     }
 
@@ -240,7 +226,7 @@ class AdminService {
             keyword?: string;
             type?: string;
         } = {}
-    ): Promise<{ status: string; data?: PaginatedResponse<Restaurant>; message?: string }> {
+    ): Promise<ApiResponse<PaginatedResponse<Restaurant>>> {
         const queryParams = new URLSearchParams();
 
         if (params.page) queryParams.append('page', params.page.toString());
@@ -268,7 +254,7 @@ class AdminService {
         tags?: string[];
         preview?: string[];
         rating?: number;
-    }): Promise<{ status: string; data?: Restaurant; message?: string }> {
+    }): Promise<ApiResponse<Restaurant>> {
         return apiClient.post('/api/admin/content', data);
     }
 
@@ -291,14 +277,14 @@ class AdminService {
             preview?: string[];
             rating?: number;
         }
-    ): Promise<{ status: string; data?: Restaurant; message?: string }> {
+    ): Promise<ApiResponse<Restaurant>> {
         return apiClient.put(`/api/admin/content/${id}`, data);
     }
 
     /**
      * 删除其他内容（管理员）- 生活和娱乐
      */
-    async deleteContent(id: string): Promise<{ status: string; data?: null; message?: string }> {
+    async deleteContent(id: string): Promise<ApiResponse<null>> {
         return apiClient.delete(`/api/admin/content/${id}`);
     }
 
@@ -315,7 +301,7 @@ class AdminService {
             status?: string;
             enabled?: boolean;
         } = {}
-    ): Promise<{ status: string; data?: PaginatedResponse<Activity>; message?: string }> {
+    ): Promise<ApiResponse<PaginatedResponse<Activity>>> {
         const queryParams = new URLSearchParams();
 
         if (params.page) queryParams.append('page', params.page.toString());
@@ -331,9 +317,7 @@ class AdminService {
     /**
      * 创建活动（管理员）
      */
-    async createActivity(
-        data: ActivityFormData
-    ): Promise<{ status: string; data?: Activity; message?: string }> {
+    async createActivity(data: ActivityFormData): Promise<ApiResponse<Activity>> {
         return apiClient.post('/api/admin/activity', data);
     }
 
@@ -343,14 +327,14 @@ class AdminService {
     async updateActivity(
         id: string,
         data: Partial<ActivityFormData>
-    ): Promise<{ status: string; data?: Activity; message?: string }> {
+    ): Promise<ApiResponse<Activity>> {
         return apiClient.put(`/api/admin/activity/${id}`, data);
     }
 
     /**
      * 删除活动（管理员）
      */
-    async deleteActivity(id: string): Promise<{ status: string; data?: null; message?: string }> {
+    async deleteActivity(id: string): Promise<ApiResponse<null>> {
         return apiClient.delete(`/api/admin/activity/${id}`);
     }
 }

@@ -23,6 +23,7 @@ interface Restaurant {
     rating: number;
     locationDescription: string;
     orderQrCode?: string; // 点餐码
+    orderLink?: string; // 点餐直链
     menuText?: string; // 菜单文字描述
     menuImages?: string[]; // 菜单图片
 }
@@ -278,15 +279,28 @@ export default function RestaurantDetailPage() {
                                     <QrCode size={18} className="text-primary" />
                                     <h3 className="text-sm font-medium">扫码点餐</h3>
                                 </div>
-                                <Button
-                                    size="sm"
-                                    variant="flat"
-                                    color="primary"
-                                    startContent={<Download size={16} />}
-                                    onPress={handleSaveQrCode}
-                                >
-                                    保存图片
-                                </Button>
+                                <div className="flex gap-2">
+                                    {restaurant.orderLink && (
+                                        <Button
+                                            size="sm"
+                                            color="primary"
+                                            onPress={() => {
+                                                window.open(restaurant.orderLink, '_blank');
+                                            }}
+                                        >
+                                            点击点餐
+                                        </Button>
+                                    )}
+                                    <Button
+                                        size="sm"
+                                        variant="flat"
+                                        color="primary"
+                                        startContent={<Download size={16} />}
+                                        onPress={handleSaveQrCode}
+                                    >
+                                        保存图片
+                                    </Button>
+                                </div>
                             </div>
                             <div className="flex justify-center bg-default-50 rounded-lg p-6">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -302,7 +316,9 @@ export default function RestaurantDetailPage() {
                                 />
                             </div>
                             <p className="text-xs text-default-500 text-center mt-3">
-                                长按图片保存或点击"保存图片"按钮，使用微信/支付宝/美团扫码点餐
+                                {restaurant.orderLink
+                                    ? '点击"点击点餐"按钮直接跳转，或长按图片保存后使用微信/支付宝/美团扫码点餐'
+                                    : '长按图片保存或点击"保存图片"按钮，使用微信/支付宝/美团扫码点餐'}
                             </p>
                         </CardBody>
                     </Card>
