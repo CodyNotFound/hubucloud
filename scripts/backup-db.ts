@@ -135,14 +135,16 @@ function backupImages(imageSet: Set<string>, backupDir: string): number {
  * 压缩备份目录为 ZIP 文件
  */
 function compressBackup(backupDir: string): string {
+    const backupDirName = backupDir.split('/').pop()!; // 提取目录名
+    const backupBaseDir = join(process.cwd(), 'backup');
     const zipFile = `${backupDir}.zip`;
 
     console.log('🗜️  正在压缩备份文件...');
 
     try {
-        // 使用系统的 zip 命令，-r 递归，-9 最大压缩率，-q 安静模式
-        execSync(`zip -r -9 -q "${zipFile}" "${backupDir}"`, {
-            cwd: process.cwd(),
+        // 在 backup 目录下执行压缩，只压缩目录名本身，避免路径嵌套
+        execSync(`zip -r -9 -q "${backupDirName}.zip" "${backupDirName}"`, {
+            cwd: backupBaseDir,
             stdio: 'pipe',
         });
 

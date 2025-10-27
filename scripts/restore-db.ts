@@ -12,13 +12,18 @@ const prisma = new PrismaClient();
  */
 function extractZip(zipFile: string): string {
     const extractDir = zipFile.replace(/\.zip$/, '');
+    const backupBaseDir = join(process.cwd(), 'backup');
+    const zipFileName = zipFile.split('/').pop()!;
 
     console.log(`📦 正在解压备份文件: ${zipFile}`);
 
     try {
-        // 使用系统的 unzip 命令，-q 安静模式，-o 覆盖已存在的文件
-        execSync(`unzip -q -o "${zipFile}"`, {
-            cwd: process.cwd(),
+        // 确保 backup 目录存在
+        mkdirSync(backupBaseDir, { recursive: true });
+
+        // 在 backup 目录下解压，避免路径嵌套
+        execSync(`unzip -q -o "${zipFileName}"`, {
+            cwd: backupBaseDir,
             stdio: 'pipe',
         });
 
@@ -65,14 +70,17 @@ function restoreImages(backupDir: string): number {
 }
 
 async function main() {
-    const [backupPath] = process.argv.slice(2);
+    const [inputPath] = process.argv.slice(2);
 
-    if (!backupPath) {
+    if (!inputPath) {
         console.log('用法: bun run restore <备份目录>');
-        console.log('示例: bun run restore backup_2025-01-23');
+        console.log('示例: bun run restore backup/backup_2025-01-23.zip');
         console.log('\n或者: bun run restore <备份文件.json> (仅数据恢复)');
         process.exit(1);
     }
+
+    // 处理路径：支持相对路径和绝对路径
+    const backupPath = inputPath.startsWith('/') ? inputPath : join(process.cwd(), inputPath);
 
     if (!existsSync(backupPath)) {
         console.error(`❌ 路径不存在: ${backupPath}`);
