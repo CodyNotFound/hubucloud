@@ -66,6 +66,7 @@ function FoodPageContent() {
     // 使用ref跟踪上一次的分类,用于检测分类是否变化
     const prevCategoryRef = useRef(selectedCategory);
     const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null); // 防抖定时器
+    const prevSearchInputRef = useRef(searchInput); // 跟踪上一次的搜索输入
 
     // 更新 URL 参数的辅助函数
     const updateURL = useCallback(
@@ -265,8 +266,16 @@ function FoodPageContent() {
         };
     }, [currentPage, selectedCategory, searchKeyword, itemsPerPage, searchData, searchDataLoading]);
 
-    // 搜索防抖处理 - 直接在 useEffect 中处理，避免依赖问题
+    // 搜索防抖处理 - 只在 searchInput 真正改变时触发
     useEffect(() => {
+        // 检查 searchInput 是否真的改变了
+        if (prevSearchInputRef.current === searchInput) {
+            return; // 没有改变，不做任何事
+        }
+
+        // 更新 ref
+        prevSearchInputRef.current = searchInput;
+
         // 清除之前的定时器
         if (searchTimeoutRef.current) {
             clearTimeout(searchTimeoutRef.current);
@@ -285,7 +294,7 @@ function FoodPageContent() {
                 clearTimeout(searchTimeoutRef.current);
             }
         };
-    }, [searchInput, updateURL]); // 依赖 searchInput 和 updateURL
+    }, [searchInput, updateURL]); // 依赖保持不变，但通过 ref 检查避免不必要的执行
 
     // 切换分类处理函数
     const handleCategoryChange = (category: string) => {

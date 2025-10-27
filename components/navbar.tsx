@@ -25,6 +25,7 @@ import {
     User,
     Car,
     Gamepad2,
+    RefreshCw,
 } from 'lucide-react';
 
 import { siteConfig } from '@/config/site';
@@ -49,6 +50,28 @@ export const Navbar = () => {
     const { theme } = useTheme();
     const isSSR = useIsSSR();
     const pathname = usePathname();
+
+    const handleDeleteServiceWorker = async () => {
+        try {
+            // 清除所有缓存
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                await Promise.all(cacheNames.map((name) => caches.delete(name)));
+            }
+
+            // 注销 Service Worker
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                await Promise.all(registrations.map((reg) => reg.unregister()));
+            }
+
+            alert('Service Worker 已删除,页面将重新加载');
+            window.location.reload();
+        } catch (error) {
+            console.error('删除 Service Worker 失败:', error);
+            alert('删除失败,请查看控制台');
+        }
+    };
 
     return (
         <HeroUINavbar
@@ -138,6 +161,17 @@ export const Navbar = () => {
                             </NavbarMenuItem>
                         );
                     })}
+
+                    {/* 删除 Service Worker 菜单项 */}
+                    <NavbarMenuItem>
+                        <button
+                            onClick={handleDeleteServiceWorker}
+                            className="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 text-default-600 hover:bg-default-100 hover:text-default-900"
+                        >
+                            <RefreshCw size={20} className="text-default-500" />
+                            <span className="text-medium">清除缓存并刷新</span>
+                        </button>
+                    </NavbarMenuItem>
                 </div>
             </NavbarMenu>
         </HeroUINavbar>
