@@ -2,7 +2,7 @@
 
 import type { Parttime } from '@/types/parttime';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
     Button,
     Input,
@@ -61,12 +61,12 @@ function ParttimeManagement() {
     });
 
     // 获取兼职列表
-    const fetchParttimes = async () => {
+    const fetchParttimes = useCallback(async () => {
         setLoading(true);
         try {
             const response = await adminService.getParttimeList({
                 keyword: searchTerm || undefined,
-                limit: 100,
+                // 不传 limit，返回所有数据
             });
 
             if (response.status === 'success' && response.data) {
@@ -77,12 +77,12 @@ function ParttimeManagement() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [searchTerm]);
 
     // 初始加载和搜索/筛选变化时重新获取
     useEffect(() => {
         fetchParttimes();
-    }, [searchTerm]);
+    }, [fetchParttimes]);
 
     // 表格列定义
     const columns = [

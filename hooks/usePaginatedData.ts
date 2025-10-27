@@ -144,9 +144,10 @@ export function usePaginatedData<T>({
     }, [loadData, state.currentPage]);
 
     // 初始加载 - 只在组件挂载时执行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         loadData(1, initialFilters);
-    }, [loadData, initialFilters]);
+    }, []); // 空依赖数组，只在挂载时执行一次
 
     return {
         // 状态

@@ -12,8 +12,8 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const keyword = searchParams.get('keyword');
         const type = searchParams.get('type');
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = parseInt(searchParams.get('limit') || '10');
+        const page = searchParams.get('page') ? parseInt(searchParams.get('page')!) : null;
+        const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : null;
 
         console.log('🔍 后端查询参数:', { keyword, type, page, limit });
 
@@ -52,19 +52,27 @@ export async function GET(request: NextRequest) {
 
         console.log('🔍 数据库查询条件:', where);
 
-        // 计算分页参数
-        const skip = (page - 1) * limit;
+        // 如果没有分页参数，返回所有数据
+        if (page === null || limit === null) {
+            const restaurants = await db.restaurant.findMany({
+                where,
+                orderBy: [{ updatedAt: 'desc' }, { id: 'asc' }],
+            });
 
-        // 获取总数
+            console.log(`📋 查询结果: 找到 ${restaurants.length} 个餐厅 (全部数据)`);
+
+            return ResponseUtil.success({
+                list: restaurants,
+            });
+        }
+
+        // 有分页参数时，返回分页数据
+        const skip = (page - 1) * limit;
         const total = await db.restaurant.count({ where });
 
-        // 获取分页数据
         const restaurants = await db.restaurant.findMany({
             where,
-            orderBy: [
-                { updatedAt: 'desc' },
-                { id: 'asc' }, // 添加唯一标识符确保排序稳定性
-            ],
+            orderBy: [{ updatedAt: 'desc' }, { id: 'asc' }],
             skip,
             take: limit,
         });

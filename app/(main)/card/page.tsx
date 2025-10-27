@@ -55,9 +55,9 @@ export default function CardPage() {
                 </div>
             </section>
 
-            {/* 图片展示区域 - 纵向滚动显示所有页面 */}
+            {/* 图片展示区域 - 移动端纵向滚动，电脑端双栏布局 */}
             <section className="w-full">
-                <div className="w-full max-w-full overflow-hidden space-y-4">
+                <div className="w-full max-w-full overflow-hidden space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0">
                     {Array.from({ length: TOTAL_PAGES }, (_, index) => {
                         const pageNumber = index + 1;
                         return (

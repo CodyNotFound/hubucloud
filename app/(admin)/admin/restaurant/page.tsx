@@ -2,7 +2,7 @@
 
 import type { Restaurant } from '@/types/index';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
     Button,
     Input,
@@ -105,7 +105,7 @@ function RestaurantManagement() {
     };
 
     // 获取餐厅列表
-    const fetchRestaurants = async () => {
+    const fetchRestaurants = useCallback(async () => {
         setLoading(true);
         try {
             const filterType =
@@ -116,6 +116,7 @@ function RestaurantManagement() {
             const response = await adminService.getRestaurantList({
                 keyword: searchTerm || undefined,
                 type: filterType,
+                // 不传 page 和 limit，后端返回所有数据
             });
 
             if (response.status === 'success' && response.data) {
@@ -126,12 +127,12 @@ function RestaurantManagement() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [searchTerm, selectedType]);
 
     // 初始加载和搜索/筛选变化时重新获取
     useEffect(() => {
         fetchRestaurants();
-    }, [searchTerm, selectedType]);
+    }, [fetchRestaurants]);
 
     // 表格列定义
     const columns = [

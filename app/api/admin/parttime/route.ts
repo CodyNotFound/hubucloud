@@ -10,12 +10,10 @@ export async function GET(request: NextRequest) {
         await requireAdmin(request);
 
         const { searchParams } = new URL(request.url);
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = parseInt(searchParams.get('limit') || '10');
+        const page = searchParams.get('page') ? parseInt(searchParams.get('page')!) : null;
+        const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : null;
         const keyword = searchParams.get('keyword');
         const type = searchParams.get('type');
-
-        const skip = (page - 1) * limit;
 
         const where: any = {};
         if (keyword) {
@@ -29,15 +27,27 @@ export async function GET(request: NextRequest) {
             where.type = type;
         }
 
+        // 如果没有分页参数，返回所有数据
+        if (page === null || limit === null) {
+            const parttime = await db.parttime.findMany({
+                where,
+                orderBy: [{ updatedAt: 'desc' }, { id: 'asc' }],
+            });
+
+            return ResponseUtil.success({
+                list: parttime,
+            });
+        }
+
+        // 有分页参数时，返回分页数据
+        const skip = (page - 1) * limit;
+
         const [parttime, total] = await Promise.all([
             db.parttime.findMany({
                 where,
                 skip,
                 take: limit,
-                orderBy: [
-                    { updatedAt: 'desc' },
-                    { id: 'asc' }, // 添加唯一标识符作为第二排序字段，确保分页稳定性
-                ],
+                orderBy: [{ updatedAt: 'desc' }, { id: 'asc' }],
             }),
             db.parttime.count({ where }),
         ]);
