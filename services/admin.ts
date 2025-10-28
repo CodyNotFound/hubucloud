@@ -171,11 +171,15 @@ class AdminService {
         type: string;
         cover: string;
         openTime: string;
+        locationDescription?: string;
         latitude: number;
         longitude: number;
         tags?: string[];
         preview?: string[];
         rating?: number;
+        orderQrCode?: string;
+        orderLink?: string;
+        blackCardAccepted?: boolean;
         menuText?: string;
         menuImages?: string[];
     }): Promise<ApiResponse<Restaurant>> {
@@ -195,11 +199,15 @@ class AdminService {
             type?: string;
             cover?: string;
             openTime?: string;
+            locationDescription?: string;
             latitude?: number;
             longitude?: number;
             tags?: string[];
             preview?: string[];
             rating?: number;
+            orderQrCode?: string;
+            orderLink?: string;
+            blackCardAccepted?: boolean;
             menuText?: string;
             menuImages?: string[];
         }

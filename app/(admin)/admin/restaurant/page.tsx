@@ -58,6 +58,7 @@ function RestaurantManagement() {
         'idle'
     );
     const [qrScanMessage, setQrScanMessage] = useState<string>('');
+    const [qrScanResult, setQrScanResult] = useState<string>(''); // 保存识别结果
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     // 表单数据
@@ -275,17 +276,19 @@ function RestaurantManagement() {
                     result.startsWith('alipays://');
 
                 if (isUrl) {
-                    // 自动填充到 orderLink
-                    setFormData((prev) => ({ ...prev, orderLink: result }));
+                    // 保存识别结果，不自动填充
+                    setQrScanResult(result);
                     setQrScanStatus('success');
                     setQrScanMessage(`识别成功: ${result.substring(0, 50)}...`);
                 } else {
                     setQrScanStatus('error');
                     setQrScanMessage(`识别到内容但非URL: ${result}`);
+                    setQrScanResult('');
                 }
             } else {
                 setQrScanStatus('error');
                 setQrScanMessage('未能识别二维码内容');
+                setQrScanResult('');
             }
         } catch (error) {
             console.error('二维码识别失败:', error);
@@ -299,11 +302,19 @@ function RestaurantManagement() {
         if (formData.orderQrCode) {
             handleQrCodeScan(formData.orderQrCode);
         } else {
-            // 清空识别状态
+            // 清空识别状态和结果
             setQrScanStatus('idle');
             setQrScanMessage('');
+            setQrScanResult('');
         }
     }, [formData.orderQrCode]);
+
+    // 手动填充识别结果到点餐链接
+    const handleApplyQrResult = () => {
+        if (qrScanResult) {
+            setFormData({ ...formData, orderLink: qrScanResult });
+        }
+    };
 
     // 处理表单提交
     const handleSubmit = async () => {
@@ -548,23 +559,36 @@ function RestaurantManagement() {
                                     上传相关的小程序码或二维码（如微信、支付宝等），系统将自动识别链接
                                 </p>
                                 {qrScanMessage && (
-                                    <p
-                                        className={`text-xs mt-1 ${qrScanStatus === 'success' ? 'text-success' : qrScanStatus === 'error' ? 'text-warning' : 'text-default-500'}`}
-                                    >
-                                        {qrScanMessage}
-                                    </p>
+                                    <div className="mt-2 space-y-2">
+                                        <p
+                                            className={`text-xs ${qrScanStatus === 'success' ? 'text-success' : qrScanStatus === 'error' ? 'text-warning' : 'text-default-500'}`}
+                                        >
+                                            {qrScanMessage}
+                                        </p>
+                                        {qrScanStatus === 'success' && qrScanResult && (
+                                            <Button
+                                                size="sm"
+                                                color="primary"
+                                                variant="flat"
+                                                startContent={<Scan size={16} />}
+                                                onPress={handleApplyQrResult}
+                                            >
+                                                应用识别结果到点餐链接
+                                            </Button>
+                                        )}
+                                    </div>
                                 )}
                             </div>
 
                             <div className="md:col-span-2">
                                 <Input
                                     label="点餐链接"
-                                    placeholder="例如: https://xxx.com/order 或从二维码自动识别"
+                                    placeholder="例如: https://xxx.com/order"
                                     value={formData.orderLink}
                                     onChange={(e) =>
                                         setFormData({ ...formData, orderLink: e.target.value })
                                     }
-                                    description="用户可以直接点击跳转到点餐页面，可手动修改自动识别的结果"
+                                    description="用户可以直接点击跳转到点餐页面，可手动输入或使用上方识别结果"
                                 />
                             </div>
 

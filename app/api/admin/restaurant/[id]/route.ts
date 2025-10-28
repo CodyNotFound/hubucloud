@@ -36,6 +36,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             preview,
             rating,
             orderQrCode,
+            orderLink,
             blackCardAccepted,
             menuText,
             menuImages,
@@ -78,6 +79,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         if (preview !== undefined) updateData.preview = preview;
         if (rating !== undefined) updateData.rating = rating;
         if (orderQrCode !== undefined) updateData.orderQrCode = orderQrCode;
+        if (orderLink !== undefined) updateData.orderLink = orderLink;
         if (blackCardAccepted !== undefined) updateData.blackCardAccepted = blackCardAccepted;
         if (menuText !== undefined) updateData.menuText = menuText;
         if (menuImages !== undefined) updateData.menuImages = menuImages;

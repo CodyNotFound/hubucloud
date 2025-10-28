@@ -391,7 +391,8 @@ export default function RestaurantDetailPage() {
                 (restaurant.locationDescription &&
                     restaurant.locationDescription.trim() !== '' &&
                     !restaurant.locationDescription.includes('位置不详') &&
-                    !restaurant.locationDescription.includes('不知道')) ? (
+                    !restaurant.locationDescription.includes('不知道')) ||
+                restaurant.orderLink ? (
                     <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t border-divider">
                         <div className="flex gap-3">
                             {restaurant.phone && restaurant.phone.trim() !== '' && (
@@ -411,12 +412,8 @@ export default function RestaurantDetailPage() {
                                 !restaurant.locationDescription.includes('位置不详') &&
                                 !restaurant.locationDescription.includes('不知道') && (
                                     <Button
-                                        color="primary"
-                                        className={
-                                            restaurant.phone && restaurant.phone.trim() !== ''
-                                                ? 'flex-1'
-                                                : 'w-full'
-                                        }
+                                        variant="bordered"
+                                        className="flex-1"
                                         startContent={<MapPin size={16} />}
                                         onPress={() => {
                                             // 构建高德地图搜索URL，武汉市城市代码为420100
@@ -430,6 +427,18 @@ export default function RestaurantDetailPage() {
                                         查看位置
                                     </Button>
                                 )}
+                            {restaurant.orderLink && (
+                                <Button
+                                    color="primary"
+                                    className="flex-1"
+                                    startContent={<QrCode size={16} />}
+                                    onPress={() => {
+                                        window.open(restaurant.orderLink, '_blank');
+                                    }}
+                                >
+                                    在线点餐
+                                </Button>
+                            )}
                         </div>
                     </div>
                 ) : null}

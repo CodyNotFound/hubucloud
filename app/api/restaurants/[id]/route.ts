@@ -71,6 +71,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         if (body.preview !== undefined) updateData.preview = body.preview;
         if (body.openTime !== undefined) updateData.openTime = body.openTime;
         if (body.orderQrCode !== undefined) updateData.orderQrCode = body.orderQrCode;
+        if (body.orderLink !== undefined) updateData.orderLink = body.orderLink;
+        if (body.blackCardAccepted !== undefined)
+            updateData.blackCardAccepted = body.blackCardAccepted;
+        if (body.menuText !== undefined) updateData.menuText = body.menuText;
+        if (body.menuImages !== undefined) updateData.menuImages = body.menuImages;
+        if (body.locationDescription !== undefined)
+            updateData.locationDescription = body.locationDescription;
         if (body.rating !== undefined) {
             if (body.rating < 1 || body.rating > 5) {
                 return ResponseUtil.clientError('评分必须在1-5之间');
