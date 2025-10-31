@@ -25,6 +25,7 @@ import { Modal, ModalContent, ModalBody, Button, useDisclosure } from '@heroui/r
 import { HeroCarousel } from '@/components/hero-carousel';
 import { ImageViewer } from '@/components/common/image-viewer';
 import { CampusNetworkPrompt } from '@/components/common/campus-network-prompt';
+import { useMiniappMode } from '@/hooks/useMiniappMode';
 
 const STORAGE_KEY_PREFIX = 'activity_hidden_';
 const STORAGE_KEY_LAST_SHOWN = 'activity_last_shown_';
@@ -126,6 +127,15 @@ export default function Home() {
         onOpen: onComingSoonOpen,
         onClose: onComingSoonClose,
     } = useDisclosure();
+    const { isMiniappMode } = useMiniappMode();
+
+    // 根据小程序模式过滤服务
+    const filteredServices = isMiniappMode
+        ? services.filter(
+              (service) =>
+                  !service.href.startsWith('http://') && !service.href.startsWith('https://')
+          )
+        : services;
 
     useEffect(() => {
         // 首页加载时检查是否需要显示活动弹窗
@@ -236,7 +246,7 @@ export default function Home() {
                         </div>
 
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
-                            {services.map((service) => {
+                            {filteredServices.map((service) => {
                                 const IconComponent = service.icon;
 
                                 return (

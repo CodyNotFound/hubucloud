@@ -6,6 +6,8 @@ import { Button } from '@heroui/button';
 import { Card, CardBody } from '@heroui/card';
 import { Download, Smartphone, Share } from 'lucide-react';
 
+import { useMiniappMode } from '@/hooks/useMiniappMode';
+
 interface BeforeInstallPromptEvent extends Event {
     prompt: () => Promise<void>;
     userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
@@ -16,6 +18,7 @@ export function PWAInstallPrompt() {
     const [showGuide, setShowGuide] = useState(false);
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
+    const { isMiniappMode } = useMiniappMode();
 
     useEffect(() => {
         // 检测是否是 iOS
@@ -103,8 +106,8 @@ export function PWAInstallPrompt() {
         localStorage.setItem('pwa-install-dismissed', 'true');
     };
 
-    // 如果已经是独立应用模式，不显示任何内容
-    if (isStandalone) return null;
+    // 如果是小程序模式或已经是独立应用模式，不显示任何内容
+    if (isMiniappMode || isStandalone) return null;
 
     return (
         <>
@@ -216,6 +219,7 @@ export function InstallButton() {
     const [showIOSGuide, setShowIOSGuide] = useState(false);
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
+    const { isMiniappMode } = useMiniappMode();
 
     useEffect(() => {
         const userAgent = window.navigator.userAgent.toLowerCase();
@@ -258,8 +262,8 @@ export function InstallButton() {
         setDeferredPrompt(null);
     };
 
-    // 已经是独立应用，不显示按钮
-    if (isStandalone) return null;
+    // 如果是小程序模式或已经是独立应用，不显示按钮
+    if (isMiniappMode || isStandalone) return null;
 
     return (
         <>
