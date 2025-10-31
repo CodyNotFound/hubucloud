@@ -19,6 +19,7 @@ import {
     Home as HomeIcon,
     Gamepad2,
     Sparkles,
+    Lock,
 } from 'lucide-react';
 import { Modal, ModalContent, ModalBody, Button, useDisclosure } from '@heroui/react';
 
@@ -72,6 +73,13 @@ const services = [
         title: '美食',
         description: '校园周边美食',
         color: 'bg-orange-50 hover:bg-orange-100 text-orange-600',
+    },
+    {
+        href: '/food-password',
+        icon: Lock,
+        title: '美食口令',
+        description: '群内抽奖口令',
+        color: 'bg-red-50 hover:bg-red-100 text-red-600',
     },
     {
         href: '/life',

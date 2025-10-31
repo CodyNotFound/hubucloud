@@ -66,6 +66,12 @@ const sidebarItems: SidebarItem[] = [
         icon: <Calendar className="w-5 h-5" />,
         href: '/admin/activity',
     },
+    {
+        key: 'config',
+        label: '配置管理',
+        icon: <Settings className="w-5 h-5" />,
+        href: '/admin/config',
+    },
 ];
 
 interface AdminLayoutWithUserProps extends AdminLayoutProps {

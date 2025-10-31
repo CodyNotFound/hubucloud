@@ -194,23 +194,37 @@ function compressBackup(backupDir: string): string {
 
 async function main() {
     try {
-        console.log('📤 开始智能备份数据库...\n');
+        // 检查命令行参数，支持 --db-only 或 --no-images
+        const args = process.argv.slice(2);
+        const dbOnly = args.includes('--db-only') || args.includes('--no-images');
+
+        if (dbOnly) {
+            console.log('📤 开始备份数据库（仅数据）...\n');
+        } else {
+            console.log('📤 开始智能备份数据库...\n');
+        }
 
         // 1. 收集所有数据
         console.log('📊 正在收集数据...');
-        const [users, restaurants, parttimes, activities, usedImages] = await Promise.all([
+
+        const [users, restaurants, parttimes, activities] = await Promise.all([
             prisma.user.findMany(),
             prisma.restaurant.findMany(),
             prisma.parttime.findMany(),
             prisma.activity.findMany(),
-            collectUsedImages(),
         ]);
+
+        // 仅在需要时收集图片
+        const usedImages = dbOnly ? new Set<string>() : await collectUsedImages();
 
         console.log(`   ✓ 用户: ${users.length}`);
         console.log(`   ✓ 餐厅: ${restaurants.length}`);
         console.log(`   ✓ 兼职: ${parttimes.length}`);
         console.log(`   ✓ 活动: ${activities.length}`);
-        console.log(`   ✓ 使用中的图片: ${usedImages.size}\n`);
+        if (!dbOnly) {
+            console.log(`   ✓ 使用中的图片: ${usedImages.size}`);
+        }
+        console.log('');
 
         // 2. 创建备份目录
         const backupBaseDir = join(process.cwd(), 'backup');
@@ -244,29 +258,38 @@ async function main() {
         writeFileSync(dataFile, JSON.stringify(data, null, 2));
         console.log(`   ✓ 数据文件: ${dataFile}\n`);
 
-        // 4. 备份图片
-        console.log('🖼️  正在备份图片...');
-        const copiedImages = backupImages(usedImages, backupDir);
-
-        console.log(`   ✓ 已备份图片: ${copiedImages}/${usedImages.size}\n`);
+        // 4. 备份图片（仅在非 db-only 模式）
+        let copiedImages = 0;
+        if (!dbOnly) {
+            console.log('🖼️  正在备份图片...');
+            copiedImages = backupImages(usedImages, backupDir);
+            console.log(`   ✓ 已备份图片: ${copiedImages}/${usedImages.size}\n`);
+        } else {
+            console.log('⏭️  跳过图片备份（仅备份数据库）\n');
+        }
 
         // 5. 创建备份说明文件
+        const backupVersion = dbOnly ? 'v3.0 (仅数据库)' : 'v2.0 (包含图片)';
+        const filesDesc = dbOnly
+            ? '- data.json: 数据库数据'
+            : '- data.json: 数据库数据\n- images/: 使用中的图片文件';
+        const imageStats = dbOnly ? '' : `- 图片: ${copiedImages}/${usedImages.size}`;
+
         const readme = `# 数据库备份
 
 ## 备份信息
 - 备份时间: ${new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}
-- 备份版本: v2.0 (包含图片)
+- 备份版本: ${backupVersion}
 
 ## 数据统计
 - 用户: ${users.length}
 - 餐厅: ${restaurants.length}
 - 兼职: ${parttimes.length}
 - 活动: ${activities.length}
-- 图片: ${copiedImages}/${usedImages.size}
+${imageStats}
 
 ## 文件说明
-- data.json: 数据库数据
-- images/: 使用中的图片文件
+${filesDesc}
 
 ## 恢复方法
 \`\`\`bash

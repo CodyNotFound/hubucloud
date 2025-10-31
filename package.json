@@ -15,6 +15,7 @@
         "list-users": "bun scripts/list-users.ts",
         "reset-password": "bun scripts/reset-password.ts",
         "backup": "bun scripts/backup-db.ts",
+        "backup:db-only": "bun scripts/backup-db.ts --db-only",
         "restore": "bun scripts/restore-db.ts",
         "clean-images": "bun scripts/clean-unused-images.ts",
         "fix-covers": "bun scripts/fix-restaurant-covers.ts",

@@ -90,3 +90,6 @@ export interface FilterParams {
     type?: string;
     [key: string]: any;
 }
+
+// 导出配置相关类型
+export * from './config';

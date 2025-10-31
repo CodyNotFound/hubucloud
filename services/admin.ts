@@ -1,4 +1,4 @@
-import type { Parttime, Restaurant, ApiResponse } from '@/types';
+import type { Parttime, Restaurant, ApiResponse, Config, ConfigFormData } from '@/types';
 import type { Activity, ActivityFormData } from '@/types/activity';
 
 import { apiClient } from './api-client';
@@ -344,6 +344,59 @@ class AdminService {
      */
     async deleteActivity(id: string): Promise<ApiResponse<null>> {
         return apiClient.delete(`/api/admin/activity/${id}`);
+    }
+
+    // ============ 配置管理相关方法 ============
+
+    /**
+     * 获取配置列表（管理员）
+     */
+    async getConfigList(
+        params: {
+            page?: number;
+            limit?: number;
+            keyword?: string;
+        } = {}
+    ): Promise<ApiResponse<PaginatedResponse<Config>>> {
+        const queryParams = new URLSearchParams();
+
+        if (params.page) queryParams.append('page', params.page.toString());
+        if (params.limit) queryParams.append('limit', params.limit.toString());
+        if (params.keyword) queryParams.append('keyword', params.keyword);
+
+        const query = queryParams.toString();
+        return apiClient.get(`/api/admin/config${query ? `?${query}` : ''}`);
+    }
+
+    /**
+     * 获取单个配置（管理员）
+     */
+    async getConfig(key: string): Promise<ApiResponse<Config | null>> {
+        return apiClient.get(`/api/admin/config?key=${encodeURIComponent(key)}`);
+    }
+
+    /**
+     * 创建配置（管理员）
+     */
+    async createConfig(data: ConfigFormData): Promise<ApiResponse<Config>> {
+        return apiClient.post('/api/admin/config', data);
+    }
+
+    /**
+     * 更新配置（管理员）
+     */
+    async updateConfig(
+        key: string,
+        data: Partial<ConfigFormData>
+    ): Promise<ApiResponse<Config>> {
+        return apiClient.put(`/api/admin/config/${encodeURIComponent(key)}`, data);
+    }
+
+    /**
+     * 删除配置（管理员）
+     */
+    async deleteConfig(key: string): Promise<ApiResponse<null>> {
+        return apiClient.delete(`/api/admin/config/${encodeURIComponent(key)}`);
     }
 }
 
